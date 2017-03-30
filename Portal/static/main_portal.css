@@ -1,0 +1,48 @@
+body {
+}
+
+.teaser_section {
+    background: lightgrey;
+    min-height: 190px;
+    margin:0;
+
+}
+
+.teaser_section h2 {
+    color: white;
+
+}
+
+/*-------- Detail View Styles --------*/
+.profile-img-lg {
+    max-width: 200px;
+    border: 2px solid red;
+}
+
+/* ----- Section Designs ------*/
+/*VENUE Section*/
+.venue {
+    background: darkblue;
+    margin:0;
+}
+.venue_teaser {
+    float:left;
+}
+
+
+/*TEAM Section*/
+.teams {
+    background: blue;
+    margin:0;
+
+}
+.team-label {
+    background: white;
+    height: 100%;
+    margin:0;
+    padding:20px;
+}
+.team-img {
+    margin:0;
+    padding:0;
+}

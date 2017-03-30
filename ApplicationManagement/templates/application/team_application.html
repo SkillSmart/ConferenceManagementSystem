@@ -1,0 +1,98 @@
+{% extends 'base_application.html' %}
+<!--Sets the header image class-->
+{% block header-imgClass %}team-application{% endblock %}
+
+
+<!--Displays the overall Team Information to be filled out-->
+{% block form-header %}
+    <div class="container">
+        <article class="header-display">
+            <header>
+                <h2>Team Information</h2>
+            </header>
+            <form action="" method="POST">
+                <table>
+                    <tbody>
+                    {{ teamForm.as_table }}
+                    </tbody>
+                </table>
+            </form>
+        </article>
+    </div>
+{% endblock form-header %}
+
+<!--Displays additional introduction information to the registration Process-->
+{% block header-intro %}
+    <article class="header-display">
+        <h2>Welcome</h2>
+        <p>33 Teams will be accepted for the CDRC Convention in 2017.
+            To register a mediator or negotiator Team with the Competition provide us
+            with the following information.
+        </p>
+    </article>
+{% endblock header-intro %}
+
+<!--Displays the Sidebar Management System-->
+{% block form-sidebar %}
+<section class="">
+    <article class="">
+        <header>
+            <h3>Status</h3>
+        </header>
+        <p>Your Application is pending </br>
+        You have 23h and 12 min to complete.</p>
+    </article>
+    <!---->
+    <article class="">
+        <header>
+            <h3>Process</h3>
+            <ol class="list">
+                <li>Invite Teammembers</li>
+                <li>Fill Profile</li>
+                <li>Present University</li>
+                <li>Confirm Application</li>
+            </ol>
+        </header>
+    </article>
+    <!--Display Help Functionality-->
+    {% comment %}<article class="row">
+        <header>
+            <h3>Contact us</h3>
+        </header>
+        <form action="" method="POST" class="form">
+            {% for field in contactForm %}
+            <div class="form-group">
+                {{ field.label }}
+                {{ field }}
+                <small>{{ field.help }}</small>
+            </div>
+            {% endfor %}
+            <input class="btn btn-success" type="submit" value="Submit message">
+        </form>
+    </article>{% endcomment %}
+    
+</section>
+{% endblock form-sidebar %}
+
+<!--Displays the central Form to be filled-->
+{% block form-content %}
+<h2>Register Team Members</h2>
+<p>Next, please register all Team Members as part of the Team Application</p>
+<form method="post">
+    {% csrf_token %}
+<table>
+    <tbody>
+       {{ userForm.management_form }}
+       {% for form in userForm %}
+       <tr><td>Add Team Member</td></tr>
+       {{ form.as_table}}
+
+       {% endfor %}
+    </tbody>
+</table>
+<input type="submit" class="btn btn-success" value="Register Teammembers">
+</form>
+</article>
+{% endblock form-content %}
+
+<!--Displays additional Information to consider, documents and -->

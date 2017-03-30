@@ -1,0 +1,203 @@
+{% extends 'base_profile.html' %}
+
+
+{% block profile-header %}
+<div class="container">
+    <article class="row">
+        <header class="col-sm-3">
+            <!--Profile Picture-->
+            <h3>{{ student.user.attendent.role|capfirst}}</h3>
+            <img class="img-responsive" style="max-width: 160px;" src="{% if student.profileImg %}{{ student.profileImg.url}} {% else %} https://placehold.it/180x180 {% endif %}" alt="">
+            <h2>{{ student.user.get_full_name }}</h2>
+            
+            <!--Contact Details-->
+            <table class="table-sm">
+                <tbody>
+                    <tr><td>Phone</td><td>{{ student.phoneNumber}}</td></tr>
+                    <tr><td>Email</td><td>{{ student.user.email}}</td></tr>
+                    <tr><td>City</td><td>{{ student.phoneNumber}}</td></tr>
+                    <tr><td>Country</td><td>{{ student.phoneNumber}}</td></tr>
+                </tbody>
+            </table>
+            <hr>
+            <nav class="social_links list-inline">
+                <li><a href="{{ student.twitter }}">Twitter</a></li>
+                <li><a href="{{ student.facebook }}">Facebook</a></li>
+                <li><a href="{{ student.blog }}">Website</a></li>
+            </nav>
+        </header>
+        <!--Header Detail Section-->
+        <content class="col-sm-8">
+            <div class="backlink">
+            </div>
+            <article class="row">
+                <header>
+                </header>
+                <content>
+                    <h3>Slogan</h3>
+                    <blockquote cite="">
+                        {{ student.slogan }}
+                    </blockquote>
+                </content>
+            </article>
+            <article class="row">
+                <header>
+                    <h3>Biography</h3>
+                </header>
+                <content>
+                    {{ student.bio }}
+                </content>
+            </article>
+        </content>
+    </section>
+</div>
+{% endblock %}
+
+<!--          MAIN BODY            -->
+
+{% comment %}   SIDEBAR   {% endcomment %}
+{% block profile-content %}
+
+{% if request.user.profile.studentprofile == student %}
+    <!--Personal Information Feedback-->
+    <section class="row">
+        <article class="col-sm-6">
+            Left Side
+            <button type="button" class="btn-sm btn-danger">Edit Profile</button>
+        </article>
+        <article class="col-sm-6">
+            Right Side
+        </article>
+    </section>
+{% endif %}
+
+<section class="row">
+    <aside class="col-sm-4">
+        
+        <article class="row">
+            <header class="col-sm-3">
+                <img class="img-responsive" src="{{ student.team.university_logo.url }}" alt="">
+            </header>
+            <content class="row">
+                <table>
+                    <tr><td><small><img src="{{ student.team.country.flag }}" alt=""> {{ student.team.country.name }}</small></td></tr>
+                    <tr><td><h5>{{ student.team.university}}</h5></td></tr>
+                </table>
+            </content>
+        </article>
+
+        <article class="row">
+            <h3>Languages</h3>
+            
+            {% for language in student.language_set.all %}
+                <header>
+                    <h4>{{ language.name }}</h4>
+                </header>
+                <table>
+                    <tbody>
+                        <tr><td>Spoken: </td><td>{{ language.get_prof_spoken_display|capfirst }}</td></tr>
+                        <tr><td>Written: </td><td>{{ language.get_prof_written_display|capfirst }}</td></tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+                
+        </article>
+    </aside>
+
+{% comment %}   MAIN CONTENT   {% endcomment %}
+    <main class="col-sm-8">
+        <!-- Awards -->
+        <section class="row">
+            <h3>Awards</h3>
+            {% for award in student.award_set.all %}
+            <article class="col-sm-3">
+                <h4>{{ award.title }}</h4>
+                <ul class="list-unstyled">
+                    <li>{{ award.competition }} {{ award.competition.year}}</li>
+                    <li></li>
+                    <li>{{ award.competition.city }}, {{ award.competition.country.name }}</li>
+                </ul>
+            </article>
+            {% endfor %}
+        </section>
+
+
+        <section class="row">
+            <h3>International Experience</h3>
+            <!--International Experience-->
+            {% for practice in student.internship_set.all %}
+            <article class="row">
+                <header class="col-sm-4">
+                    <h5>{{ practice.field_of_practice|title }}</h5>
+                    <h4>{{ practice.position|title }}</h4>
+                    <ul class="list-unstyled">
+                        <li>{{ practice.duration }}, {{ practice.year }}</li>
+                        <li><img src="{{ practice.country.flag }}" alt=""> {{ practice.country.name }}</li>
+                        <small>Languages Used:</small>
+                        <li>{{ practice.languages_used }}</li>
+                    </ul>
+                    <small></small>
+                </header>
+                <content class="col-sm-8">
+                    <small>Position</small>
+                    <h4>{{ practice.employer }} </h4>
+                    <p>{{ practice.descr }}</p>
+                </content>
+            </article>
+        {% endfor %}
+        </section>
+
+
+        <!--Relevant Coursework -->
+
+        <section class="row">
+            <h3>Course Work</h3>
+        {% for course in negotiationCourses %}
+            <article class="row">
+                
+                <header class="col-sm-12">
+                    <p>{{ course.year }}</p>
+                    <small></small>
+                    <h4>{{ course.title }}</h4>
+                </header>
+                <aside class="col-sm-4">
+                    <h5>{{ course.institution}}</h5>
+                    <ul class="list-unstyled">
+                        <li>Instructor: {{ course.instructor }}</li>
+                        <li>Duration: {{ course.duration }} Hours</li>
+                    </ul>
+                </aside>
+                <content class="col-sm-8">
+                    <h5>Course Content</h5>
+                    <p>{{ course.learnings }}</p>
+                </content>
+            </article>
+            {% endfor %}
+            {% for course in mediationCourses %}
+                <article class="row">
+                
+                <header class="col-sm-12">
+                    <p>{{ course.year }}</p>
+                    <small></small>
+                    <h4>{{ course.title }}</h4>
+                </header>
+                <aside class="col-sm-4">
+                    <h5>{{ course.institution}}</h5>
+                    <ul class="list-unstyled">
+                        <li>Instructor: {{ course.instructor }}</li>
+                        <li>Duration: {{ course.duration }} Hours</li>
+                    </ul>
+                </aside>
+                <content class="col-sm-8">
+                    <h5>Course Content</h5>
+                    <p>{{ course.learnings }}</p>
+                </content>
+            </article>
+            {% endfor %}
+        </section>
+
+
+    </main>
+
+</section>
+{% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css-includes %}
+<link rel="stylesheet" href="{% static 'main_portal.css' %}">
+{% endblock %}
+
+{% block content %}
+<header class="jumbotron">
+    <section class="container">
+        <content class="col-sm-7">
+            <h3>Today @ CDRC</h3>
+            <article>
+                <header>
+                    <h4>Current Sessions</h4>
+                </header>
+                <ul class="list-unstyled">
+                    <li>Preliminary Round 1, WH-023  |  9:30 - 10:45 </li>
+                    <li>Preliminary Round 1, WH-104  |  9:30 - 10:45 </li>
+                    <li>Preliminary Round 1, WH-105  |  9:30 - 10:45 </li>
+                </ul>
+            </article>
+            <article>
+                <header>
+                    <h4>Upcoming Sessions</h4>
+                </header>
+                <ul class="list-unstyled">
+                    <li>Preliminary Round 2, WH-023  |  11:15 - 12:30 </li>
+                    <li>Preliminary Round 2, WH-104  |  11:15 - 12:30 </li>
+                    <li>Preliminary Round 2, WH-105  |  11:15 - 12:30 </li>
+                </ul>
+            </article>
+            <article>
+                <header>
+                    <h4>Announcements</h4>
+                </header>
+                <ul class="list-unstyled">
+                    <li>Preliminary Round 2, WH-023  |  11:15 - 12:30 </li>
+                    <li>Preliminary Round 2, WH-104  |  11:15 - 12:30 </li>
+                    <li>Preliminary Round 2, WH-105  |  11:15 - 12:30 </li>
+                </ul>
+            </article>
+        </content>
+        <header class="col-sm-5">
+            <h3>My Day</h3>
+            <article>
+                <header>
+                    <h5>Sessions</h5>
+                </header>
+                <ul>
+                    <li>9:30 - 10:45 | Preliminary Round 1, WH-1-4</li>
+                    <li>12:15 - 14:30 | Lunch at Conference Hall</li>
+                </ul>
+            </article>
+            <article>
+                <header>                    <h5>Mentor Talks</h5>
+                </header>
+                <ul>
+                    <li>14:15 - 15:00 | Juan Luca Curacor at Conference Hall</li>
+                </ul>
+            </article>
+        </header>
+        <footer class="row">
+        </footer>
+    </section>
+</header>
+
+{% comment %}Sidebar{% endcomment %}
+<div class="container">
+    <div class="row">
+        <section class="sidebar col-sm-4">
+            <header>
+                <h3>#CDRC-2017</h3>
+                <article class="social_media_feed">
+                    <h4>Singapore in Semi</h4>
+                    <p>Chalatan signs the wining bet at the CDRC Semi Finals in 
+                        Vienna #CDRC #MediationForWinn
+                    </p>
+                </article>
+                <article class="social_media_feed">
+                    <h4>What to wear in Mediation</h4>
+                    <p>Chalatan signs the wining bet at the CDRC Semi Finals in 
+                        Vienna #CDRC #MediationForWinn
+                    </p>
+                </article>
+                <article class="social_media_feed">
+                    <h4>Erythreya for the WIN</h4>
+                    <p>Chalatan signs the wining bet at the CDRC Semi Finals in 
+                        Vienna #CDRC #MediationForWinn
+                    </p>
+                </article>
+            </header>
+            <content>
+                <article>
+                    
+                </article>
+            </content>
+        </section>
+        <section class="main col-sm-8">
+            <header>
+                <h3>CDRC - General Information</h3>
+            </header>
+            <content>
+                <article class="venues-today row">
+                    <header>
+                        <h3>Venues</h3>
+                    </header>
+                    <content>
+                        display img links to all relevant venues for that competition 
+                        day
+                    </content>
+                </article>
+                <article class="teams-today row">
+                    <header>
+                        <h3>Teams</h3>
+                    </header>
+                    <content>
+                        display img links to all relevant venues for that competition 
+                        day
+                    </content>
+                </article>
+                <article class="img-today row">
+                    <header>
+                        <h3>Day in Pictures</h3>
+                    </header>
+                    <p>Display pictures here
+                    </p>
+                </article>
+                <article class="rules row">
+                    <header>
+                        <h3>Rules</h3>
+                    </header>
+                </article>
+                <article class="FAQ row">
+                    <header>
+                        <h3>FAQ</h3>
+                    </header>
+                    <content>
+                        Display FAQ Section with general Answer first looks
+                    </content>
+                </article>
+            </content>
+            <footer class="row">
+                Further links for the competition while ongoing.
+
+                Before start it will display Application Details
+            </footer>
+        </section>
+    </div>
+
+</div>
+
+{% endblock content %}
+

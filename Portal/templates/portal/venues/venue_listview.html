@@ -1,0 +1,28 @@
+{% extends 'base_profile.html' %}
+{% load static %}
+
+{% block css-includes %}
+<link rel="stylesheet" href="{% static 'main_portal.css' %}">
+{% endblock %}
+
+{% block profile-header %}
+{% for venue in venue_list %}
+        <table class="table">
+            <thead>
+            
+            </thead>
+            <tbody>
+                <tr>
+                    <td><img src="{{ venue.img_venue.url }}" alt=""></td>
+                    <td>{{ venue.name }}</td>
+                    <td>{{ venue.city }}</td>
+                    <td>{{ venue }}</td>
+                    <td>{{ venue }}</td>
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
+
+
+    
+{% endblock %}

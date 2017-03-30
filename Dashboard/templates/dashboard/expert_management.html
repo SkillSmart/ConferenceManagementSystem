@@ -1,0 +1,338 @@
+{% extends "base_dashboard.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block overview-head %}
+<article class="col-sm-8">
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr >
+                <td class="col-sm-3">Name</td>
+                <td class="col-sm-2">Role</td>
+                <td class="col-sm-2">Application</td>
+                <td class="">Accept</td>
+            </tr>
+        
+        </thead>
+        <tbody>
+            <h4>Selected/Accepted Applications <small>({{expertlist_accepted|length }}/{{ expertlist|length }})</small></h4>
+            {% for application in expertlist_accepted %}
+                <tr class="success">
+                    <td><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td>{{ application.applicant.role|capfirst }}</td>
+                    <td>{{ application.get_status_display }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% comment %}{% endcomment %}
+    <table class="table table-striped table-hover">
+        <tbody>
+            <h4>Reviewed Applications <small>({{expertlist_reviewed|length }}/{{ expertlist|length }})</small></h4>
+            {% for application in expertlist_reviewed %}
+                <tr class="warning">
+                    <td class="col-sm-3"><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td class="col-sm-2">{{ application.applicant.role|capfirst }}</td>
+                    <td class="col-sm-2">{{ application.get_status_display }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% comment %}{% endcomment %}
+    <table class="table table-striped table-hover">
+        <tbody>
+            <h4>Unreviewed Applications <small>({{expertlist_unreviewed|length }}/{{ expertlist|length }})</small></h4>
+            {% for application in expertlist_unreviewed %}
+                <tr class="primary">
+                    <td class="col-sm-3"><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td class="col-sm-2">{{ application.applicant.role|capfirst }}</td>
+                    <td class="col-sm-2">{{ application.get_status_display }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-striped table-hover">
+        <tbody>
+            <h4>Declined Applications <small>({{expertlist_declined|length }}/{{ expertlist|length }})</small></h4>
+            {% for application in expertlist_declined %}
+                <tr class="danger">
+                    <td class="col-sm-3"><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td class="col-sm-2">{{ application.applicant.role|capfirst }}</td>
+                    <td class="col-sm-2">{{ application.get_status_display }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+
+</article>
+
+{% comment %}Sidebar{% endcomment %}
+<article class="col-sm-4">
+    <header>
+        <div class="col-sm-4">
+            <img class="img-responsive" src="{{ expert.applicant.user.profile.profileImg.url }}" alt="">
+        </div>
+        <div class="col-sm-8">
+            <small>
+                <ul class="list list-inline">
+                    
+                    {% if expert.applicant.user.profile.expertprofile.iba_member %}
+                    <li><img class="img-responsive" style="height:40px; border:1px dotted lightgrey;" src="{% static 'images/iba-logo.jpg' %}" alt=""></li>    
+                    {% endif %}
+                    {% if expert.applicant.user.profile.expertprofile.imi_certified %}
+                    <li><img class="img-responsive" style="height:40px; border:1px dotted lightgrey;" src="{% static 'images/imi-logo.png' %}" alt=""></li>
+                    {% endif %}
+                    {% if expert.applicant.user.profile.expertprofile.viac_member %}
+                    <li><img class="img-responsive" style="height:40px; border:1px dotted lightgrey;" src="{% static 'images/viac-logo-web.png' %}" alt=""></li>
+                    {% endif %}      
+                </ul>
+            </small>
+            <h3>{{ expert.applicant.user.get_full_name }}</h3>
+            <h4>{{ expert.applicant.user.profile.expertprofile.position }} <br>
+            @ {{ expert.applicant.user.profile.expertprofile.affiliation }}</h4>
+
+        </div>
+
+    </header>
+    <content>
+        {% comment %}AVAILABILITY{% endcomment %}
+        <article class="row">
+            <header>
+                <h4>Availability</h4>
+            </header>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr class="success">
+                        <td>Timeslot</td>
+                        <td>Mon</td>
+                        <td>Tue</td>
+                        <td>Wed</td>
+                        <td>Thu</td>
+                        <td>Fri</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Morning</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>Afternoon</td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td>1</td>
+                        <td>0</td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+        
+        <article class="row">
+            <header>
+                <h4>Student Feedback</h4>
+            </header>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr class="success">
+                        <td>Year</td>
+                        <td>D1</td>
+                        <td>D2</td>
+                        <td>D3</td>
+                        <td>D4</td>
+                        <td>Avg</td>
+                        <td>Rank</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for review in expert.review_set.all %}
+                    <tr>
+                        <td>2015</td>
+                        <td>{{ review.question_1 }}</td>
+                        <td>{{ review.question_2 }}</td>
+                        <td>{{ review.question_3 }}</td>
+                        <td>{{ review.question_4 }}</td>
+                        <td>2.5</td>
+                        <td>45/50</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
+        <article class="row">
+            <header>
+                <h4>Internal Comment</h4>
+            </header>
+            {% crispy form %}
+        </article>
+        
+            
+    </content>
+</article>
+{% endblock overview-head %}
+
+{% comment %} SUMMARY STATISTIC DISPLAY {% endcomment %}
+{% block content-header %}
+<section class="row">
+    <article class="col-sm-4">
+        <header>
+            <h3>Mediation Experience</h3>
+        </header>
+         <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>Profession</td>
+                        <td>Years</td>
+                        <td>Cases</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for experience in expert.applicant.user.profile.expertprofile.mediationexperience_set.all %}
+                        <tr>
+                            <td>{{ experience.get_profession_display }}</td>
+                            <td>{{ experience.duration }}{{ experience.}}</td>
+                            <td>{{ experience.cases }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </article>
+
+    <article class="col-sm-4">
+        <header>
+            <h3>Negotiation Experience</h3>
+        </header>
+         <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>Profession</td>
+                        <td>Years</td>
+                        <td>Cases</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for experience in expert.applicant.user.profile.expertprofile.negotiationexperience_set.all %}
+                        <tr>
+                            <td>{{ experience.get_profession_display }}</td>
+                            <td>{{ experience.duration }}</td>
+                            <td>{{ experience.cases }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </article>
+
+    <article class="col-sm-4">
+        <header>
+            <h3>Certifications</h3>
+        </header>
+         <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>Institution</td>
+                        <td>Title</td>
+                        <td>Year</td>
+ 
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for certificate in expert.applicant.user.profile.expertprofile.certification_set.all %}
+                    <tr>
+                        <td>{{ certificate.title }}</td>
+                        <td>{{ certificate.institution}}</td>
+                        <td>{{ certificate.issueDate|date:'Y' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+    </article>
+</section>
+
+
+<section class="row">
+    <article class="col-sm-6">
+        <header>
+            <h3>Historical Performance</h3>
+        </header>
+        <img src="https://www.placehold.it/460x200" alt="">
+        <img src="https://www.placehold.it/100x200" alt="">
+        Display a lineplot over the individual averages for each category
+        over all historical years of participation
+    </article>
+    <article class="col-sm-6">
+        <header>
+            <h3>Feedback Sentiment Analysis</h3>
+        </header>
+        <img src="https://www.placehold.it/460x200" alt="">
+        <img src="https://www.placehold.it/100x200" alt="">
+        Display Summary Statistics for the Feedback given as ratings.
+        Display Emotions associated with the Comments given to the Assessors by Students
+    </article>
+</section>
+{% endblock content-header %}
+
+{% comment %}{% endcomment %}
+{% block content-main %}
+<article class="row">
+    <header>
+        <h3>Detailed Feedback</h3>
+    </header>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr class="success">
+                <td>Year</td>
+                <td>Session</td>
+                <td>D1</td>
+                <td>D2</td>
+                <td>D3</td>
+                <td>D4</td>
+                <td>Student Comments</td>
+            </tr>
+
+        </thead>
+        <tbody>
+        
+            {% for feedback in expert.applicant.feedback_set.all %}
+                <tr>
+                    <td>{{ feedback.session.startTime|date:"Y"}}</td>
+                    <td><a href="{% url 'session:session' feedback.session.slug%}">{{ feedback.session }}</a></td>
+                    <td>{{ feedback.category_1}}</td>
+                    <td>{{ feedback.category_2}}</td>
+                    <td>{{ feedback.category_3}}</td>
+                    <td>{{ feedback.category_4}}</td>
+                    <td>{{ feedback.text }}</td>
+                </tr>
+            {% endfor %}
+                
+        </tbody>
+    </table>
+</article>
+{% endblock content-main %}
+
+{% comment %}{% endcomment %}
+{% block content-sidemenue %}
+<h4>Filter Feedback</h4>
+Put filter options here to subset the Feedback section based on
+<ul>
+    <li>Sentiment</li>
+    <li>Rounds</li>
+    <li>Years</li>
+    <li></li>
+</ul>
+
+<article class="row">
+    <header>
+        <h4></h4>
+    </header>
+</article>
+{% endblock content-sidemenue %}

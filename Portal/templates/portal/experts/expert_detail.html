@@ -1,0 +1,273 @@
+{% extends 'base_profile.html' %}
+
+
+{% block profile-header %}
+<div class="container">
+    <article class="row">
+        <header class="col-sm-3">
+            <!--Profile Picture-->
+            <small>Role</small>
+            <h3>{{ expert.user.attendent.role|capfirst}}</h3>
+            <img class="img-responsive" style="max-width: 160px;" src="{% if expert.profileImg %}{{ expert.profileImg.url}} {% else %} https://placehold.it/180x180 {% endif %}" alt="">
+            <img src="{{ expert.country.flag}}" alt=""> {{ expert.country.name}}
+            <h2>{{ expert.user.get_full_name }}</h2>
+            
+            <!--Contact Details-->
+            <table class="table-sm">
+                <tbody>
+                    <tr><td>Phone: </td><td>{{ expert.phoneNumber}}</td></tr>
+                    <tr><td>Email: </td><td>{{ expert.user.email}}</td></tr>
+                    <tr><td>City: </td><td>{{ expert.city }}</td></tr>
+                </tbody>
+            </table>
+            <hr>
+            <nav class="social_links list-inline">
+                <li><a href="{{ expert.twitter }}">Twitter</a></li>
+                <li><a href="{{ expert.facebook }}">Facebook</a></li>
+                <li><a href="{{ expert.blog }}">Website</a></li>
+            </nav>
+            {% if request.user.profile.expertprofile == expert %}
+                <a href="{% url 'userManagement:profile_edit' %}" role="button" class="btn-block btn-danger">Edit Profile</a>
+            {% endif %}
+        </header>
+        <!--Header Detail Section-->
+        <content class="col-sm-8">
+            <div class="backlink">
+            </div>
+            <article class="row">
+                <header>
+                </header>
+                <content>
+                    <h3>Slogan</h3>
+                    <blockquote cite="">
+                        {{ expert.slogan }}
+                    </blockquote>
+                </content>
+            </article>
+            <article class="row">
+                <header>
+                    <h3>Biography</h3>
+                </header>
+                <content>
+                    {{ expert.bio }}
+                </content>
+            </article>
+        </content>
+    </section>
+</div>
+{% endblock %}
+
+<!--          MAIN BODY            -->
+
+{% comment %}   SIDEBAR   {% endcomment %}
+{% block profile-content %}
+
+<!--        DISPLAY ONLY FOR EXPERT THEMSELVES                          -->
+
+{% if request.user.profile.expertprofile == expert %}
+    <!--Personal Information Feedback-->
+    <section class="row">
+        <article class="col-sm-6">
+            <article class="row">
+                <header>
+                    <h4>Upcoming Appointments</h4>
+                </header>
+                <content>Scheduled Appointments can be displayed here.</content>
+            </article>
+
+            <article class="row">
+                <header>
+                    <h4>Messages</h4>
+                </header>
+                <content>
+                    <!--This is one message-->
+                    <article class="row">
+                        <header class="col-sm-3">
+                            <small>Sent 12:45, 2/3/2017</small>
+                            <h5>Marc Aurelius</h5>
+                            <p></p>
+                        </header>
+                        <content class="col-sm-9">
+                            <p>Hey this is the message text that i sent you.</p>
+                        </content>
+                    </article>
+                    <article class="row">
+                        <header class="col-sm-3">
+                            <small>Sent 12:45, 2/3/2017</small>
+                            <h5>Marc Aurelius</h5>
+                            <p></p>
+                        </header>
+                        <content class="col-sm-9">
+                            <p>Hey this is the message text that i sent you.</p>
+                        </content>
+                    </article>
+
+
+                </content>
+            </article>
+        </article>
+        <article class="col-sm-6">
+            <article class="row">
+                <header>
+                    <h4>Score Results</h4>
+                </header>
+                <content>Display the scores that have been put in so far here.</content>
+            </article>
+
+            <article class="row">
+                <header>
+                    <h4>Score Results</h4>
+                </header>
+                <content>Display the scores that have been put in so far here.</content>
+            </article>
+
+        </article>
+    </section>
+{% endif %}
+
+<!--        DISPLAY ONLY FOR EXPERT THEMSELVES                          -->
+<section class="row">
+        <h3>Upcoming Programs/Trainings</h3>
+        {% for program in expert.program_set.all %}
+            <a href="{{program.webpage.url}}">
+            <article class="col-sm-6">
+                
+                <header class="col-sm-12">
+                    <p>{{ program.year }}</p>
+                    <small></small>
+                    <h4>{{ program.title }}</h4>
+                </header>
+                <aside class="col-sm-4">
+                    <h5>{{ program.institution}}</h5>
+                    <ul class="list-unstyled">
+                        <li>Instructor: {{ program.expert.user.get_full_name }}</li>
+                        <li>Duration: {{ program.duration }} Hours</li>
+                    </ul>
+                </aside>
+                <content class="col-sm-8">
+                    <h5>Program Content</h5>
+                    <p>{{ program.description }}</p>
+                </content>
+            </article></a>
+            {% endfor %}
+            {% for course in mediationCourses %}
+                <article class="row">
+                
+                <header class="col-sm-12">
+                    <p>{{ course.year }}</p>
+                    <small></small>
+                    <h4>{{ course.title }}</h4>
+                </header>
+                <aside class="col-sm-4">
+                    <h5>{{ course.institution}}</h5>
+                    <ul class="list-unstyled">
+                        <li>Instructor: {{ course.instructor }}</li>
+                        <li>Duration: {{ course.duration }} Hours</li>
+                    </ul>
+                </aside>
+                <content class="col-sm-8">
+                    <h5>Course Content</h5>
+                    <p>{{ course.learnings }}</p>
+                </content>
+            </article>
+            {% endfor %}
+        </section>
+    
+
+<section class="row">
+    <aside class="col-sm-4">
+        <h3>Certifications</h3>
+        
+        {% for certificate in expert.certification_set.all %}
+            <article class="row">
+                <header class="col-sm-12">
+                    <h4>{{certificate.title}}</h4>
+                    
+                </header>
+                <content class="col-sm-12">
+                    <small>{{ certificate.issueDate }} ( {{ certificate.institution }} )</small>
+                </content>
+            </article>
+        {% endfor %}
+            
+
+        <article class="row">
+            <h3>Languages</h3>
+            
+            {% for language in expert.language_set.all %}
+                <header>
+                    <h4>{{ language.name }}</h4>
+                </header>
+                <table>
+                    <tbody>
+                        <tr><td>Spoken: </td><td>{{ language.get_prof_spoken_display|capfirst }}</td></tr>
+                        <tr><td>Written: </td><td>{{ language.get_prof_written_display|capfirst }}</td></tr>
+                    </tbody>
+                </table>
+            {% endfor %}
+                
+        </article>
+    </aside>
+
+{% comment %}   MAIN CONTENT   {% endcomment %}
+    <main class="col-sm-8">
+        <!-- Awards -->
+        <section class="row">
+            <h3>Mediation Experience</h3>
+            {% for experience in expert.mediationexperience_set.all %}
+            <article class="row">
+                <div class="col-sm-12">
+                    <h5>{{ experience.get_profession_display|capfirst }}</h5>
+                    <ul class="list-inline">
+                        <li>{{ experience.duration }} Years of Experience</li>
+                        <li><img src="{{ experience.country.flag }}" alt=""> {{ experience.country.name }}</li>
+                        <li>{{ experience.cases }} Cases worked</li>
+                    </ul>
+                </div>
+                <header class="col-sm-6">
+                    <h4>Clients worked with</h4>
+                    <p>{{ experience.priorClients }}</p>
+                    <small></small>
+                </header>
+                <content class="col-sm-6">
+                    <small></small>
+                    <h4>Places worked from</h4>
+                    <p>{{ experience.placesWorked }}</p>
+                </content>
+            </article>
+        {% endfor %}
+        </section>
+
+
+        <section class="row">
+            <h3>Negotiation Experience</h3>
+            {% for experience in expert.negotiationexperience_set.all %}
+            <article class="row">
+                <div class="col-sm-12">
+                    <h5>{{ experience.get_profession_display|capfirst }}</h5>
+                    <ul class="list-inline">
+                        <li>{{ experience.duration }} Years of Experience</li>
+                        <li><img src="{{ experience.country.flag }}" alt=""> {{ experience.country.name }}</li>
+                        <li>{{ experience.cases }} Cases worked</li>
+                    </ul>
+                </div>
+                <header class="col-sm-6">
+                    <h4>Clients worked with</h4>
+                    <p>{{ experience.priorClients }}</p>
+                    <small></small>
+                </header>
+                <content class="col-sm-6">
+                    <small></small>
+                    <h4>Places worked from</h4>
+                    <p>{{ experience.placesWorked }}</p>
+                </content>
+            </article>
+        {% endfor %}
+        </section>
+
+
+        <!--Relevant Coursework -->
+    </main>
+
+</section>
+{% endblock %}

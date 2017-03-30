@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block sub-navigation %}
+<ul class="nav navbar-nav">
+    <li><a href="{% url 'dashboard:index' %}">Dashboard</a></li>
+    <li><a href="{% url 'dashboard:manage_experts' %}">Expert Applications</a></li>
+    <li><a href="{% url 'dashboard:manage_teams' %}">Team Applications</a></li>
+    <li><a href="{% url 'dashboard:manage_venues' %}">Venue Management</a></li>
+    <li><a href="{% url 'dashboard:manage_sessions'%}">Session Management</a></li> 
+    <li><a href="{% url 'dashboard:manage_shifts' %}">Shift Management</a></li>
+</ul>
+{% endblock sub-navigation %}
+
+{% block content %}
+<div class="jumbotron">
+    <div class="container">
+        <section class="row">
+            {% block overview-head %}
+            {% endblock overview-head %}
+        </section>
+    </div>
+</div>
+
+<div class="container">
+    <section class="row">
+        {% block content-header %}
+        {% endblock content-header %}
+    </section>
+    <section class="row">
+        <article class="col-sm-3">
+            {% block content-sidemenue %}
+            {% endblock content-sidemenue %}
+        </article>
+        <article class="col-sm-9">
+            {% block content-main %}
+            {% endblock content-main %}
+            
+        </article>
+    </section>
+</div>
+{% endblock %}
+
+{% block footer-left %}
+{% endblock footer-left %}
+
+
+{% block footer-right %}
+{% endblock footer-right %}

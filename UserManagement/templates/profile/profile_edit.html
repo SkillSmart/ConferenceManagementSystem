@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% crispy mediationFormSet mediationFormsetHelper %}
+{% crispy negotiationFormSet negotiationFormSetHelper %}
+{% crispy programFormSet programFormSetHelper %}
+
+
+{% block content %}
+<section class="jumbotron">
+    <form method="POST" action="" enctype="multipart/form-data">{% csrf_token %}
+    <div class="container">
+        <article class="row">
+            <header class="col-sm-4">
+                <!--Profile Picture-->
+                <small>Role</small>
+                <h3>{{ expert.user.attendent.role|capfirst}}</h3>
+                <img class="img-responsive" style="max-width: 160px;" src="{% if expert.profileImg %}{{ expert.profileImg.url}} {% else %} https://placehold.it/180x180 {% endif %}" alt="">
+                {{ expertForm.profileImg|as_crispy_field }}
+                <h2>{{ userForm.first_name }} {{ userForm.last_name }}</h2>
+                <h4>{{ expertForm.position}} </br> At {{ expertForm.affiliation }}</h4>
+                
+                <!--Contact Details-->
+                <table class="table-sm">
+                    <tbody>
+                        <tr><td>Phone</td><td>{{ expertForm.phoneNumber}}</td></tr>
+                        <tr><td>Email</td><td>{{ userForm.email}}</td></tr>
+                        <tr><td>City</td><td>{{ expertForm.city}}</td></tr>
+                        <tr><td>Country</td><td>{{ expertForm.country }}</td></tr>
+                    </tbody>
+                </table>
+                <hr>
+                <table>
+                    <tbody>
+                        <tr><td>LinkedIn:</td><td>{{ expertForm.linkedin }}</td></tr>
+                        <tr><td>Twitter: </td><td>{{ expertForm.twitter }}</td></tr>
+                        <tr><td>Website:</td><td>{{ expertForm.blog }}</td></tr>
+                        <tr><td>Facebook:</td><td>{{ expertForm.facebook }}</td></tr>
+                        <tr><td>Twitter:</td><td>{{ expertForm.twitter }}</td></tr>
+                    </tbody>
+                </table>
+                <!--SUBMIT BUTTON-->
+                <button type="submit" value='submit' class="btn btn-success">Save changes</button>
+
+            </header>
+            <!--Header Detail Section-->
+            <content class="col-sm-8">
+                <div class="backlink">
+                </div>
+                <article class="row">
+                    <header>
+                    </header>
+                    <content>
+                        <h3>Slogan</h3>
+                        <blockquote cite="">
+                            {{ expertForm.slogan|as_crispy_field }}
+                        </blockquote>
+                    </content>
+                </article>
+                <article class="row">
+                    <header>
+                        <h3>Biography</h3>
+                    </header>
+                    <content>
+                        {{ expertForm.bio|as_crispy_field }}
+                    </content>
+                </article>
+            </content>
+        </section>
+    </div>
+
+
+</section>
+
+<section class="profile-content row">
+    <div class="container">
+        {% if request.user.profile.expertprofile == expert %}
+    <!--Personal Information Feedback-->
+    <section class="row">
+        <article class="col-sm-6">
+            <article class="row">
+                <header>
+                    <h4>Upcoming Appointments</h4>
+                </header>
+                <content>Scheduled Appointments can be displayed here.</content>
+            </article>
+
+            <article class="row">
+                <header>
+                    <h4>Messages</h4>
+                </header>
+                <content>
+                    <!--This is one message-->
+                    <article class="row">
+                        <header class="col-sm-3">
+                            <small>Sent 12:45, 2/3/2017</small>
+                            <h5>Marc Aurelius</h5>
+                            <p></p>
+                        </header>
+                        <content class="col-sm-9">
+                            <p>Hey this is the message text that i sent you.</p>
+                        </content>
+                    </article>
+                    <article class="row">
+                        <header class="col-sm-3">
+                            <small>Sent 12:45, 2/3/2017</small>
+                            <h5>Marc Aurelius</h5>
+                            <p></p>
+                        </header>
+                        <content class="col-sm-9">
+                            <p>Hey this is the message text that i sent you.</p>
+                        </content>
+                    </article>
+
+
+                </content>
+            </article>
+        </article>
+        <article class="col-sm-6">
+            <article class="row">
+                <header>
+                    <h4>Score Results</h4>
+                </header>
+                <content>Display the scores that have been put in so far here.</content>
+            </article>
+
+            <article class="row">
+                <header>
+                    <h4>Score Results</h4>
+                </header>
+                <content>Display the scores that have been put in so far here.</content>
+            </article>
+
+        </article>
+    </section>
+{% endif %}
+
+<!--        DISPLAY ONLY FOR EXPERT THEMSELVES                          -->
+<section class="row">
+        <h3>Upcoming Programs/Trainings</h3>
+        {{ programFormSet.management_form }}
+        {% crispy programFormSet programFormSetHelper %}
+            
+        </section>
+    
+
+<section class="row">
+    <aside class="col-sm-4">
+        <h3>Certifications</h3>         
+
+        <article class="row">
+            <h3>Languages</h3>
+                
+        </article>
+    </aside>
+
+{% comment %}   MAIN CONTENT   {% endcomment %}
+    <main class="col-sm-8">
+        <!-- Awards -->
+        <section class="row">
+            <h3>Mediation Experience</h3>
+            {{ mediationFormSet.management_form|crispy }}
+            {% crispy mediationFormSet mediationFormSetHelper %}
+        </section>
+
+
+        <section class="row">
+            <h3>Negotiation Experience</h3>
+            {% crispy negotiationFormSet negotiationFormSetHelper %}
+        </section>
+
+
+        <!--Relevant Coursework -->
+    </main>
+
+</section>
+
+    </div>
+</section>
+<section class="row social-media-stream">
+    {% block social-media-stream %}
+    {% endblock social-media-stream %}
+</form>
+</section>
+{% endblock %}
+
+
+
+
+
+
+
+

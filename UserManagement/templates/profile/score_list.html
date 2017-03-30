@@ -1,0 +1,37 @@
+{% extends 'profile/base_profile.html' %}
+
+{% comment %}
+This page displays the Scoring Results for the currently logged in User.
+It is part of the main Profile Section and enables only display of the underlying data.
+{% endcomment %}
+
+{% block sub-navigation %}
+
+{% endblock %}
+
+{% block main %}
+ <section>
+     <header>
+         <h2>Scoring Results per Category</h2>
+     </header>
+     <main>
+         <table>
+             <thead>
+                 <td>Category</td>
+                 <td>Average Score</td>
+                 <td>Comments</td>
+             </thead>
+             <tbody>
+                 {% for field in form %}
+                 <tr>
+                     <td>{{ field.label_tag }}</td>
+                     <td>{{ field }} </td>
+                 </tr>
+                 {% endfor %}
+                 
+             </tbody>
+         </table>
+     </main>
+ </section>
+{% endblock main %}
+

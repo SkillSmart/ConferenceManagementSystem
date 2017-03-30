@@ -1,0 +1,127 @@
+{% extends 'base_profile.html' %}
+{% load static %}
+
+{% block css-includes %}
+<link rel="stylesheet" href="{% static 'main_portal.css' %}">
+{% endblock %}
+
+
+{% block profile-header %}
+<section class="container">
+    <article class="row">
+        <header class="col-sm-9">
+            <h2>{{ location.name }}</h2>
+        <img src="{{ location.img_venue.url }}" alt="" class="img-responsive">
+        </header>
+        <content class="col-sm-3" style="margin-top: 40px;">
+            <h3>Rooms</h3>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>Room</td>
+                        <td>Section</td>
+                        <td>Level</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for room in location.room_set.all %}
+                    <tr>
+                        <td>{{ room.name }}</td>
+                        <td>{{ room.section }}</td>
+                        <td>{{ room.level }}</td>
+                    </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+            
+                
+        </content>
+    </article>
+</section>
+
+{% endblock %}
+
+{% block profile-content %}
+<div class="row">
+    <section class="col-sm-4">
+        <article>
+            <header>
+                <h3>Venue Information</h3>
+            </header>
+            <content>
+                <p>{{ location.location_info}}</p>
+            </content>
+            
+        </article>
+        <article>
+            <header>
+                <h3>How to get here</h3>
+            </header>
+            <content>
+                <p>{{ location.directions }}</p>
+            </content>
+        </article>
+        
+    </section>
+    <section class="col-sm-8">
+        <article>
+            <header>
+                <h3>Location</h3>
+            </header>
+            <content >
+                <iframe
+                    width="100%"
+                    height="450"
+                    frameborder="0" style="border:0"
+                    src="https://www.google.com/maps/embed/v1/place?key=AIzaSyBEL8dd38-sBknSXbkwk3zYX3nFje9EAKo
+                        &center={{location.geolocation}}
+                        &q={{location.address}}
+                        &zoom=18
+                        &maptype=satellite">
+                </iframe>
+        
+            </content>
+        </article>
+    </section>
+</div>
+<section class="container">
+    <article class="row">
+        <h3>Session Planner</h3>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <td>Room</td>
+                    <td>Session</td>
+                    <td>Start</td>
+                    <td>End</td>
+                    <td>Mediator Team</td>
+                    <td>Negotiator Team</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for room in location.room_set.all %}
+                
+                {% for session in room.session_set.all %}
+                    <tr>
+                        <td>{{ room.name }}</td>
+                        <td><a href="{{session.get_absolute_url}}">{{ session.name }}</a></td>
+                        <td>{{ session.startTime|date:"h:i"}}</td>
+                        <td>{{ session.endTime|date:"h:i"}}</td>
+                        <td>{{ session.mediatorTeam }}</td>
+                        <td>{{ session.negotiatorTeam }}</td>
+                    </tr>
+                {% endfor %}
+                    
+                    
+                {% endfor %}
+                    
+            </tbody>
+        </table>
+    </article>
+</section>
+
+{% endblock %}
+
+{% block social-media-stream %}
+{% endblock social-media-stream %}

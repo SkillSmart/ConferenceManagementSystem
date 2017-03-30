@@ -1,0 +1,36 @@
+{% extends 'profile/base_profile.html' %}
+{% comment %}
+Displays a detailed Listing of all Feedback Scores given for
+a specific Session. Displays only the scores that are given for
+that Expert themselves.
+{% endcomment %}
+{% block main %}
+<section>
+    <header>
+        <h2>Score Results for {{ session }}</h2>
+        <p>On Friday, 15th of April <br>
+        From: 9:30 to 10:30</p>
+        <div>
+            <ul>
+                <li>Mediating Team: University of Bangalore</li>
+                <li>Negotiating Team A: University of Shanghai</li>
+                <li>Negotiating Team B: University of Seol</li>
+            </ul>
+        </div>
+    </header>
+    <main>
+        <article>
+            <header>
+                <h3>8.4</h3>
+                <small>Overall Score</small>
+            </header>
+            <h4>Comments:</h4>
+            <p>The permission can then be assigned to a User via its 
+                user_permissions attribute or to a Group via its permissions attribute.</p>
+        </article>
+    </main>
+    <footer>
+        
+    </footer>
+</section>
+{% endblock main %}

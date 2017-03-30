@@ -1,0 +1,120 @@
+{% extends "base_dashboard.html" %}
+
+
+{% block overview-head %}
+<h2>Overview section</h2>
+    <ul class="list-unstyled">
+        <li>Display information that is relevant to the current situation at the convention</li>
+        <li>Make this a onestop solution for the Admin Team to have all current data access</li>
+        <li>Bring unresolved matters to attention</li>
+        <li>Link to all relevant information from here directly</li>
+        <li></li>
+    </ul>
+<section class="col-sm-6">
+    <article class="row">
+        <header>
+            <h3>Upcoming Sessions</h3>
+        </header>
+        <content>
+            Display the next Sessions that need to be prepared and make all relevant data 
+            available to see if everything can be finished on time.
+            Especially (Judges, Teams, and any special information on that session)
+        </content>
+    </article>
+    <article class="row">
+        <header>
+            <h3>Rooms</h3>
+        </header>
+        <content>
+            Display the status of the rooms associated with the upcoming Sessions
+            Highlight anything that still needs to be done, and the person responsible
+            for the room management
+        </content>
+    </article>
+    <article class="row">
+        <header>
+            <h3>Venues</h3>
+        </header>
+        <content>
+            Display relevant context information.
+            Contact Numbers, responsible people, associated
+        </content>
+    </article>
+</section>
+<section class="col-sm-6">
+    <article class="row">
+        <header>
+            <h3>Manage sessions</h3>
+        </header>
+        <Content>
+            Display a flexible form to do fast changes on the Details of
+            the upcoming sessions on the fly. 
+            - Judge needs to be reassigned
+            - Room needs to quickly be adapted
+            - 
+        </Content>
+    </article>
+</section>
+{% endblock overview-head %}
+
+{% block content-main %}
+<h2>Main Content</h2>
+<section class="row">
+    <header>
+        <h3>Sessions</h3>
+    </header>
+    <content>
+        Display a paginated list of all sessions ordered by day and automatically 
+        subset to upcoming only
+    </content>`
+</section>
+
+<section class="row">
+    <header>
+        <h3>Teams</h3>
+    </header>
+    <content>
+        Currently engaged Teams, Scores and current ranking of Teams here
+    </content>
+</section>
+
+<section class="row">
+    <header>
+        <h3>Experts</h3>
+    </header>
+</section>
+
+<section class="row">
+    <header>
+        <h3>Rooms</h3>
+    </header>
+    <content>
+        Information on the rooms booked by session, current information on the people
+        repsonsible and the status of the room readiness for the next session.
+    </content>
+</section>
+<section class="row">
+    <header>
+        <h3>Venues</h3>
+    </header>
+</section>
+{% endblock content-main %}
+
+{% block content-sidemenue %}
+<h2>Sidemenue</h2>
+<article class="row">
+    <header>
+        <h3>Shift</h3>
+    </header>
+    <content>
+        The current shifts, and associated information 
+        to notes, contact details, responsibilities etc..
+    </content>
+</article>
+
+<article class="row">
+    <header>
+        <h3>Shift</h3>
+    </header>
+</article>
+{% endblock content-sidemenue %}

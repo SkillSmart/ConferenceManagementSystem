@@ -1,0 +1,66 @@
+{% extends "base_session.html" %}
+
+{% block profile-header %}
+<article class="container">
+    <header class="col-sm-6">
+        List filter
+    </header>
+    <content class="col-sm-6">
+        Search Bars
+    </content>
+</article>
+{% endblock %}
+
+
+{% block profile-content %}
+<section>
+    <h5>It's now {% now "jS F Y H:i"%}</h5>
+    <article class="col-sm-10">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Session Name</td>
+                    <td class="col-sm-1">Day</td>
+                    <td class="col-sm-1">Start</td>
+                    <td class="col-sm-1">End</td>
+                    <td class="col-sm-2">Mediator Team</td>
+                    <td class="col-sm-2">Negotiator Team</td>
+                    <td class="col-sm-2">Venue</td>
+                    <td class="col-sm-1">Room</td>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for session in session_list %} 
+                    <tr>
+                        <td><a href="{% url 'session:session_edit' session.slug %}" role="button" class="btn-danger">edit</a></td>
+                        <td><a href="{{session.get_absolute_url}}">{{ session.name }}</a></td>
+                        <td>{{ session.startTime|date:"d.m" }}</td>
+                        <td>{{ session.startTime|date:"h:i" }}</td>
+                        <td>{{ session.endTime|date:"h:i" }}</td>
+                        <td>{{ session.mediatorTeam }}</td>
+                        <td>{{ session.negotiatorTeam }}</td>
+                        <td><a href="{% url 'portal:venue_detail' session.room.venue.slug %}">{{ session.room.venue }}</a></td>
+                        <td>{{ session.room }}</td>
+                    </tr>
+                {% endfor %}
+                    
+            </tbody>
+        </table>
+    </article>
+    <aside class="col-sm-2">
+        <p>Filter options here that scroll with the Table</p>
+        <ul>
+            <li>INPUT: Freetext Search</li>
+            <li>Filter for upcoming/passed Sessions</li>
+            <li>Filter for Venue</li>
+            <li>Filter for </li>
+        </ul>
+
+    </aside>
+</section>
+<section class="row">
+
+</section>
+{% endblock %}

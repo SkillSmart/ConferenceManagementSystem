@@ -1,0 +1,108 @@
+{% extends 'base_profile.html' %}
+
+
+{% block profile-header %}
+<section class="jumbotron">
+    <div class="container">
+        <small><img src="{{ team.country.flag }}" alt=""> {{ team.country.name }}</small>
+        <h2>{{ team.university }}</h2>
+        <article class="row">
+            <header>
+                <img src="https://placehold.it/1200x450" alt="GroupPicture" class="img-responsive">
+            </header>
+            <div class="profiles row">
+                {% for member in team.student_set.all %}
+                    <article class="member {% if team.members.all|length == 4%}col-sm-3 {% else %} col-sm-4 {%endif%}">
+                        <header>
+                            <img src="https://placehold.it/280x210" class="member-profile img-responsive" alt="Member Profile Picture">
+                        </header>
+                        <content>
+                           <p>{{ member.user.get_full_name | title }}</p>
+                           <small>{{ member.studentRole|title }}</small>
+                        </content>
+                    </article>
+                {% endfor %}
+            </div>
+        </article>
+    </content>
+</section>
+{% endblock %}
+
+{% block profile-content %}
+<main class="container">
+    <div class="content-main col-sm-12 col-md-8">
+    <section class="row">
+            <article class="row">
+                <header>
+                    <h3>Team Information</h3>
+                </header>
+                <content>
+                    <p>{{ team.teamprofile.presentation_text }}</p>
+                </content>
+            </article>
+            <article class="row">
+                <header>
+                    <h3>Information Section</h3>
+                </header>
+            </article>
+        </section>
+        
+        {% comment %}
+        ----- MEMBER Section ---- 
+        {% endcomment %}
+        
+        <section class="member-display row">
+            <h3>Members</h3>
+        {% for member in team.studentprofile_set.all %}
+            <a href="{% url 'portal:student_profile' member.user.username %}">
+            <article class="member row">
+                <header class="col-sm-3">
+                    <img src="{{ member.profileImg.url }}" class="img-responsive" alt="Profile Image of {{ member.user.get_full_name }}">
+                    <small><img src="{{ member.country.flag }}" alt=""> {{ member.country.name }}</small>
+                </header>
+                <content class="col-sm-9">
+                    <h5>{{ member.user.attendent.role|capfirst }}</h5>
+                    <h4>{{ member.user.get_full_name }}</h4>
+                    <p>{{ member.bio|truncatechars:300 }}</p>
+                </content>
+                <footer class="col-sm-6">
+                    <ul class="list-inline">
+                        {% if member.profile.twitter %}<li class=""><a href="">Twitter</a></li>{% endif %}
+                        {% if member.user.profile.facebook %}<li class=""><a href="">Facebook</a></li>{% endif %}                   
+                        {% if member.user.profile.website %}<li class=""><a href="">Website</a></li>{% endif %} 
+                    </ul>
+                </footer>
+            </article>
+                </a>
+            {% endfor %}
+            </section>
+    </div>
+    <div class="sidebar-right hidden-sm col-md-4">
+        
+        <article>
+            <header>
+                {% if team.university_logo %}
+                <img  class="img-responsive" src="{{team.university_logo.url }}" alt="">
+                {% endif %}
+                <h3>{{ team.university. }}</h3>
+                <small><img src="{{ team.country.flag }}" alt=""> {{ team.country.name }}</small>
+            </header>
+            <content>
+                Display 
+                <img class="img-responsive" src="https://placehold.it/220x350" alt="">
+            </content>
+            <ul>
+                <li>Founded in:</li>
+                <li>Students: </li>
+                <li>Number of related Courses:</li>
+                <li>webpage</li>
+                <li></li>
+                <li></li>
+            </ul>
+        </article>
+
+    </div>
+</main>
+  
+
+{% endblock %}

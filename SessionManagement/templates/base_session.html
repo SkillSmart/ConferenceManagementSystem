@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css-includes %}
+<link rel="stylesheet" href="{% static 'css/main_session.css'%}">
+{% endblock css-includes %}
+
+{% block sub-navigation %}
+{% comment %}
+Display a forum navigation with linkedin style dialog features
+for all logged in users heres.
+{% endcomment %}
+{% endblock %}
+
+
+{% block content %}
+<section class="jumbotron">
+    {% block profile-header %}
+    {% endblock %}
+</section>
+
+<section class="profile-content row">
+    <div class="container">
+        {% block profile-content %}
+        {% endblock %}
+    </div>
+</section>
+<section class="row social-media-stream">
+    {% block social-media-stream %}
+    {% endblock social-media-stream %}
+</section>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base_profile.html' %}
+{% load crispy_forms_tags %}
+
+{% block profile-header %}
+<section class="jumbotron">
+    <div class="container">
+        <header>
+            <h2>CDRC Expert Selection</h2>
+        </header>
+        <content class="row">
+            <div class="searchBox col-sm-4">
+                <h4>by Mediation Experience</h4>
+                <form action="" method="GET">
+                    {% for role in medExp_list %}
+                        <div class="">
+                            <label for="id_{{role}}">{{ role.1 }}</label>
+                            <input type="checkbox" name="id_{{role.1}}" value="{{ role.1 }}" class="">
+                        </div>
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="searchBox col-sm-4">
+                <h4>by Negotiation Experience</h4>
+                <form action="" method="GET">
+                    {% for role in negExp_list %}
+                        <div class="">
+                            <label for="id_{{role.1}}">{{role.1}}</label>
+                            <input type="checkbox" name="id_{{role.1}}" value="{{role.1}}" class="">
+                        </div>
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="searchBox col-sm-4">
+                <h4>Find an Expert</h4>
+                {% csrf_token %}
+                {% crispy search_form %}
+            </div>
+        </content>
+    </div>
+</section>
+{% endblock %}
+
+{% block profile-content %}
+    {% for expert in expert_list %}
+    <a href="{% url 'portal:expert_profile' expert.user.username %}">
+        <article class="list_item row">
+            <header class="col-sm-3">
+                <img src="{% if expert.user.profile.profileImg %}{{ expert.user.profile.profileImg.url }}{% else %}https://placehold.it/180x190{% endif %}" alt="">
+                <small class="row"><img src="{{ expert.user.profile.country.flag}}" alt=""> {{ expert.user.profile.country.name}} </small>
+            </header>
+            <content class="col-sm-9">
+                <h3>{{ expert.user.get_full_name }}</h3>
+                <h4>{{expert.user.profile.expertprofile.position|capfirst}}, {{ expert.user.profile.expertprofile.affiliation|capfirst }} </h4>
+                <p>{{ expert.user.profile.bio|truncatewords:100 }}</p>
+            </content>
+            
+        </article>
+    </a>
+    {% endfor %}
+{% endblock %}

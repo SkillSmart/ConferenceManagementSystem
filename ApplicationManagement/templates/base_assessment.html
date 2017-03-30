@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block sub-navigation %}
+<nav class="navbar navbar-toggleable-md">
+    <ul class="nav navbar-nav">
+        <li><a href="#">Application Overview</a></li>
+        <li><a href="#">Finished Reviews</a></li>
+        <li><a href="{% url 'application:review_teamapplication' %}">Score Applications</a></li>
+    </ul>
+</nav>
+{% endblock sub-navigation %}
+
+{% block content %}
+<div class="jumbotron"> 
+    <section class="container">
+        <!--Includes all relevant process information and control for the Assessor during Assessment-->
+        {% block assessment-header %}
+        {% endblock assessment-header %}
+    </section>
+</div>
+
+{% comment %}Main Content{% endcomment %}
+<div class="container">
+    <section class="row">
+        <!--Includes a Detail View for all Members in order (First Assessment Phase = Validate Information and make notes)-->
+        {% block assessment-presentation %}
+        {% endblock assessment-presentation %}
+    </section>
+    <!--Includes a side by side summary overview of all team members with only the validated Information, attached form for feedback
+    on the bottom for each team member-->
+    <section class="row">
+        {% block scoring-section %}
+        {% endblock scoring-section %}
+    </section>
+</div>
+
+{% endblock content %}

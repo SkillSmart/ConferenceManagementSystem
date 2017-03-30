@@ -1,0 +1,78 @@
+{% extends 'base_application.html' %}
+{% load tags %}
+{% load crispy_forms_tags %}
+
+
+
+{% comment %}CRISPY LOADERS{% endcomment %}
+{% crispy userForm %}
+{% crispy profileFormHeader profileFormHeader.helper %}
+{% crispy profileFormSide profileFormSide.helper %}
+{% crispy profileFormMain profileFormMain.helper %}
+
+{% crispy languageFormset languageFormset_helper %}
+{% crispy internshipFormset internshipFormset_helper %}
+{% crispy competitionFormset competitionFormset_helper %}
+{% crispy courseworkFormset courseworkFormset_helper %}
+{% crispy awardsFormset awardsFormset_helper %}
+
+<!--FORM HEADER SECTION-->
+{% block form-header %}
+    <h2>Personal Details</h2>
+    {% crispy userForm %}
+{% endblock form-header %}
+
+
+{% block header-intro %}
+    <h3>Background</h3>
+    {% crispy profileFormHeader %}
+{% endblock header-intro %}
+
+<!--FORM SIDEBAR -->
+{% block form-sidebar %}
+    <section class="row">
+        <img src="https://placehold.it/190x210" alt="">
+        <h3>Professional Details</h3>
+        <article>
+            {% crispy profileFormSide profileFormSide.helper %}
+        </article>
+    </section>
+    <section class="row">
+        <header>
+            <h3>Languages</h3>
+        </header>
+        {% crispy languageFormset languageFormset_helper %}
+    </section>
+    
+
+{% endblock form-sidebar %}
+
+<!--MAIN FORM BODY-->
+{% block form-content %}
+    <section class="row">
+        <h3>Competition Experience</h3>
+        {% crispy competitionFormset competitionFormset_helper %}
+        {% crispy awardsFormset awardsFormset_helper %}
+
+    </section>
+    <section class="row">
+        <header>
+            <h3>International Experience</h3>
+            <p>Please describe to us the professional background you bring
+                to the table here.
+            </p>
+        </header>
+        <content>
+            {% crispy internshipFormset internshipFormset_helper %}
+        </content>
+    </section>
+    <section>
+        <header>
+            <h3>Coursework</h3>
+        </header>
+        <content>
+            {% crispy courseworkFormset courseworkFormset_helper %}
+        </content>
+    </section>
+
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base_profile.html' %}
+{% load static %}
+
+{% block css-includes %}
+<link rel="stylesheet" href="{% static 'main_portal.css' %}">
+{% endblock %}
+
+{% block profile-header %}
+<section class="container">
+    <h2>CDRC Venues 2017</h2>
+    {% for venue in venue_list %}
+        <article>
+            <header>
+                <a href="{% url 'portal:venue_detail' venue.slug %}"><img class="img-responsive" src="{{ venue.img_venue.url }}" alt="" style="height:200px; padding: 0; margin:0; float:left;"></a>
+            </header>
+            <content>
+
+            </content>
+        </article>
+    {% endfor %}
+</section>`
+
+
+    
+{% endblock %}

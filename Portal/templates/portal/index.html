@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css-includes %}
+<link rel="stylesheet" href="{% static 'main_portal.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="competition teaser_section row">
+    <section class="container">
+        <header>
+            <h2>The Competition</h2>
+        </header>
+    </section>
+</section>
+<section class="venue teaser_section row">
+    <section class="container">
+        <header class="row">
+            <h2>The Venues</h2>
+            {% for venue in venues %}
+            <a href="{% url 'portal:venue_detail' venue.slug %}">
+            <article class="venue_teaser col-sm-3">
+                <header>
+                    <img class="img-responsive" src="{% if venue.img_venue %}{{ venue.img_venue.url }}{% else %} https://placehold.it/240x160 {% endif %}" alt="" class="img-responsive">
+                </header>
+            </article>
+            </a>
+            {% endfor %}
+        </header>
+    </section>
+</section>
+<section class="teams teaser_section row">
+    <section class="container">
+        <header>
+            <h2>The Teams</h2>
+            {% for team in teams_invited %}
+            <a href="{% url 'portal:team_profile' team.slug %}">
+            <article class="row team-teaser">
+                <header>
+                    <div class="col-sm-3 team-label">
+                        <small><img src="{{ team.country.flag }}" alt=""> {{ team.country.name}}</small>
+                        <h3>{{ team.university }}</h3>
+                        <p>{{ team.slogan }}</p>
+                        <ul class="team-members list">
+                            {% for member in team.studentprofile_set.all %}
+                            <li>{{ member.user.get_full_name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="col-sm-9 team-img">
+                        <img  class="img-responsive" src="{% if team.teamImg %}{{ team.teamImg.url}}{% else %}https://placehold.it/640x220{% endif %}" alt="">
+                    </div>
+
+                    <h4></h4>
+                </header>
+            </article>
+            </a>
+            {% endfor %}
+        </header>
+    </section>
+</section>
+<section class="row teaser_section experts">
+    <section class="container">
+        <div class="row">
+            <header>
+                <h2>The Experts</h2>
+            </header>
+            {% for expert in experts_invited %}
+            <a href="{% url 'portal:expert_profile' expert.user.username %}">
+                <article class="col-xs-6  col-sm-4 col-md-3">
+                    <header>
+                        <img src="{% if expert.user.profile.profileImg %}{{ expert.user.profile.profileImg.url }} {% else %}https://placehold.it/190x180 {% endif %}" alt="">
+                        <h4>{{ expert.user.get_full_name }}</h4>
+                    </header>
+                    <content class="expert_overlay">
+                        {{ expert.user.profile.position }}</br>
+                        {{ expert.expertprofile.affiliation }}
+                    </content>
+                </article>
+                </a>
+            {% endfor %}
+        </div>
+        
+    </section>
+</section>
+
+{% endblock content %}

@@ -1,0 +1,52 @@
+{% extends 'base_application.html' %}
+{% load tags %}
+{% load crispy_forms_tags %}
+
+
+
+{% comment %}CRISPY LOADERS{% endcomment %}
+{% crispy userForm %}
+{% crispy profileFormHeader profileFormHeader.helper %}
+{% crispy profileFormSide profileFormSide.helper %}
+{% crispy profileFormMain profileFormMain.helper %}
+{% crispy negotiationExp negotiationExp_helper %}
+{% crispy mediationExp mediationExp_helper %}
+
+
+<!--FORM HEADER SECTION-->
+{% block form-header %}
+<form method="POST" action="" enctype="multipart/form-data">
+{% csrf_token %}
+    <h2>Personal Details</h2>
+    {% crispy userForm %}
+{% endblock form-header %}
+
+
+{% block header-intro %}
+    <h3>Background</h3>
+    {% crispy profileFormHeader %}
+{% endblock header-intro %}
+
+<!--FORM MAIN-->
+{% block form-sidebar %}
+    <img src="https://placehold.it/190x210" alt="">
+    <h3>Professional Details</h3>
+    {% crispy profileFormSide %}
+{% endblock form-sidebar %}
+
+{% block form-content %}
+    <h3>Negotiation Experience</h3>
+    <p>Please describe to us the professional background you bring
+        to the table here.
+    </p>
+   {% crispy negotiationExp negotiationExp_helper %}
+
+   <h3>Mediation Experience</h3>
+   <p>Please describe to us the professional background you bring
+        to the table here.
+    </p>
+   {% crispy mediationExp mediationExp_helper %}
+
+<!--End of FORM-->
+</form>
+{% endblock %}

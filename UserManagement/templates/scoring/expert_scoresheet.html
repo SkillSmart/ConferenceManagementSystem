@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="jumbotron">
+    {% block profile-header %}
+    {% endblock %}
+</section>
+
+<section class="profile-content row">
+    <div class="container">
+        {% block profile-content %}
+        {% endblock %}
+    </div>
+</section>
+<section class="row social-media-stream">
+    {% block social-media-stream %}
+    {% endblock social-media-stream %}
+</section>
+{% endblock %}

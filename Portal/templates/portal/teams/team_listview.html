@@ -1,0 +1,95 @@
+{% extends 'base_profile.html' %}
+
+
+
+{% block profile-header %}
+
+<section class="jumbotron">
+    <div class="container">
+        <header>
+            <h2>CDRC - Competing Teams</h2>
+        </header>
+        <content class="row">
+            <div class="searchBox col-sm-4">
+                <h4>by Mediation Experience</h4>
+                <form action="" method="GET">
+                    {% for role in medExp_list %}
+                        <div class="">
+                            <label for="id_{{role}}">{{ role }}</label>
+                            <input type="checkbox" name="id_{{role}}" value="{{ role.value }}" class="">
+                        </div>
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="searchBox col-sm-4">
+                <h4>by Negotiation Experience</h4>
+                <form action="" method="GET">
+                    {% for role in negExp_list %}
+                        <div class="">
+                            <label for="id_{{role}}">{{role}}</label>
+                            <input type="checkbox" name="id_{{role}}" value="{{role}}" class="">
+                        </div>
+                    {% endfor %}
+                </form>
+            </div>
+            <div class="searchBox col-sm-4">
+                <h4>Find an team</h4>
+                <form method="POST" action="">
+                    <table>
+                        {{ search_form.as_table }}
+                    </table>
+                </form>
+            </div>
+        </content>
+    </div>
+</section>
+{% endblock %}
+
+
+{% comment %}---------  LISTVIEW  ------------{% endcomment %}
+{% block profile-content %}
+
+    {% for team in team_list.all %}
+    <a href="{% url 'portal:team_profile' team.slug %}">
+        <article class="list_item row">
+            <header class="col-sm-3">
+                {% if team.university_logo %}
+                <img src="{{ team.university_logo.url }}" alt="">
+                {% endif %}
+                <h3>{{ team.university }}</h3>
+                <small><img src="{{ team.country.flag }}" alt=""> {{ team.country.name }}</small>
+                <h4>Languages spoken</h4>
+                <p>{{ team.teamprofile.languages_spoken }}</p>
+                <h4>Members</h4>
+                <ul class="list-unstyled">
+                    {% for member in team.studentprofile_set.all %}
+                    <li>{{ member.user.get_full_name}}</li>
+                    {% endfor %}
+                </ul>
+                <footer>
+                {% comment %}<ul class="list-inline">
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Official</a></li>
+                </ul>{% endcomment %}
+            </footer>
+            </header>
+            <content class="col-sm-9">
+                
+                {% if team.teamImg %}
+                <img class="img-responsive" src="{{ team.teamImg.url }}" alt="">
+                {% else %}
+                <h3>Description</h3>
+                <p>{{ team.teamprofile.presentation_text|truncatewords:300 }}</p>
+                {% endif %}
+                
+                
+
+            </content>
+            
+        </article>
+    </a>
+{% endfor %}
+
+{% endblock %}

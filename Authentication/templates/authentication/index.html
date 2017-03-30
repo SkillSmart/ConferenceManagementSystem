@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+Successfully logged in!
+<h1>Logged in as {{user}}</h1>
+FIrst Name:{{user.first_name}}
+
+<h1>CDRC Vienna 2017</h1>
+
+<section>
+    <header>
+        <h3>Experts</h3>
+    </header>
+</section>
+<section>
+    <header>
+        <h3>Teams</h3>
+        {% for team in team_list %}
+        <article>
+            <header>
+                <img src="#" alt="Team Groupfoto">
+                <h4>{{ team.university }}</h4>
+                <ul>
+                    {% for member in team.members %}
+                    <li>{{ member.name }}</li>
+                    {% endfor %}
+                </ul>
+            </header>
+        </article>
+        {% endfor %}
+    </header>
+</section>
+<section>
+    <header>
+        <h3>The Venue</h3>
+    </header>
+</section>
+
+{% endblock %}

@@ -1,0 +1,12 @@
+<h2>Create Account</h2>
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <table>
+        <tbody>
+            {{ attendent_form.as_table }}
+            {{ account_form.as_table }}
+        </tbody>
+    </table>
+    <button type="submit">Create Account</button>
+</form>

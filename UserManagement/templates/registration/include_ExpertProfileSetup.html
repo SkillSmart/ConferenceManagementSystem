@@ -1,0 +1,35 @@
+<h2>Personal Details</h2>
+<form action="" method="POST">
+    {% csrf_token %}
+<table>
+    <tbody>
+        {{ profile_form.as_table }}
+    </tbody>
+</table>
+<button type="submit">Save changes</button>
+</form>
+
+
+<h2>Mediation Experience</h2>
+<form action="" method="POST">
+<table>
+    {% csrf_token %}
+    <tbody>
+        {{ medExp_form.as_table }}
+    </tbody>
+</table>
+<button type="submit">Add Experience</button>
+</form>
+
+
+<h2>Negotiation Experience</h2>
+<form method="POST" action="">
+    {% csrf_token %}
+<table>
+    <tbody>
+        {{ negExp_form.as_table }}
+    </tbody>
+</table>
+<button type="submit">Add Experience</button>
+</form>
+

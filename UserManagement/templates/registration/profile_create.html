@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Set up your {{ attendent.role | title}} Profile</h2>
+    <section>
+        <header>
+            <h3>Welcome to CDRC 2017</h3>
+            {% if attendent.role in "expert" %}
+                <p>Thank your for your interest in working with us. To finalize your 
+                application we invite you to provide us with some additional information
+                about your professional background. 
+                </p>
+            </header>
+            <content>
+                {% include 'registration/include_ExpertProfileSetup.html' %}
+            </content>
+            {% elif attendent.role in "mediator" %}
+                <p>Congratulations on your interest in the Field of Mediation. To finalize your Application
+                    please provide us with the following information about your Team. 
+                </p>
+                </header>
+            <content>
+                {% include 'registration/include_TeamProfileSetup.html' %}
+            </content>
+            {% elif attendent.role in "negotiator" %}
+                <p>Congratulations on your interest in the Field of Mediation. To finalize your Application
+                    please provide us with the following information about your Team. 
+                </p>
+            </header>
+            <content>
+                {% include 'registration/include_TeamProfileSetup.html' %}
+            </content>
+            {% endif %}
+        </header>
+        <content>
+{% endblock content %}

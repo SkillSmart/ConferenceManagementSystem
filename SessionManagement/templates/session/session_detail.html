@@ -1,0 +1,116 @@
+{% extends "base_session.html" %}
+
+{% block profile-header %}
+<article class="container">
+    <header class="col-sm-3">
+        <h5>{{ session.startTime|date:"D, d M Y"}}</h5>
+        <h2>{{ session.name }}</h2>
+        <table class="table">
+            <tbody>
+                <tr><td>Venue:</td> <td>{{ session.room.venue.name }}</td></tr>
+                <tr><td>Room:</td> <td>{{ session.room }}</td></tr>
+                <tr><td>Start:</td> <td>{{ session.startTime|date:"H:i"}}</td></tr>
+                <tr><td>End:</td> <td>{{ session.endTime|date:"H:i"}}</td></tr>
+
+                <tr><td></td><td>{{ session.room }}</td></tr>
+            </tbody>
+        </table>
+    </header>
+    <content class="col-sm-9">
+        <article class="row">
+            <header>
+                <h3>Judges</h3>
+            </header>
+            <content>    
+                {% for expert in session.assessors.all %}
+                    <div class="col-sm-3">
+                        <img src="{{ expert.profileImg.url }}" alt="">
+                        <small> {{ expert.user.get_full_name}} | <img src="{{ expert.country.flag }}" alt=""> {{ expert.country.name }}  </small>
+                    </div>
+                {% endfor %}
+            </content>
+        </article>
+        <!-- The TEAMS -->
+        <article class="col-sm-6">
+            <h3>Negotiator Team</h3>
+            <header class="row">
+                <img src="{{ session.negotiatorTeam.university_logo.url }}" alt="" class="col-sm-3">
+                <div class="col-sm-9">
+                    <h3>{{ session.negotiatorTeam.university }}</h3>
+                    <h4>{{ session.negotiatorTeam.country.name }}</h4>
+                </div>
+            </header>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>Role</td>
+                        <td>Member</td>
+                        <td>Country</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in session.negotiatorTeam.studentprofile_set.all %}
+                        <tr>
+                        <td>{{ member.user.attendent.role|capfirst }}</td>
+                        <td>{{ member.user.get_full_name }}</td>
+                        <td>{{ member.country.name }}</td>
+                    </tr>
+                    {% endfor %}
+                        
+                </tbody>
+            </table>
+        </article>
+        <article class="col-sm-6">
+            <h3>Mediator Team</h3>
+            <header class="row">
+                <img src="{{ session.mediatorTeam.university_logo.url }}" alt="" class="col-sm-3">
+                <div class="col-sm-9">
+                    <h3>{{ session.mediatorTeam.university }}</h3>
+                    <h4>{{ session.mediatorTeam.country.name }}</h4>
+                </div>
+            </header>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <td>Role</td>
+                        <td>Member</td>
+                        <td>Country</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in session.mediatorTeam.studentprofile_set.all %}
+                        <tr>
+                        <td>{{ member.user.attendent.role|capfirst }}</td>
+                        <td>{{ member.user.get_full_name }}</td>
+                        <td>{{ member.country.name }}</td>
+                    </tr>
+                    {% endfor %}
+                        
+                </tbody>
+            </table>
+        </article>
+    </content>
+</article>
+{% endblock %}
+
+{% block profile-content %}
+    <section class="row">
+        <h2>Location and Directions</h2>
+        <article class="col-sm-6">
+            <header>
+                <h3>{{ session.room.venue.name }}</h3>
+            </header>
+            <p>Google Maps plugin of venue here</p>
+        </article>
+        <article class="col-sm-6">
+            <header>
+                <h3>Room</h3>
+            </header>
+            <content>
+                <h4>Directions</h4>
+                <p>{{ session.room.directions }}</p>
+            </content>
+        </article>
+    </section> 
+{% endblock profile-content %}
+
