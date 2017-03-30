@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  Byte-compiled / optimized / DLL files
 __pycache__/
 *.pyc
@@ -7,6 +8,13 @@ __pycache__/
 *.sqlite3
 *.json
 
+=======
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+>>>>>>> 528a6dd4b23364bdfb5db0fc2677ed35eaf8f9f9
 # C extensions
 *.so
 
@@ -24,7 +32,10 @@ lib64/
 parts/
 sdist/
 var/
+<<<<<<< HEAD
 wheels/
+=======
+>>>>>>> 528a6dd4b23364bdfb5db0fc2677ed35eaf8f9f9
 *.egg-info/
 .installed.cfg
 *.egg
@@ -56,7 +67,10 @@ coverage.xml
 
 # Django stuff:
 *.log
+<<<<<<< HEAD
 settings.py
+=======
+>>>>>>> 528a6dd4b23364bdfb5db0fc2677ed35eaf8f9f9
 local_settings.py
 
 # Flask stuff:
@@ -72,7 +86,11 @@ docs/_build/
 # PyBuilder
 target/
 
+<<<<<<< HEAD
 # Jupyter Notebook
+=======
+# IPython Notebook
+>>>>>>> 528a6dd4b23364bdfb5db0fc2677ed35eaf8f9f9
 .ipynb_checkpoints
 
 # pyenv
@@ -81,14 +99,20 @@ target/
 # celery beat schedule file
 celerybeat-schedule
 
+<<<<<<< HEAD
 # SageMath parsed files
 *.sage.py
 
+=======
+>>>>>>> 528a6dd4b23364bdfb5db0fc2677ed35eaf8f9f9
 # dotenv
 .env
 
 # virtualenv
+<<<<<<< HEAD
 .venv
+=======
+>>>>>>> 528a6dd4b23364bdfb5db0fc2677ed35eaf8f9f9
 venv/
 ENV/
 
