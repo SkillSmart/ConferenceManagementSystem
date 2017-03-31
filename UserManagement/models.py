@@ -8,6 +8,8 @@ from django.dispatch import receiver
 from django_countries.fields import CountryField
 # URL resolvers
 from django.urls import reverse
+# Calculation imports
+from django.db.models import (Avg, StdDev, Sum, Max, Min)
 
 
 PRACTICE_FIELDS = (
@@ -34,9 +36,25 @@ class Attendent(models.Model):
     blacklisted = models.BooleanField(default=False)
     administrativeComment = models.TextField(blank=True, null=True)
 
-    def get_student_rating(self):
-        # ratings = self.profile.studentprofile.
-        pass
+    def get_ratings(self):
+        # Catch all given Feedback
+        ratings = self.feedback_set.all()
+        if ratings:
+            # Calculate the AVG Values
+            feedbackQuality = ratings.aggregate(Avg('feedbackQuality'))
+            feedbackRelated = ratings.aggregate(Avg('feedbackRelated'))
+            feedbackComm = ratings.aggregate(Avg('feedbackComm'))
+        else:
+            return None
+        # Store in DICT to add
+        ratings = {
+            'StudentFeedback': {
+                'feedbackQuality': feedbackQuality,
+                'feedbackRelated' : feedbackRelated,
+                'feedbackComm' : feedbackComm,
+            }
+        }
+        return ratings
 
     def get_absolute_url(self):
         return reverse('portal:expert_profile', args = [self.user.username])

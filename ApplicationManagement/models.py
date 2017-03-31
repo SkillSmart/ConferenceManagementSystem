@@ -91,14 +91,16 @@ class Feedback(models.Model):
     """
     Feedback given by a participating student to a judge at a session
     """
-    session = models.ForeignKey(Session)
-    expert = models.ForeignKey(Attendent)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    expert = models.ForeignKey(Attendent, on_delete=models.CASCADE)
 
     # Feedback Categories
-    category_1 = models.IntegerField(verbose_name="How helpfull was his/her Feedback")
-    category_2 = models.IntegerField(verbose_name="How personal did you feel the Feedback was")
-    category_3 = models.IntegerField(verbose_name="How easy was it to put the Feedback into action")
-    category_4 = models.IntegerField(verbose_name="How clear and elaborate was the Experts Feedback")
+    feedbackQuality = models.IntegerField(verbose_name="How helpfull was his/her Feedback?",
+                                            blank=True, null=True)
+    feedbackRelated = models.IntegerField(verbose_name="How well did the Feedback relate to the Assessment Criteria?",
+                                             blank=True, null=True)
+    feedbackComm = models.IntegerField(verbose_name="How well was the Feedback Communicated?",
+                                             blank=True, null=True)
 
     # Free Text Feedback
     text = models.TextField(max_length=250, blank=True, null=True)

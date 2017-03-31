@@ -4,12 +4,16 @@
 
 {% block overview-head %}
 <article class="col-sm-8">
+    <h2>Expert Application Management</h2>
+    <hr>
     <table class="table table-striped table-hover">
         <thead>
-            <tr >
-                <td class="col-sm-3">Name</td>
-                <td class="col-sm-2">Role</td>
-                <td class="col-sm-2">Application</td>
+            <tr>
+                <td class="col-sm-2">Country</td>
+                <td class="col-sm-2">Name</td>
+                <td class="col-sm-1">Score</td>
+                <td class="col-sm-1">Role</td>
+                <td class="col-sm-2">Status</td>
                 <td class="">Accept</td>
             </tr>
         
@@ -32,6 +36,7 @@
             <h4>Reviewed Applications <small>({{expertlist_reviewed|length }}/{{ expertlist|length }})</small></h4>
             {% for application in expertlist_reviewed %}
                 <tr class="warning">
+                    <td class="col-sm-2"><img src="{{application.applicant.user.profile.country.flag}}" alt=""> {{application.applicant.user.profile.country.name}}</td>
                     <td class="col-sm-3"><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
                     <td class="col-sm-2">{{ application.applicant.role|capfirst }}</td>
                     <td class="col-sm-2">{{ application.get_status_display }}</td>
@@ -73,8 +78,9 @@
 </article>
 
 {% comment %}Sidebar{% endcomment %}
-<article class="col-sm-4">
-    <header>
+<section class="col-sm-4">
+    <div class="card">
+    <header class="card-header">
         <div class="col-sm-4">
             <img class="img-responsive" src="{{ expert.applicant.user.profile.profileImg.url }}" alt="">
         </div>
@@ -100,9 +106,9 @@
         </div>
 
     </header>
-    <content>
+    <content class="card-block">
         {% comment %}AVAILABILITY{% endcomment %}
-        <article class="row">
+        <article>
             <header>
                 <h4>Availability</h4>
             </header>
@@ -138,7 +144,7 @@
             </table>
         </article>
         
-        <article class="row">
+        <article class="">
             <header>
                 <h4>Student Feedback</h4>
             </header>
@@ -169,7 +175,7 @@
                 </tbody>
             </table>
         </article>
-        <article class="row">
+        <article class="">
             <header>
                 <h4>Internal Comment</h4>
             </header>
@@ -178,22 +184,29 @@
         
             
     </content>
-</article>
+    <div class="card-footer">
+        Status
+    </div>
+    </div>
+</section>
 {% endblock overview-head %}
 
 {% comment %} SUMMARY STATISTIC DISPLAY {% endcomment %}
 {% block content-header %}
-<section class="row">
-    <article class="col-sm-4">
-        <header>
-            <h3>Mediation Experience</h3>
-        </header>
-         <table class="table table-striped table-hover">
+<section class="container">
+    {% comment %}{% endcomment %}
+    <div class="col-sm-4">
+        <article class="card">
+            <header class="card-header">
+                <h3>Mediation Experience</h3>
+            </header>
+            <table class="table table-striped table-hover">
                 <thead>
                     <tr>
                         <td>Profession</td>
                         <td>Years</td>
                         <td>Cases</td>
+                        <td>Clients</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -202,14 +215,21 @@
                             <td>{{ experience.get_profession_display }}</td>
                             <td>{{ experience.duration }}{{ experience.}}</td>
                             <td>{{ experience.cases }}</td>
+                            <td>{{ experience.priorClients|truncatewords:'5'}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-    </article>
+            <div class="card-footer">
 
-    <article class="col-sm-4">
-        <header>
+            </div>
+        </article>
+    </div>
+    
+    <div class="col-sm-4">
+    <article class="card">
+
+        <header class="card-header">
             <h3>Negotiation Experience</h3>
         </header>
          <table class="table table-striped table-hover">
@@ -218,6 +238,7 @@
                         <td>Profession</td>
                         <td>Years</td>
                         <td>Cases</td>
+                        <td>Clients</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -226,36 +247,38 @@
                             <td>{{ experience.get_profession_display }}</td>
                             <td>{{ experience.duration }}</td>
                             <td>{{ experience.cases }}</td>
+                            <td>{{ experience.priorClients|truncatewords:'5'}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
     </article>
-
-    <article class="col-sm-4">
-        <header>
-            <h3>Certifications</h3>
-        </header>
-         <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <td>Institution</td>
-                        <td>Title</td>
-                        <td>Year</td>
- 
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for certificate in expert.applicant.user.profile.expertprofile.certification_set.all %}
-                    <tr>
-                        <td>{{ certificate.title }}</td>
-                        <td>{{ certificate.institution}}</td>
-                        <td>{{ certificate.issueDate|date:'Y' }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-    </article>
+    </div>
+    <div class="col-sm-4">
+        <article class="card">
+            <header class="card-header">
+                <h3>Certifications</h3>
+            </header>
+            <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Institution</td>
+                            <td>Title</td>
+                            <td>Year</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for certificate in expert.applicant.user.profile.expertprofile.certification_set.all %}
+                        <tr>
+                            <td>{{ certificate.title }}</td>
+                            <td>{{ certificate.institution}}</td>
+                            <td>{{ certificate.issueDate|date:'Y' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </article>
+    </div>
 </section>
 
 
@@ -305,7 +328,7 @@
             {% for feedback in expert.applicant.feedback_set.all %}
                 <tr>
                     <td>{{ feedback.session.startTime|date:"Y"}}</td>
-                    <td><a href="{% url 'session:session' feedback.session.slug%}">{{ feedback.session }}</a></td>
+                    <td><a href="{% url 'session:session_detail' feedback.session.slug %}">{{ feedback.session }}</a></td>
                     <td>{{ feedback.category_1}}</td>
                     <td>{{ feedback.category_2}}</td>
                     <td>{{ feedback.category_3}}</td>

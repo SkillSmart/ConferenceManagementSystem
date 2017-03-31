@@ -44,7 +44,8 @@ def expert_management(request, username=None):
         expert = Application.objects.get(applicant__user__username=username, competition_year='2017')
     else:
         expert = expertlist[0]
-
+    # Get the current Feedback Ratings for the Person
+    ratings = expert.applicant.get_ratings()
     if request.method == "POST":
         form = ExpertCommentForm(request.POST)
         if form.is_valid():
@@ -59,7 +60,8 @@ def expert_management(request, username=None):
             'expertlist_reviewed': expertlist_reviewed,
             'expertlist_accepted': expertlist_accepted,
             'expertlist_declined': expertlist_declined, 
-            'expert':expert, 
+            'expert':expert,
+            'ratings':ratings,
             'form': form,
             })
 
@@ -73,7 +75,8 @@ def expert_management(request, username=None):
         'expertlist_reviewed': expertlist_reviewed,
         'expertlist_accepted': expertlist_accepted,
         'expertlist_declined': expertlist_declined, 
-        'expert':expert, 
+        'expert':expert,
+        'ratings': ratings, 
         'form': form,
     })
 
