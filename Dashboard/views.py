@@ -118,11 +118,21 @@ def team_management(request, slug=None):
 
 class SessionManagement(ListView):
     model = Session
-    template_name = 'dashboard/session_management.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(SessionManagement, self).get_context_data()
-        return context
+    def get(self, request, slug=None):
+        if slug:
+            selected_session = Session.objects.get(slug=slug)
+        else:
+            selected_session = Session.objects.all()[0]
+        
+        # Information on the 
+        context = {
+            'session_list' : Session.objects.all().order_by('-startTime'),
+            'selected_session': selected_session,
+        }
+        return render(request, 'dashboard/session_management.html',context)
+
+
 
 class VenueManagement(DetailView):
     model = Venue
