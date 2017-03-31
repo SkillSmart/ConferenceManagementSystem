@@ -347,7 +347,6 @@
                 <td>D1</td>
                 <td>D2</td>
                 <td>D3</td>
-                <td>D4</td>
                 <td>Student Comments</td>
             </tr>
 
@@ -358,10 +357,9 @@
                 <tr>
                     <td>{{ feedback.session.startTime|date:"Y"}}</td>
                     <td><a href="{% url 'session:session_detail' feedback.session.slug %}">{{ feedback.session }}</a></td>
-                    <td>{{ feedback.category_1}}</td>
-                    <td>{{ feedback.category_2}}</td>
-                    <td>{{ feedback.category_3}}</td>
-                    <td>{{ feedback.category_4}}</td>
+                    <td>{{ feedback.feedbackQuality}}</td>
+                    <td>{{ feedback.feedbackRelated}}</td>
+                    <td>{{ feedback.feedbackComm}}</td>
                     <td>{{ feedback.text }}</td>
                 </tr>
             {% endfor %}
