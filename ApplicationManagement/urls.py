@@ -9,8 +9,6 @@ urlpatterns = [
     url(r'^team/$', application_views.team_registration, name='register_team'),
     url(r'^student/$', application_views.student_registration, name='register_student'),
     url(r'^expert/$', application_views.expert_registration, name='register_expert'),
-    url(r'^review/$', application_views.applicationoverview_team,name="teamapplication_overview"),
-    url(r'^review/teams/$', application_views.assess_team, name="review_teamapplication"),
 ]
 
 # # Application Management Views

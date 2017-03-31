@@ -27,6 +27,7 @@ class DashboardIndex(ListView):
     template_name = 'dashboard/dashboard_index.html'
 
 
+# ---- EXPERT RELATED VIEWS --------------------------------
 def expert_management(request, username=None):
     """
     The Interactive administrative Overview over the status and details for all
@@ -76,6 +77,30 @@ def expert_management(request, username=None):
         'form': form,
     })
 
+#  --------- TEAM Management Views --------------
+from ApplicationManagement.models import Application
+
+def applicationoverview_team(request):
+    CONTINENTS = ['Africa', 'Europe', 'Asia', 'Australia', 'North America', 'South America']
+
+    team_applications = get_list_or_404(Application, applicant__role='team')
+    # Create Lists of Teams per Continent
+    teamlists = {}
+    for country in CONTINENTS:
+        teamlists[country] = Application.objects.filter(applicant__role="team")
+
+    # Application Review - status
+    teams_reviewed = Application.objects.filter(applicant__role='team', status__gte=1)
+    teams_unreviewed = Application.objects.filter(applicant__role='team', status=0)
+
+    return render(request, 'dashboard/teamreview_index.html', {
+        'team_applications': team_applications,
+        'continents': settings.CONTINENTS,
+        'teamlists': teamlists,
+        'teams_reviewed': teams_reviewed,
+        'teams_unreviewed': teams_unreviewed,
+    })
+
 def team_management(request, slug=None):
     teamlist = Application.objects.filter(applicant__role='team')
     teamlist_unreviewed = Application.objects.filter(status="0", applicant__role='team')
@@ -116,6 +141,8 @@ def team_management(request, slug=None):
         'form': form, 
     })
 
+
+# ------ SESSION RELATED VIEWS ----------------------
 class SessionManagement(ListView):
     model = Session
 
@@ -133,7 +160,7 @@ class SessionManagement(ListView):
         return render(request, 'dashboard/session_management.html',context)
 
 
-
+# ------ VENUE RELATED VIEWS --------------------------
 class VenueManagement(DetailView):
     model = Venue
 
@@ -166,7 +193,11 @@ class VenueManagement(DetailView):
         }
         return render(request, 'dashboard/venue_management.html', context)
 
-
+# --------- SHIFT RELATED VIEWS --------------------------
 class ShiftManagement(ListView):
     model = Session
     template_name = 'dashboard/shift_management.html'
+
+
+
+

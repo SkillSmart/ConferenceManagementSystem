@@ -177,6 +177,28 @@ def team_registration(request):
 #-------Application Display--------
 from .models import Application
 
+def assess_team(request, teamslug=None):
+    teamlist = get_list_or_404(Application, applicant__role='team')
+    if teamslug:
+        team = get_object_or_404(Application, role='team', slug=teamslug)
+    else:
+        team = teamlist[0]
+
+    if request.method=="POST":
+        member_assessment_form = MemberReviewForm(request.POST)
+        if member_assessment_form.is_valid():
+            member_assessment_form.save()
+        else:
+            return render(request, 'review/teamreview_scoresheet.html', {
+                'teamlist': teamlist, 
+                'team': team, 
+                'member_assessment_form': member_assessment_form,
+            })
+
+    member_assessment_form = MemberReviewForm()
+    return render(request, 'review/teamreview_scoresheet.html', {
+        'team': team,
+    })
 
 def expert_applicationlist(request):
     """Displays the list of all applications. Filtering by status"""
@@ -222,47 +244,3 @@ def assessors_detail(request):
     each Expert Assessor."""
     return render(request, 'review/assessors_detail.html', {})
 
-# --------- Application Review ------------------------
-def applicationoverview_team(request):
-    CONTINENTS = ['Africa', 'Europe', 'Asia', 'Australia', 'North America', 'South America']
-
-    team_applications = get_list_or_404(Application, applicant__role='team')
-    # Create Lists of Teams per Continent
-    teamlists = {}
-    for country in CONTINENTS:
-        teamlists[country] = Application.objects.filter(applicant__role="team")
-
-    # Application Review - status
-    teams_reviewed = Application.objects.filter(applicant__role='team', status__gte=1)
-    teams_unreviewed = Application.objects.filter(applicant__role='team', status=0)
-
-    return render(request, 'review/teamreview_index.html', {
-        'team_applications': team_applications,
-        'continents': settings.CONTINENTS,
-        'teamlists': teamlists,
-        'teams_reviewed': teams_reviewed,
-        'teams_unreviewed': teams_unreviewed,
-    })
-
-def assess_team(request, teamslug=None):
-    teamlist = get_list_or_404(Application, applicant__role='team')
-    if teamslug:
-        team = get_object_or_404(Application, role='team', slug=teamslug)
-    else:
-        team = teamlist[0]
-
-    if request.method=="POST":
-        member_assessment_form = MemberReviewForm(request.POST)
-        if member_assessment_form.is_valid():
-            member_assessment_form.save()
-        else:
-            return render(request, 'review/teamreview_scoresheet.html', {
-                'teamlist': teamlist, 
-                'team': team, 
-                'member_assessment_form': member_assessment_form,
-            })
-
-    member_assessment_form = MemberReviewForm()
-    return render(request, 'review/teamreview_scoresheet.html', {
-        'team': team,
-    })
