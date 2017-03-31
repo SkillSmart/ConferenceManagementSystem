@@ -29,65 +29,65 @@
         {% url 'portal:students' as students %}
 
         {% comment %}{% endcomment %}
-        <nav class="navbar navbar-toggleable-md navbar-fixed-top">
-            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-          <div class="collapse navbar-collapse"  id="navbarNav">
-            <div class="navbar-header">
-              <a class="navbar-brand" href="{{ index }}">CDRC</a>
-            </div>
-            <ul class="nav navbar-nav">
-              <li><a class="{% active request competition %} nav-item" href="{{ competition }}">Competition</a></li>
-              <li><a class="{% active request venue %}  nav-item" href="{{ venue }}">Venue</a></li>
-              <li><a class="{% active request teams %} nav-item" href="{{ teams }}">Teams</a></li>
-              <li><a class="{% active request experts %} nav-item" href="{{ experts }}">Experts</a></li>
-              <li><a class="{% active request students %} nav-item" href="{{ students }}">Students</a></li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                {% if not user.is_authenticated %}
-                {% comment %}<li><a role="button" data-toggle="modal" data-target="#loginModal" href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>  Log In</a>{% endcomment %}
-                <li><a href="{% url 'application:register_user' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                <li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown"><span class="glyphicon glyphicon-log-in"></span> Login</a>
-                    <div class="dropdown-menu" style="padding: 15px; padding-bottom: 10px;">
-                        <form class="form-horizontal" action="/login/" method="post" accept-charset="UTF-8">
-                            {% csrf_token %}
-                            <input id="username" class="form-control login" type="text" name="username" placeholder="Username.." />
-                            <input id="password" class="form-control login" type="password" name="password" placeholder="Password.."/>
-                            <input class="btn btn-primary" type="submit" name="submit" value="login" />
-                        </form>
-                    </div>
-                </li>
-                {% else %}
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-user-circle-o"></i> Profile <b class="caret"></b></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="profileMenue">
-                       <li class="dropdown-header">Profile Settings</li>
-                        <li><a href="/profile">Profile</a></li>
-                        <li><a href="#">Messages</a></li>
-                        <li><a href="#">Settings</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Process Control</li>
-                        <li><a href="{% url 'dashboard:index'%}">Dashboard </a></li>
-                        <li><a href="{% url 'dashboard:manage_experts'%}">Expert Applications</a></li>
-                        <li><a href="{% url 'dashboard:manage_teams'%}">Team Applications</a></li>
-                        <li><a href="{% url 'dashboard:manage_sessions'%}">Session Management </a></li>
-                        <li><a href="{% url 'dashboard:manage_venues'%}">Venue Management</a></li>
-                        <li class="divider"></li>
-                        <li class="dropdown-header">Application Management</li>
-                        {% comment %}<li><a href="{% url 'application:teamapplication_overview'%}">Teamapplication Overview</a></li>{% endcomment %}
-
-
-                    </ul>
-                    <li><a href="{% url 'logout' %}"><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
-                </li>
+            <img src="/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt="">
+            <a class="navbar-brand" href="{{ index }}">CDRC</a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto mt-2 mt-md-0">
+                  <li class="nav-item"><a class="{% active request competition %} nav-link" href="{{ competition }}">Competition</a></li>
+                  <li class="nav-item"><a class="{% active request venue %}  nav-link" href="{{ venue }}">Venue</a></li>
+                  <li class="nav-item"><a class="{% active request teams %} nav-link" href="{{ teams }}">Teams</a></li>
+                  <li class="nav-item"><a class="{% active request experts %} nav-link" href="{{ experts }}">Experts</a></li>
+                  <li class="nav-item"><a class="{% active request students %} nav-link" href="{{ students }}">Students</a></li>
+                </ul>
+                <ul class="navbar-nav navbar-right">
+                    {% if not user.is_authenticated %}
+                    {% comment %}<li><a role="button" data-toggle="modal" data-target="#loginModal" href="#"><i class="fa fa-sign-in" aria-hidden="true"></i>  Log In</a>{% endcomment %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'application:register_user' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+                            <span class="glyphicon glyphicon-log-in"></span> Login
+                        </a>
+                        <div class="dropdown-menu" style="padding: 15px; padding-bottom: 10px;">
+                            <form class="form-horizontal" action="/login/" method="post" accept-charset="UTF-8">
+                                {% csrf_token %}
+                                <input id="username" class="form-control login" type="text" name="username" placeholder="Username.." />
+                                <input id="password" class="form-control login" type="password" name="password" placeholder="Password.."/>
+                                <input class="btn btn-primary" type="submit" name="submit" value="login" />
+                            </form>
+                        </div>
+                    </li>
+                    {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-user-circle-o"></i> Profile <b class="caret"></b></a>
+                        <div class="dropdown-menu" role="menu" aria-labelledby="profileMenue">
+                            <div class="dropdown-header">Profile</div>
+                            <a class="dropdown-item" href="/profile" class="nav-link">Profile</a>
+                            <a class="dropdown-item" href="#" class="nav-link">Messages</a>
+                            <a class="dropdown-item" href="#">Settings</a>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-header">Competition Management</div>
+                            <a class="dropdown-item" href="{% url 'dashboard:index'%}" class="nav-link">Dashboard </a>
+                            <a class="dropdown-item" href="{% url 'dashboard:manage_experts'%}" class="nav-link">Expert Applications</a>
+                            <a class="dropdown-item" href="{% url 'dashboard:manage_teams'%}" class="nav-link">Team Applications</a>
+                            <a class="dropdown-item" href="{% url 'dashboard:manage_sessions'%}" class="nav-link">Session Management </a>
+                            <a class="dropdown-item" href="{% url 'dashboard:manage_venues'%}" class="nav-link">Venue Management</a>
+                            {% comment %}<li><a href="{% url 'application:teamapplication_overview'%}">Teamapplication Overview</a></li>{% endcomment %}
+                        </div>
+                        <li class="nav-item"><a href="{% url 'logout' %}" class="nav-link"><i class="fa fa-sign-out" aria-hidden="true"></i></a></li>
+                    </li>
+                </div>
                 {% endif %}
             </ul>
-          </div>
+            </div>
         </nav>
 
     </head>
     <body>
+
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->

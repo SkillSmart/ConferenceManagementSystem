@@ -36,10 +36,10 @@ def expert_management(request, username=None):
     from initial screening to final invitation/decline decissions.
     """
     expertlist = Application.objects.filter(applicant__role="expert", competition_year='2017')
-    expertlist_accepted = Application.objects.filter(Q(status="2") | Q(status="3"), applicant__role="expert", competition_year='2017')
-    expertlist_reviewed = Application.objects.filter(status="1", applicant__role="expert", competition_year='2017')
-    expertlist_unreviewed = Application.objects.filter(status="0", applicant__role="expert", competition_year='2017')
-    expertlist_declined = expertlist.filter(status="4", applicant__role="expert", competition_year='2017')
+    expertlist_accepted = Application.objects.filter(Q(status="3") | Q(status="4"), applicant__role="expert", competition_year='2017')
+    expertlist_reviewed = Application.objects.filter(status="2", applicant__role="expert", competition_year='2017')
+    expertlist_unreviewed = Application.objects.filter(status="1", applicant__role="expert", competition_year='2017')
+    expertlist_declined = expertlist.filter(status="0", applicant__role="expert", competition_year='2017')
     if username:
         expert = Application.objects.get(applicant__user__username=username, competition_year='2017')
     else:
@@ -106,10 +106,10 @@ def applicationoverview_team(request):
 
 def team_management(request, slug=None):
     teamlist = Application.objects.filter(applicant__role='team')
-    teamlist_unreviewed = Application.objects.filter(status="0", applicant__role='team')
-    teamlist_reviewed = Application.objects.filter(status="1", applicant__role="team")
-    teamlist_accepted = Application.objects.filter(Q(status="2") | Q(status="3"), applicant__role='team')
-    teamlist_declined = Application.objects.filter(status=4, applicant__role='team')
+    teamlist_unreviewed = Application.objects.filter(status="1", applicant__role='team')
+    teamlist_reviewed = Application.objects.filter(status="2", applicant__role="team")
+    teamlist_accepted = Application.objects.filter(Q(status="3") | Q(status="4"), applicant__role='team')
+    teamlist_declined = Application.objects.filter(status='0', applicant__role='team')
     if slug:
         team = Application.objects.get(applicant__team__slug=slug, competition_year='2017')
     else:

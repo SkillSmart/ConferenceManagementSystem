@@ -9,11 +9,11 @@
     <table class="table table-striped table-hover">
         <thead>
             <tr>
-                <td class="col-sm-2">Country</td>
-                <td class="col-sm-2">Name</td>
-                <td class="col-sm-1">Score</td>
-                <td class="col-sm-1">Role</td>
-                <td class="col-sm-2">Status</td>
+                <td class="">Name</td>
+                <td class="">Country</td>
+                <td class="">Rank</td>
+                <td class="">Role</td>
+                <td class="">Status</td>
                 <td class="">Accept</td>
             </tr>
         
@@ -21,54 +21,93 @@
         <tbody>
             <h4>Selected/Accepted Applications <small>({{expertlist_accepted|length }}/{{ expertlist|length }})</small></h4>
             {% for application in expertlist_accepted %}
-                <tr class="success">
-                    <td><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
-                    <td>{{ application.applicant.role|capfirst }}</td>
-                    <td>{{ application.get_status_display }}</td>
-                    <td></td>
+                <tr class="table-success">
+                    <td class=""><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td class=""><img src="{{application.applicant.user.profile.country.flag}}" alt=""> {{application.applicant.user.profile.country.name}}</td>
+                    <td>2/32</td>
+                    <td class="">{{ application.applicant.role|capfirst }}</td>
+                    <td class="">{{ application.get_status_display }}</td>
+                    <td><a class="btn-link btn-success" href="#">Accept</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
     {% comment %}{% endcomment %}
     <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <td class="">Name</td>
+                <td class="">Country</td>
+                <td class="">Rank</td>
+                <td class="">Role</td>
+                <td class="">Status</td>
+                <td class="">Accept</td>
+            </tr>
+        </thead>
         <tbody>
             <h4>Reviewed Applications <small>({{expertlist_reviewed|length }}/{{ expertlist|length }})</small></h4>
             {% for application in expertlist_reviewed %}
-                <tr class="warning">
-                    <td class="col-sm-2"><img src="{{application.applicant.user.profile.country.flag}}" alt=""> {{application.applicant.user.profile.country.name}}</td>
-                    <td class="col-sm-3"><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
-                    <td class="col-sm-2">{{ application.applicant.role|capfirst }}</td>
-                    <td class="col-sm-2">{{ application.get_status_display }}</td>
-                    <td></td>
+                <tr class="table-primary">
+                    <td class=""><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td class=""><img src="{{application.applicant.user.profile.country.flag}}" alt=""> {{application.applicant.user.profile.country.name}}</td>
+                    <td>2/32</td>
+                    <td class="">{{ application.applicant.role|capfirst }}</td>
+                    <td class="">{{ application.get_status_display }}</td>
+                    <td><a class="btn-link btn-success" href="#">Accept</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
     {% comment %}{% endcomment %}
     <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <td class="">Name</td>
+                <td class="">Country</td>
+                <td class="">Rank</td>
+                <td class="">Role</td>
+                <td class="">Status</td>
+                <td class="">Accept</td>
+            </tr>
+        
+        </thead>
         <tbody>
             <h4>Unreviewed Applications <small>({{expertlist_unreviewed|length }}/{{ expertlist|length }})</small></h4>
             {% for application in expertlist_unreviewed %}
-                <tr class="primary">
-                    <td class="col-sm-3"><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
-                    <td class="col-sm-2">{{ application.applicant.role|capfirst }}</td>
-                    <td class="col-sm-2">{{ application.get_status_display }}</td>
-                    <td></td>
+                <tr class="table-warning">
+                    <td class=""><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td class=""><img src="{{application.applicant.user.profile.country.flag}}" alt=""> {{application.applicant.user.profile.country.name}}</td>
+                    <td>2/32</td>
+                    <td class="">{{ application.applicant.role|capfirst }}</td>
+                    <td class="">{{ application.get_status_display }}</td>
+                    <td><a class="btn-link btn-success" href="#">Accept</a></td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
     <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <td class="">Name</td>
+                <td class="">Country</td>
+                <td class="">Rank</td>
+                <td class="">Role</td>
+                <td class="">Status</td>
+                <td class="">Accept</td>
+            </tr>
+        
+        </thead>
         <tbody>
             <h4>Declined Applications <small>({{expertlist_declined|length }}/{{ expertlist|length }})</small></h4>
             {% for application in expertlist_declined %}
-                <tr class="danger">
-                    <td class="col-sm-3"><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
-                    <td class="col-sm-2">{{ application.applicant.role|capfirst }}</td>
-                    <td class="col-sm-2">{{ application.get_status_display }}</td>
-                    <td></td>
+                <tr class="table-danger">
+                    <td class=""><a href="{% url 'dashboard:expert_detail' application.applicant.user.username %}">{{ application.applicant.user.get_full_name}}</a></td>
+                    <td class=""><img src="{{application.applicant.user.profile.country.flag}}" alt=""> {{application.applicant.user.profile.country.name}}</td>
+                    <td>2/32</td>
+                    <td class="">{{ application.applicant.role|capfirst }}</td>
+                    <td class="">{{ application.get_status_display }}</td>
+                    <td><a class="btn-link btn-success" href="#">Accept</a></td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -79,32 +118,31 @@
 
 {% comment %}Sidebar{% endcomment %}
 <section class="col-sm-4">
-    <div class="card">
+    <div class="card">   
     <header class="card-header">
-        <div class="col-sm-4">
-            <img class="img-responsive" src="{{ expert.applicant.user.profile.profileImg.url }}" alt="">
-        </div>
-        <div class="col-sm-8">
-            <small>
-                <ul class="list list-inline">
-                    
+        <div class="row">
+            <div class="col-sm-4">
+                <img class="img-fluid" src="{{ expert.applicant.user.profile.profileImg.url }}" alt="">
+            </div>
+            <div class="col-sm-6">
+                <h5>{{ expert.applicant.user.get_full_name }}</h3>
+                <small>{{ expert.applicant.user.profile.expertprofile.position }} <br>
+                @ {{ expert.applicant.user.profile.expertprofile.affiliation }}</small>
+            </div>
+            <div class="col-sm-2">
+                <ul class="list-unstyled">
                     {% if expert.applicant.user.profile.expertprofile.iba_member %}
-                    <li><img class="img-responsive" style="height:40px; border:1px dotted lightgrey;" src="{% static 'images/iba-logo.jpg' %}" alt=""></li>    
+                    <li><img class="img-fluid" style="height:30px; " src="{% static 'images/iba-logo.jpg' %}" alt=""></li>    
                     {% endif %}
                     {% if expert.applicant.user.profile.expertprofile.imi_certified %}
-                    <li><img class="img-responsive" style="height:40px; border:1px dotted lightgrey;" src="{% static 'images/imi-logo.png' %}" alt=""></li>
+                    <li><img class="img-fluid" style="height:30px; " src="{% static 'images/imi-logo.png' %}" alt=""></li>
                     {% endif %}
                     {% if expert.applicant.user.profile.expertprofile.viac_member %}
-                    <li><img class="img-responsive" style="height:40px; border:1px dotted lightgrey;" src="{% static 'images/viac-logo-web.png' %}" alt=""></li>
+                    <li><img class="img-fluid" style="height:30px; " src="{% static 'images/viac-logo-web.png' %}" alt=""></li>
                     {% endif %}      
                 </ul>
-            </small>
-            <h3>{{ expert.applicant.user.get_full_name }}</h3>
-            <h4>{{ expert.applicant.user.profile.expertprofile.position }} <br>
-            @ {{ expert.applicant.user.profile.expertprofile.affiliation }}</h4>
-
+            </div>
         </div>
-
     </header>
     <content class="card-block">
         {% comment %}AVAILABILITY{% endcomment %}
@@ -112,7 +150,7 @@
             <header>
                 <h4>Availability</h4>
             </header>
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover table-sm">
                 <thead>
                     <tr class="success">
                         <td>Timeslot</td>
@@ -148,7 +186,7 @@
             <header>
                 <h4>Student Feedback</h4>
             </header>
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover table-sm">
                 <thead>
                     <tr class="success">
                         <td>Year</td>
@@ -193,12 +231,12 @@
 
 {% comment %} SUMMARY STATISTIC DISPLAY {% endcomment %}
 {% block content-header %}
-<section class="container">
+<section class="row">
     {% comment %}{% endcomment %}
     <div class="col-sm-4">
         <article class="card">
             <header class="card-header">
-                <h3>Mediation Experience</h3>
+                <h4>Mediation Experience</h4>
             </header>
             <table class="table table-striped table-hover">
                 <thead>
@@ -218,11 +256,14 @@
                             <td>{{ experience.priorClients|truncatewords:'5'}}</td>
                         </tr>
                     {% endfor %}
+                    <tr class="table-success" style="font-weight: bold">
+                        <td>Summary</td>
+                        <td>25 </td>
+                        <td>250 </td>
+                        <td>60 </td>
+                    </tr>
                 </tbody>
             </table>
-            <div class="card-footer">
-
-            </div>
         </article>
     </div>
     
@@ -230,7 +271,7 @@
     <article class="card">
 
         <header class="card-header">
-            <h3>Negotiation Experience</h3>
+            <h4>Negotiation Experience</h4>
         </header>
          <table class="table table-striped table-hover">
                 <thead>
@@ -250,14 +291,21 @@
                             <td>{{ experience.priorClients|truncatewords:'5'}}</td>
                         </tr>
                     {% endfor %}
+                    <tr class="table-success" style="font-weight: bold">
+                        <td>Summary</td>
+                        <td>25 </td>
+                        <td>250 </td>
+                        <td>60 </td>
+                    </tr>
                 </tbody>
             </table>
+
     </article>
     </div>
     <div class="col-sm-4">
         <article class="card">
             <header class="card-header">
-                <h3>Certifications</h3>
+                <h4>Certifications</h4>
             </header>
             <table class="table table-striped table-hover">
                     <thead>
@@ -282,26 +330,7 @@
 </section>
 
 
-<section class="row">
-    <article class="col-sm-6">
-        <header>
-            <h3>Historical Performance</h3>
-        </header>
-        <img src="https://www.placehold.it/460x200" alt="">
-        <img src="https://www.placehold.it/100x200" alt="">
-        Display a lineplot over the individual averages for each category
-        over all historical years of participation
-    </article>
-    <article class="col-sm-6">
-        <header>
-            <h3>Feedback Sentiment Analysis</h3>
-        </header>
-        <img src="https://www.placehold.it/460x200" alt="">
-        <img src="https://www.placehold.it/100x200" alt="">
-        Display Summary Statistics for the Feedback given as ratings.
-        Display Emotions associated with the Comments given to the Assessors by Students
-    </article>
-</section>
+
 {% endblock content-header %}
 
 {% comment %}{% endcomment %}
@@ -340,6 +369,28 @@
         </tbody>
     </table>
 </article>
+
+<!--For later to try out-->
+<section class="row">
+    <article class="col-sm-6">
+        <header>
+            <h3>Historical Performance</h3>
+        </header>
+        <img src="https://www.placehold.it/460x200" alt="">
+        <img src="https://www.placehold.it/100x200" alt="">
+        Display a lineplot over the individual averages for each category
+        over all historical years of participation
+    </article>
+    <article class="col-sm-6">
+        <header>
+            <h3>Feedback Sentiment Analysis</h3>
+        </header>
+        <img src="https://www.placehold.it/460x200" alt="">
+        <img src="https://www.placehold.it/100x200" alt="">
+        Display Summary Statistics for the Feedback given as ratings.
+        Display Emotions associated with the Comments given to the Assessors by Students
+    </article>
+</section>
 {% endblock content-main %}
 
 {% comment %}{% endcomment %}
