@@ -1,14 +1,19 @@
 {% extends "base.html" %}
 
 {% block sub-navigation %}
-<ul class="nav navbar-nav">
-    <li><a href="{% url 'dashboard:index' %}">Dashboard</a></li>
-    <li><a href="{% url 'dashboard:manage_experts' %}">Expert Applications</a></li>
-    <li><a href="{% url 'dashboard:manage_teams' %}">Team Applications</a></li>
-    <li><a href="{% url 'dashboard:manage_venues' %}">Venue Management</a></li>
-    <li><a href="{% url 'dashboard:manage_sessions'%}">Session Management</a></li> 
-    <li><a href="{% url 'dashboard:manage_shifts' %}">Shift Management</a></li>
+<nav class="navbar sticky-top navbar-toggleable-md navbar-light bg-faded" role="navigation">
+     <a class="navbar-brand" href="{% url 'dashboard:index' %}">
+         Admin-Dashboard >
+     </a>
+  
+<ul class="navbar-nav mr-auto ">
+    <li><a class='nav-link'  href="{% url 'dashboard:manage_experts' %}">Expert Applications</a></li>
+    <li><a class='nav-link'  href="{% url 'dashboard:manage_teams' %}">Team Applications</a></li>
+    <li><a class='nav-link'  href="{% url 'dashboard:manage_venues' %}">Venue Management</a></li>
+    <li><a class='nav-link'  href="{% url 'dashboard:manage_sessions'%}">Session Management</a></li> 
+    <li><a class='nav-link'  href="{% url 'dashboard:manage_shifts' %}">Shift Management</a></li>
 </ul>
+</nav>
 {% endblock sub-navigation %}
 
 {% block content %}
@@ -31,7 +36,7 @@
             {% block content-sidemenue %}
             {% endblock content-sidemenue %}
         </article>
-        <article class="col-sm-9">
+        <article class="col-sm">
             {% block content-main %}
             {% endblock content-main %}
             

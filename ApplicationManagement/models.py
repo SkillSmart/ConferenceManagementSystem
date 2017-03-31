@@ -13,11 +13,11 @@ class Application(models.Model):
     Attendent instance."""
 
     STATUS = (
-        (0, 'Unreviewed'),
-        (1, 'Reviewed'),
-        (2, 'Selected'),
-        (3, 'Accepted'),
-        (4, 'Declined')
+        (0, 'Declined'),
+        (1, 'Unreviewed'),
+        (2, 'Reviewed'),
+        (3, 'Selected'),
+        (4, 'Accepted')
     )
 
     applicant = models.ForeignKey(Attendent)
