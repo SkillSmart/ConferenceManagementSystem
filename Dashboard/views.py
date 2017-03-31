@@ -1,6 +1,8 @@
 # General Imports
-from django.shortcuts import render
+from django.conf import settings
+from django.shortcuts import (render, get_object_or_404, get_list_or_404)
 from django.db.models import Q
+from datetime import timedelta, date, datetime
 
 # Modelimports
 from UserManagement.models import Attendent, Team
@@ -10,10 +12,20 @@ from ApplicationManagement.models import Application
 # FORM Imports ------
 from .forms import ExpertCommentForm, TeamCommentForm
 
+from django.views import View
+from django.views.generic.edit import (CreateView, UpdateView, DeleteView)
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+
+# Helper Function
+
+
 
 # Create your views here.
-def management_index(request):
-    return render(request, 'dashboard/dashboard_index.html', {})
+class DashboardIndex(ListView):
+    model = Session
+    template_name = 'dashboard/dashboard_index.html'
+
 
 def expert_management(request, username=None):
     """
@@ -104,20 +116,47 @@ def team_management(request, slug=None):
         'form': form, 
     })
 
-def session_management(request):
-    sessionlist = Session.objects.all()
-    return render(request, 'dashboard/session_management.html', {
-        'sessionlist': sessionlist, 
-    })
+class SessionManagement(ListView):
+    model = Session
+    template_name = 'dashboard/session_management.html'
 
-def venue_management(request):
-    venuelist = Venue.objects.all()
-    return render(request, 'dashboard/venue_management.html', {
-        'venuelist': venuelist, 
-    })
+    def get_context_data(self, **kwargs):
+        context = super(SessionManagement, self).get_context_data()
+        return context
 
-def shift_management(request):
-    shiftlist = Shift.objects.all()
-    return render(request, 'dashboard/shift_management.html', {
-        'shiftlist': shiftlist,
-    })
+class VenueManagement(DetailView):
+    model = Venue
+
+    START_DATE = datetime(2017, 8, 5)
+    END_DATE = datetime(2017, 8, 12)
+    def daterange(start_date, end_date):
+            """
+            Returns a generator object to be used for the construction of 
+            planning tables to manage Time Availabilities.
+            """
+            for n in range(int((end_date - start_date).days)):
+                yield start_date + timedelta(n)
+
+    def get(self, request, slug=None):
+        if slug:
+            selected_venue = Venue.objects.get(slug=slug)
+        else:
+            selected_venue = Venue.objects.all()[0]
+
+        # Information on the selected Venue
+        rooms_sel = selected_venue.room_set.all()
+        session_sel = selected_venue.session_set.all()
+
+        context = {
+            'venue_list': Venue.objects.all(),
+            'selected_venue': selected_venue,
+            'session_sel': session_sel,
+            'rooms_sel': rooms_sel,
+            'competition_days' : [day for day in settings.CONVENTION_DAYS],
+        }
+        return render(request, 'dashboard/venue_management.html', context)
+
+
+class ShiftManagement(ListView):
+    model = Session
+    template_name = 'dashboard/shift_management.html'

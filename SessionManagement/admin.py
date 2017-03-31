@@ -12,7 +12,7 @@ class VenueAdmin(admin.ModelAdmin):
     }
 admin.site.register(models.Venue, VenueAdmin)
 admin.site.register(models.Room)
-
+admin.site.register(models.Availability)
 # Session related Staff Management
 admin.site.register(models.Session)
 

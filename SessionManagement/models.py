@@ -1,15 +1,27 @@
 import requests
+from django.conf import settings
 from django.db import models
 from django.urls import reverse_lazy
 from UserManagement.models import Attendent, ExpertProfile, Team
 # Import for Google Maps Plugin
 from django_google_maps import fields as map_fields
 from django.utils.text import slugify
+
+from datetime import timedelta, date, datetime
 # --------------Location Management -------------------
-from datetime import datetime
 
 
 # Define general helper Functions
+START_DATE = datetime(2017, 8, 5)
+END_DATE = datetime(2017, 8, 12)
+def daterange(start_date, end_date):
+        """
+        Returns a generator object to be used for the construction of 
+        planning tables to manage Time Availabilities.
+        """
+        for n in range(int((end_date - start_date).days)):
+            yield start_date + timedelta(n)
+
 def geocode(lat, lng):
     base = "http://maps.googleapis.com/maps/api/geocode/json?"
     params = "latlng={lat},{lon}&sensor=false".format(
@@ -34,12 +46,25 @@ class Venue(models.Model):
     directions = models.TextField(max_length=350, null=True)
     location_info = models.TextField(max_length=1000, null=True)
 
+    # Management Relevant Information
+    BOOKING_STATUS = (
+        (1, 'inquired'),
+        (2, 'reserved'),
+        (3, 'confirmed')
+    )
+
+    booking_status = models.IntegerField(choices = BOOKING_STATUS)
+
+    def get_status(self):
+        return self.booking_status
+
     def __str__(self):
         return self.name
     
     def get_absolute_url(self):
         return reverse_lazy('portal:venue_detail', args=[self.slug])
-    
+            
+
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         self.address = geocode(self.geolocation.lat, self.geolocation.lon)
@@ -52,6 +77,8 @@ class Room(models.Model):
     """A specific Room available to be assigned to a session."""
     venue = models.ForeignKey(Venue)
     name = models.CharField(max_length=60)
+    slots = {}
+
     # Comment section for information as to equipment and specials
     directions = models.TextField(max_length=2000, null=True)
     level = models.CharField(max_length=50, null=True)
@@ -68,20 +95,28 @@ class Room(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
-        
+    
+    def check_timeslots(self):
+        days = {key:None for key in daterange(START_DATE, END_DATE)}
+        availabilities = self.availability_set.all()
+        for day in days:
+            for slot in availabilities:
+                if slot.free_from.day == day.day:
+                    days[day] = slot
+        return days
+
 # -----  STATE MODELS ----------
 class Availability(models.Model):
     """
     A continous stretch of available time for a given Room
     to be used with a Session.
     """
-    Room = models.ForeignKey(Room)
+    room = models.ForeignKey(Room)
+    slug = models.SlugField(blank=True)
     free_from = models.DateTimeField()
     free_till = models.DateTimeField()
 
     # Calculate amount of time available in this stretch
-    
-    
     def schedule(self, session):
         """
         Checks if the Time associated with the Session planned fits
@@ -89,19 +124,22 @@ class Availability(models.Model):
         """
         return True
 
-    def duration(self):
+    def get_duration(self):
         duration = self.free_from - self.free_till
         return duration 
     
-    def get_gps_location(self):
-        pass
-        
+    def check_available(self, Session):
+        if Session.startTime > self.free_from and Session.endTime <= self.free_till:
+            return True
+        else:
+            return False
+
     def __str__(self):
-        return "{}: {}".format(self.free_from, self.duration)
+        return self.room.name
     # TODO: Turn the location ino GPS for displaying on a map
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
+        self.slug = slugify(self.room.name)
         super().save(*args, **kwargs)
 
 # ---------------Session Management-----------------------
@@ -118,12 +156,14 @@ class Session(models.Model):
     assessors = models.ManyToManyField(ExpertProfile)
 
     # The Room scheduled
+    venue = models.ForeignKey(Venue)
     room = models.ForeignKey(Room)
     # The Timeslot scheduled
     startTime = models.DateTimeField(blank=True, null=True)
     endTime = models.DateTimeField(blank=True, null=True)
     # Additional Ressources Scheduled
     notes = models.TextField(blank=True, null=True)
+
 
     def __str__(self):
         return self.name
