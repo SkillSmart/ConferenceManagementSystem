@@ -1,0 +1,154 @@
+{% extends 'base_dashboard.html' %}
+
+{% block subnavigation %}
+Subnavigation for T
+{% endblock subnavigation %}
+
+{% block overview-head %}
+<article class="row">
+    <header class="col-sm-4">
+        <h2>Team Application Review</h2>
+        <p>Put some introductory text here to describe the process of evaluating the teams</p>
+    </header>
+    <content class="col-sm-8">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <td class="col-sm-1"><small>Rank Overall</small></td>
+                    <td class="col-sm-1"><small>Rank Continent</small></td>
+                    <td class="col-sm-3">University</td>
+                    <td class="col-sm-4">Country</td>
+                    <td>Application Status</td>
+                </tr>
+            
+            </thead>
+            <tbody>
+                {% for application in team_applications %}
+                    <tr>
+                        <td class="success">{{ application.overall_rank }}</td>
+                        <td>{{ application.continent_rank }}</td>
+                        <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                        <td><img src="{{ application.applicant.team.country.flag }}" alt=""> {{ application.applicant.team.country.name }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                    </tr>
+            	{% endfor %}
+            </tbody>
+        </table>
+    </content>
+</article>
+
+{% comment %}    Application Status    {% endcomment %}
+<section class="row">
+    <hr>    
+    <article class="col-sm">
+        <header></header>
+        <content>
+            <h4>Finalized Reviews</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td>University</td>
+                        <td>Max Score</td>
+                        <td>Min Score</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for application in teams_reviewed %}
+                    <tr>
+                        <td class="success"><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                        <td>3.4</td>
+                        <td>2.3</td>
+
+                    </tr>
+                </tbody>
+                    {% endfor %}
+            </table>              
+        </content>
+    </article>
+
+    {% comment %}{% endcomment %}
+    <article class="col-sm">
+        <header>
+        </header>
+        <content>
+            <h4>Unfinished Reviews</h4>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td>University</td>
+                        <td>Max Score</td>
+                        <td>Min Score</td>
+                        <td>Review Count</td>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for application in teams_unreviewed %}
+                    <tr>
+                        <td class="warning"><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                        <td>3.4</td>
+                        <td>2.3</td>
+                        <td>2/12 finished</td>
+
+                    </tr>
+                </tbody>
+                    {% endfor %}
+            </table>              
+        </content>
+    </article>
+</section>
+{% endblock overview-head %}
+
+{% block content-sidemenue %}
+<h3>Ranking Statistics</h3>
+{% endblock content-sidemenue %}
+
+{% comment %}{% endcomment %}
+{% block content-main %}
+<section class="row">
+    <h3>Team Ranking</h3>
+        {% for continent, continent_list in teamlists.items %}
+        <div class="row">
+        <h3>{{ continent }}</h3>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <td class="col-sm-1"><small>Rank Overall</small></td>
+                    <td class="col-sm-1"><small>Rank Continent</small></td>
+                    <td class="col-sm">Country</td>
+                    <td>University</td>
+                    <td>Rating</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for application in continent_list %}
+                <tr>
+                    <td {% if application.status %} class="success" {% else %} class="warning" {% endif %} >{{ application.overall_rank }} / {{ team_applications|length }}</td>
+                    <td>{{ application.continent_rank }}</td>
+                    <td><img src="{{application.applicant.team.country.flag}}" alt=""> {{ application.applicant.team.country.name }}</td>
+                    <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                    <td>{{ application.score }}</td>
+                    
+                    {% for member in application.applicant.team.members.all %}
+                    <td>{{ member.score }}</td>
+                    {% endfor %}
+                        
+                </tr> 
+                {% endfor %} 
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}            
+    
+</section>
+    {% for application in team_applications %}
+
+    {% endfor %}
+{% endblock content-main %}
+
+{% comment %}Subblock {% endcomment %}
+{% block scoring-section %}
+<section class="row">
+    <h3>Summary Statistics</h3>
+</section>
+{% endblock scoring-section %}
