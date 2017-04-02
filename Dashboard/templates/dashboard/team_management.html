@@ -2,153 +2,156 @@
 {% load crispy_forms_tags %}
 
 {% block overview-head %}
-<article class="col-sm-8">
-<div class="card">
-    <header class="card-header">
-        <h2 class="card-title">Team Applications</h2>
-    </header>
-    <h4 class="card-title">Selected/Accepted Applications <small>({{teamlist_accepted|length }}/{{ teamlist|length }})</small> </h4>
-    <table class="table table-striped table-hover card-block">
-        <thead>
-            <tr>
-                <td class="col-sm-3">University</td>
-                <td class="col-sm-4">Country</td>
-                <td class="col-sm-3">Application Status</td>
-            </tr>
-        
-        </thead>
-        <tbody>
-            {% for application in teamlist_accepted %}
-                <tr class="success">
-                    <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
-                    <td>{{ application.applicant.team.country.name }}</td>
-                    <td>{{ application.get_status_display }}</td>
-                    <td>{{ application}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% comment %}{% endcomment %}
-    <table class="table table-striped table-hover">
-        <thead>
-            {% comment %}<tr>
-                <td>University</td>
-                <td>Country</td>
-                <td>Application Status</td>
-            </tr>{% endcomment %}
-        
-        </thead>
-        <tbody>
-            <h4>Reviewed Applications <small>({{teamlist_reviewed|length }}/{{ teamlist|length }})</small></h4>
-            {% for application in teamlist_reviewed %}
-                <tr class="warning">
-                    <td class="col-sm-3"><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
-                    <td class="col-sm-4">{{ application.applicant.team.country.name }}</td>
-                    <td class="col-sm-3">{{ application.get_status_display }}</td>
-                    <td>{{ application}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% comment %}{% endcomment %}
-    <table class="table table-striped table-hover">
-        {% comment %}<thead>
-            <tr>
-                <td>University</td>
-                <td>Country</td>
-                <td>Application Status</td>
-            </tr>
-        
-        </thead>{% endcomment %}
-        <tbody>
-            <h4>Unreviewed Applications <small>({{teamlist_unreviewed|length }}/{{ teamlist|length }})</small></h4>
-            {% for application in teamlist_unreviewed %}
-                <tr>
-                    <td class="col-sm-3"><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
-                    <td class="col-sm-4">{{ application.applicant.team.country.name }}</td>
-                    <td class="col-sm-3">{{ application.get_status_display }}</td>
-                    <td>{{ application}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    {% comment %}{% endcomment %}
-    <table class="table table-striped table-hover">
-        {% comment %}<thead>
-            <tr>
-                <td>University</td>
-                <td>Country</td>
-                <td>Application Status</td>
-            </tr>
-        
-        </thead>{% endcomment %}
-        <tbody>
-            <h4>Declined Applications <small>({{teamlist_declined|length }}/{{ teamlist|length }})</small></h4>
-            {% for application in teamlist_declined %}
-                <tr class="danger">
-                    <td class="col-sm-3"><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
-                    <td class="col-sm-4">{{ application.applicant.team.country.name }}</td>
-                    <td class="col-sm-3">{{ application.get_status_display }}</td>
-                    <td>{{ application}}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-</article>
-
-{% comment %}Sidebar{% endcomment %}
-<article class="col-sm-4">
-    <div class="card">
-        <header class="card-header">
-            {% if team.applicant.team.university_logo.url %}
-                <div class="col-sm-4">
-                    <img class="img-responsive" src="{{ team.applicant.team.university_logo.url }}" alt="">
-                </div>
-            {% endif %}
-            <div class="col-sm-8">
-                <h3 class="card-title">{{ team.applicant.team.university }}</h3>
-                <h4>{{ team.applicant.team.country.name }}</h4>
-            </div>
+<section class="row">
+    <article class="col-sm-8">
+        <header>
+            <h2>Team Applications</h2>
         </header>
-        <content class="card-block">
-            <article class="list-group">
-                <header>
-                    <h4>Assessor Scores</h4>
-                    <small></small>
-                </header>
-                <table class="table table-striped table-hover">
-                    <thead>
-                        <tr>
-                            <td>Member</td>
-                            <td>Q1</td>
-                            <td>Q2</td>
-                            <td>Q3</td>
-                            <td>Q4</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for member in team.applicant.team.members.all %}
-                        <tr>
-                            <td>{{ member.user.get_full_name}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </article>
-            {% comment %}{% endcomment %}
-            <article class="card-block">
-                <header>
-                </header>
-                <form method="POST" class="form-horizontal">
-                    {% crispy form %}
-                </form>
-            </article>       
-        </content>
-    </div>
-</article>
-<a href="{% url 'dashboard:manage_teams' %}" class="btn btn-danger btn-sm"> Back to Overview Results</a>
+        <h4>Selected/Accepted Applications <small>({{teamlist_accepted|length }}/{{ teamlist|length }})</small> </h4>
+        <table class="table table-striped table-hover">
+            <thead class="thead-default">
+                <tr>
+                    <td>University</td>
+                    <td>Country</td>
+                    <td>Application Status</td>
+                </tr>
+            
+            </thead>
+            <tbody>
+                {% for application in teamlist_accepted %}
+                    <tr class="table-success">
+                        <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                        <td>{{ application.applicant.team.country.name }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                        <td>{{ application}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% comment %}{% endcomment %}
+        <table class="table table-striped table-hover">
+            <thead>
+                {% comment %}<tr>
+                    <td>University</td>
+                    <td>Country</td>
+                    <td>Application Status</td>
+                </tr>{% endcomment %}
+            
+            </thead>
+            <tbody>
+                <h4>Reviewed Applications <small>({{teamlist_reviewed|length }}/{{ teamlist|length }})</small></h4>
+                {% for application in teamlist_reviewed %}
+                    <tr>
+                        <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                        <td>{{ application.applicant.team.country.name }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                        <td>{{ application}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% comment %}{% endcomment %}
+        <table class="table table-striped table-hover">
+            {% comment %}<thead>
+                <tr>
+                    <td>University</td>
+                    <td>Country</td>
+                    <td>Application Status</td>
+                </tr>
+            
+            </thead>{% endcomment %}
+            <tbody>
+                <h4>Unreviewed Applications <small>({{teamlist_unreviewed|length }}/{{ teamlist|length }})</small></h4>
+                {% for application in teamlist_unreviewed %}
+                    <tr class="table-warning">
+                        <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                        <td>{{ application.applicant.team.country.name }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                        <td>{{ application}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        {% comment %}{% endcomment %}
+        <table class="table table-striped table-hover">
+            {% comment %}<thead>
+                <tr>
+                    <td>University</td>
+                    <td>Country</td>
+                    <td>Application Status</td>
+                </tr>
+            
+            </thead>{% endcomment %}
+            <tbody>
+                <h4>Declined Applications <small>({{teamlist_declined|length }}/{{ teamlist|length }})</small></h4>
+                {% for application in teamlist_declined %}
+                    <tr class="table-danger">
+                        <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
+                        <td>{{ application.applicant.team.country.name }}</td>
+                        <td>{{ application.get_status_display }}</td>
+                        <td>{{ application}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+
+    {% comment %}Sidebar{% endcomment %}
+    <article class="col-sm-4">
+        <div class="card">
+            <header class="card-header">
+                <div class="row">
+                    {% if team.applicant.team.university_logo.url %}
+                    <div class="col-sm-4">
+                        <img class="img-responsive" src="{{ team.applicant.team.university_logo.url }}" alt="">
+                    </div>
+                    {% endif %}
+                    <div class="col-sm-8">
+                        <h3 class="card-title">{{ team.applicant.team.university }}</h3>
+                        <small><img src="{{ team.applicant.team.country.flag }}" alt=""> {{ team.applicant.team.country.name }}</small>
+                    </div>
+                </div>
+            </header>
+            <content class="card-block">
+                <article class="list-group">
+                    <header>
+                        <h4>Assessor Scores</h4>
+                        <small></small>
+                    </header>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <td>Member</td>
+                                <td>Q1</td>
+                                <td>Q2</td>
+                                <td>Q3</td>
+                                <td>Q4</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in team.applicant.team.members.all %}
+                            <tr>
+                                <td>{{ member.user.get_full_name}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </article>
+                {% comment %}{% endcomment %}
+                <article class="card-block">
+                    <header>
+                    </header>
+                    <form method="POST" class="form-horizontal">
+                        {% crispy form %}
+                    </form>
+                </article>       
+            </content>
+        </div>
+    </article>
+    <a href="{% url 'dashboard:manage_teams' %}" class="btn btn-danger btn-sm"> Back to Overview Results</a>
+</section>
+
 
 {% endblock overview-head %}
 
@@ -157,10 +160,17 @@
 <section class="row card-group">
     {% for member in team.applicant.team.members.all %}
         <article class="card">
-            <img src="https://placehold.it/180x160" alt="" class="card-img-top">
             <header class="card-header">
-                <h5>{{member.role|capfirst}}</h5>
-                <h3 class="card-title">{{ member.user.get_full_name }}</h3>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img src="https://placehold.it/180x160" alt="" class="card-img-top">
+                    </div>
+                    <div class="col-sm-8">
+                        <h5>{{member.role|capfirst}}</h5>
+                        <h3 class="card-title">{{ member.user.get_full_name }}</h3>
+                    </div>
+                </div>
+                
             </header>
             <div class="card-block">
             <table class="table table-striped table-hover">
@@ -228,49 +238,14 @@
         </article>
     {% endfor %}
 </section>
-  
-<section class="row">
-    <article class="col-sm-6">
-        <header>
-            <h3>Historical Performance</h3>
-        </header>
-        <img src="https://www.placehold.it/460x200" alt="">
-        <img src="https://www.placehold.it/100x200" alt="">
-        Display a lineplot over the individual averages for each category
-        over all historical years of participation
-    </article>
-    <article class="col-sm-6">
-        <header>
-            <h3>Feedback Sentiment Analysis</h3>
-        </header>
-        <img src="https://www.placehold.it/460x200" alt="">
-        <img src="https://www.placehold.it/100x200" alt="">
-        Display Summary Statistics for the Feedback given as ratings.
-        Display Emotions associated with the Comments given to the Assessors by Students
-    </article>
-</section>
 {% endblock content-header %}
 
+{% block content-sidemenue %}
+
+{% endblock content-sidemenue %}
 {% comment %}{% endcomment %}
 {% block content-main %}
 
 {% endblock content-main %}
 
 {% comment %}{% endcomment %}
-{% block content-sidemenue %}
-<h4>Sidebar</h4>
-
-
-<article class="row">
-    <header>
-        <h4></h4>
-    </header>
-</article>
-
-<article class="row">
-    <header>
-        <h4>Internal Comment</h4>
-    </header>
-</article>
-
-{% endblock content-sidemenue %}

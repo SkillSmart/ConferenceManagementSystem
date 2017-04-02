@@ -144,9 +144,9 @@
             </div>
         </div>
     </header>
-    <content class="card-block">
+    <content>
         {% comment %}AVAILABILITY{% endcomment %}
-        <article>
+        <article class="card-block">
             <header>
                 <h4>Availability</h4>
             </header>
@@ -182,7 +182,7 @@
             </table>
         </article>
         
-        <article class="">
+        <article class="card-block">
             <header>
                 <h4>Student Feedback</h4>
             </header>
@@ -213,7 +213,7 @@
                 </tbody>
             </table>
         </article>
-        <article class="">
+        <article class="card-block">
             <header>
                 <h4>Internal Comment</h4>
             </header>
@@ -231,9 +231,31 @@
 
 {% comment %} SUMMARY STATISTIC DISPLAY {% endcomment %}
 {% block content-header %}
+<!--Display SUMMARY OF HISTORICAL EXPERIENCE (ONLY IF HERE FOR THE SECOND YEAR ONWARDS) -->
 <section class="row">
-    {% comment %}{% endcomment %}
-    <div class="col-sm-4">
+    <aside class="col-sm-6">
+        <header>
+            <h3>Historical Performance</h3>
+        </header>
+        <img class="img-fluid" src="https://www.placehold.it/400x200" alt="">
+        <img class="img-fluid" src="https://www.placehold.it/100x200" alt="">
+        Display a lineplot over the individual averages for each category
+        over all historical years of participation
+    </aside>
+    <aside class="col-sm-6">
+        <header>
+            <h3>Feedback Sentiment Analysis</h3>
+        </header>
+        <img class="img-fluid" src="https://www.placehold.it/400x200" alt="">
+        <img class="img-fluid" src="https://www.placehold.it/100x200" alt="">
+        Display Summary Statistics for the Feedback given as ratings.
+        Display Emotions associated with the Comments given to the Assessors by Students
+    </aside>
+</section>
+
+<!-- Section to Display the Professional Experience-->
+<section class="professional_experience row">
+    <div class="card-deck">
         <article class="card">
             <header class="card-header">
                 <h4>Mediation Experience</h4>
@@ -265,44 +287,38 @@
                 </tbody>
             </table>
         </article>
-    </div>
-    
-    <div class="col-sm-4">
-    <article class="card">
-
-        <header class="card-header">
-            <h4>Negotiation Experience</h4>
-        </header>
-         <table class="table table-striped table-hover">
-                <thead>
-                    <tr>
-                        <td>Profession</td>
-                        <td>Years</td>
-                        <td>Cases</td>
-                        <td>Clients</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for experience in expert.applicant.user.profile.expertprofile.negotiationexperience_set.all %}
+        <article class="card">
+            <header class="card-header">
+                <h4>Negotiation Experience</h4>
+            </header>
+            <table class="table table-striped table-hover">
+                    <thead>
                         <tr>
-                            <td>{{ experience.get_profession_display }}</td>
-                            <td>{{ experience.duration }}</td>
-                            <td>{{ experience.cases }}</td>
-                            <td>{{ experience.priorClients|truncatewords:'5'}}</td>
+                            <td>Profession</td>
+                            <td>Years</td>
+                            <td>Cases</td>
+                            <td>Clients</td>
                         </tr>
-                    {% endfor %}
-                    <tr class="table-success" style="font-weight: bold">
-                        <td>Summary</td>
-                        <td>25 </td>
-                        <td>250 </td>
-                        <td>60 </td>
-                    </tr>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for experience in expert.applicant.user.profile.expertprofile.negotiationexperience_set.all %}
+                            <tr>
+                                <td>{{ experience.get_profession_display }}</td>
+                                <td>{{ experience.duration }}</td>
+                                <td>{{ experience.cases }}</td>
+                                <td>{{ experience.priorClients|truncatewords:'5'}}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr class="table-success" style="font-weight: bold">
+                            <td>Summary</td>
+                            <td>25 </td>
+                            <td>250 </td>
+                            <td>60 </td>
+                        </tr>
+                    </tbody>
+                </table>
 
-    </article>
-    </div>
-    <div class="col-sm-4">
+        </article>
         <article class="card">
             <header class="card-header">
                 <h4>Certifications</h4>
@@ -330,81 +346,58 @@
 </section>
 
 
-
 {% endblock content-header %}
+
+
+<!-- The SIDEMENUE Content -->
+{% block content-sidemenue %}
+<aside>
+    <h3>Feedback Controls</h3>
+    <p>Give controls to subset and filter the Feedback Results</p>
+</aside>
+<aside>
+    <h3>Graphical Analysis</h3>
+</aside>
+{% endblock content-sidemenue %}
+
+
 
 {% comment %}{% endcomment %}
 {% block content-main %}
-<article class="row">
-    <header>
-        <h3>Detailed Feedback</h3>
-    </header>
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr class="success">
-                <td>Year</td>
-                <td>Session</td>
-                <td>D1</td>
-                <td>D2</td>
-                <td>D3</td>
-                <td>Student Comments</td>
-            </tr>
-
-        </thead>
-        <tbody>
-        
-            {% for feedback in expert.applicant.feedback_set.all %}
-                <tr>
-                    <td>{{ feedback.session.startTime|date:"Y"}}</td>
-                    <td><a href="{% url 'session:session_detail' feedback.session.slug %}">{{ feedback.session }}</a></td>
-                    <td>{{ feedback.feedbackQuality}}</td>
-                    <td>{{ feedback.feedbackRelated}}</td>
-                    <td>{{ feedback.feedbackComm}}</td>
-                    <td>{{ feedback.text }}</td>
+    <article>
+        <header>
+            <h3>Detailed Feedback</h3>
+        </header>
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr class="success">
+                    <td>Year</td>
+                    <td>Session</td>
+                    <td>D1</td>
+                    <td>D2</td>
+                    <td>D3</td>
+                    <td>Student Comments</td>
                 </tr>
-            {% endfor %}
-                
-        </tbody>
-    </table>
-</article>
 
-<!--For later to try out-->
-<section class="row">
-    <article class="col-sm-6">
-        <header>
-            <h3>Historical Performance</h3>
-        </header>
-        <img src="https://www.placehold.it/460x200" alt="">
-        <img src="https://www.placehold.it/100x200" alt="">
-        Display a lineplot over the individual averages for each category
-        over all historical years of participation
+            </thead>
+            <tbody>
+            
+                {% for feedback in expert.applicant.feedback_set.all %}
+                    <tr>
+                        <td>{{ feedback.session.startTime|date:"Y"}}</td>
+                        <td><a href="{% url 'session:session_detail' feedback.session.slug %}">{{ feedback.session }}</a></td>
+                        <td>{{ feedback.feedbackQuality}}</td>
+                        <td>{{ feedback.feedbackRelated}}</td>
+                        <td>{{ feedback.feedbackComm}}</td>
+                        <td>{{ feedback.text }}</td>
+                    </tr>
+                {% endfor %}
+                    
+            </tbody>
+        </table>
     </article>
-    <article class="col-sm-6">
-        <header>
-            <h3>Feedback Sentiment Analysis</h3>
-        </header>
-        <img src="https://www.placehold.it/460x200" alt="">
-        <img src="https://www.placehold.it/100x200" alt="">
-        Display Summary Statistics for the Feedback given as ratings.
-        Display Emotions associated with the Comments given to the Assessors by Students
-    </article>
-</section>
+
+
 {% endblock content-main %}
 
 {% comment %}{% endcomment %}
-{% block content-sidemenue %}
-<h4>Filter Feedback</h4>
-Put filter options here to subset the Feedback section based on
-<ul>
-    <li>Sentiment</li>
-    <li>Rounds</li>
-    <li>Years</li>
-    <li></li>
-</ul>
-
-<article class="row">
-    <header>
-        <h4></h4>
-    </header>
-</article>
-{% endblock content-sidemenue %}
