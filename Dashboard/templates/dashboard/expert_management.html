@@ -193,28 +193,30 @@
                         <td>D1</td>
                         <td>D2</td>
                         <td>D3</td>
-                        <td>D4</td>
                         <td>Avg</td>
                         <td>Rank</td>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for review in expert.review_set.all %}
-                    <tr>
-                        <td>2015</td>
-                        <td>{{ review.question_1 }}</td>
-                        <td>{{ review.question_2 }}</td>
-                        <td>{{ review.question_3 }}</td>
-                        <td>{{ review.question_4 }}</td>
+                    
+                    {% for year, ratings in ratings.items %}
+                        <tr>
+                        <td>{{ year}}</td>
+                        <td>{{ ratings.feedbackQuality__avg|floatformat:"1" }}</td>
+                        <td>{{ ratings.feedbackRelated__avg|floatformat:"1" }}</td>
+                        <td>{{ ratings.feedbackComm__avg|floatformat:"1" }}</td>
                         <td>2.5</td>
                         <td>45/50</td>
                     </tr>
                     {% endfor %}
+                    
                 </tbody>
             </table>
         </article>
         <article class="card-block">
             <header>
+                {{years}}
+                {{ratings.2017}}
                 <h4>Internal Comment</h4>
             </header>
             {% crispy form %}

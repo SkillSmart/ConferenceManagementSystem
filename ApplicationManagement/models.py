@@ -40,43 +40,55 @@ class Application(models.Model):
     q3_score = models.FloatField(blank=True, null=True)
     q4_score = models.FloatField(blank=True, null=True)
 
+    def return_ratings(self):
+        if applicant.role=='team':
+            # Return team values
+            pass
+
+        else:
+            # Return individual values
+            pass
+
+
     def aggregate_ratings(self):
         # Check if Team or Student
-        if self.applicant.role =="mediator" or self.applicant.role=="negotiator" or self.applicant.role=="coach":
-            # Treat this as student
-            self.q1_score = self.review_set.aggregate(Avg('question_1'))
-            self.q2_score = self.review_set.aggregate(Avg('question_2'))
-            self.q3_score = self.review_set.aggregate(Avg('question_3'))
-            self.q4_score = self.review_set.aggregate(Avg('question_4'))
-
-        elif self.applicant.role == "team":
-            # Collect the list of all member applications
-            members = self.applicant.team.members.all()
+        if self.applicant.role == "team":
+            # all the function on all teammember applications
+            # for member in self.applicant.team.members.all():
+            #     member.get_current_application().aggregate_ratings()
             # Get the list of current member applications
-            q1 
-            for member in members:
-                apl = member.get_current_application()
-                apl.aggregate_ratings()
-                ratings['q1_score'].append(apl.q1_score)
-                ratings['q2_score'].append(apl.q2_score)
-                ratings['q3_score'].append(apl.q2_score)
-                ratings['q4_score'].append(apl.q2_score)
+            self.q1_score = self.applicant.team.members.all().aggregate(Avg('application__q1_score'))
+            self.q2_score = self.applicant.team.members.all().aggregate(Avg('application__q2_score'))
+            self.q3_score = self.applicant.team.members.all().aggregate(Avg('application__q3_score'))
+            self.q4_score = self.applicant.team.members.all().aggregate(Avg('application__q4_score'))
+
+            # Working Query for the Complete Average over all Application Ratings in Total
+            results = Application.objects.all().annotate(q1_avg=Avg('review__question_1'), q2_avg=Avg('review__question_2'), q3_avg=Avg('review__question_3'), q4_avg=Avg('review__question_4')).aggregate(q1_score=Avg('q1_avg'), q2_score=Avg('q2_avg'), q3_score=Avg('q3_avg'), q4_score=Avg('q4_avg'))
             
-            return ratings
+
+            for member in self.applicant.team.members.all():
+                scores 
+            
             # # Aggregate the qx_score values on all applications; Store on self
             # self.q1_score = 
             # self.q2_score = members.aggregate(Avg('q2_score'))
             # self.q3_score = members.aggregate(Avg('q3_score'))
             # self.q4_score = members.aggregate(Avg('q4_score'))
-        else:
-            # Treat as Expert
-            pass
-        return
+        elif self.applicant.role =="mediator" or self.applicant.role=="negotiator" or self.applicant.role=="coach":
+            # Treat this as student
+            self.q1_score = self.review_set.aggregate(Avg('question_1'))
+            self.q2_score = self.review_set.aggregate(Avg('question_2'))
+            self.q3_score = self.review_set.aggregate(Avg('question_3'))
+            self.q4_score = self.review_set.aggregate(Avg('question_4'))
+        
+        else: 
+            return 'Did not recognize either student or team application'
         # If Student then calculate ratings over all reviews and store on the Attendent
         # If Team then call the calculation method on all members and then calculate the Sum
 
         # return None
 
+    
     def __str__(self):
         return "{}-{}".format(self.applicant.user.username, self.competition_year)
 
@@ -133,6 +145,7 @@ class Feedback(models.Model):
     """
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     expert = models.ForeignKey(Attendent, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
 
     # Feedback Categories
     feedbackQuality = models.IntegerField(verbose_name="How helpfull was his/her Feedback?",
@@ -147,3 +160,5 @@ class Feedback(models.Model):
 
     def __str__(self):
         return "{} - {}, {}".format(self.session, self.expert.user.last_name, self.expert.user.first_name)
+
+    

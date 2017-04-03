@@ -44,8 +44,17 @@ def expert_management(request, username=None):
         expert = Application.objects.get(applicant__user__username=username, competition_year='2017')
     else:
         expert = expertlist[0]
-    # Get the current Feedback Ratings for the Person
-    ratings = expert.applicant.get_ratings()
+
+    # Get the distinct years of feedback on this person
+    feedback_years = []
+    for feedback in expert.applicant.feedback_set.all():
+        if feedback.date.year not in feedback_years:
+            feedback_years.append(feedback.date.year)
+    
+    ratings = {}
+    for year in feedback_years:
+        ratings[year] =  expert.applicant.get_ratings(year=year)
+        # ratings = expert.applicant.get_ratings()
 
     if request.method == "POST":
         form = ExpertCommentForm(request.POST)
@@ -64,6 +73,7 @@ def expert_management(request, username=None):
             'expert':expert,
             'ratings':ratings,
             'form': form,
+            'years': feedback_years,
             })
 
     form = ExpertCommentForm(initial={'comment':expert.comments, 
@@ -79,6 +89,8 @@ def expert_management(request, username=None):
         'expert':expert,
         'ratings': ratings, 
         'form': form,
+        'years': feedback_years,
+
     })
 
 #  --------- TEAM Management Views --------------
@@ -112,12 +124,12 @@ def team_management(request, slug=None):
     teamlist_accepted = Application.objects.filter(Q(status="3") | Q(status="4"), applicant__role='team')
     teamlist_declined = Application.objects.filter(status='0', applicant__role='team')
     if slug:
-        team = Application.objects.get(applicant__team__slug=slug, competition_year='2017')
+        team = Application.objects.get(applicant__team__slug=slug, competition_year=settings.START_DATE.year)
     else:
         team = teamlist[0]
 
     # Update Reviews on the selected Team
-    ratings = team.aggregate_ratings()
+    # ratings = team.aggregate_ratings()
 
     # Handle Comment Form
     if request.method=="POST":

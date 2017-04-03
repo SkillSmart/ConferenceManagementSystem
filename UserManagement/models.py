@@ -1,5 +1,7 @@
 from datetime import datetime
+from django.conf import settings
 # General Imports
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -46,31 +48,19 @@ class Attendent(models.Model):
         Used to get the current application from inside a template.
         Returns None when no application present.
         """
-        application = self.application_set.get(competition_year="2017")
+        application = self.application_set.get(competition_year='2017')
         if application:
             return application
         else:
             return None
 
-    def get_ratings(self):
+    def get_ratings(self, year=datetime.now().year):
         # Catch all given Feedback
-        ratings = self.feedback_set.all()
-        if ratings:
+        if self.feedback_set.all():
             # Calculate the AVG Values
-            feedbackQuality = ratings.aggregate(Avg('feedbackQuality'))
-            feedbackRelated = ratings.aggregate(Avg('feedbackRelated'))
-            feedbackComm = ratings.aggregate(Avg('feedbackComm'))
+            return self.feedback_set.filter(expert=self.user.attendent, date__year=year).aggregate(Avg('feedbackQuality'), Avg('feedbackRelated'), Avg('feedbackComm'))
         else:
             return None
-        # Store in DICT to add
-        ratings = {
-            'StudentFeedback': {
-                'feedbackQuality': feedbackQuality,
-                'feedbackRelated' : feedbackRelated,
-                'feedbackComm' : feedbackComm,
-            }
-        }
-        return ratings
 
     def get_absolute_url(self):
         return reverse('portal:expert_profile', args = [self.user.username])
@@ -79,7 +69,7 @@ class Attendent(models.Model):
         return "{}".format(self.user)
     
     def save(self, *args, **kwargs):
-        self.current_application = self.application_set.filter(competition_year=datetime.now().year())
+        self.current_application = self.application_set.filter(competition_year=settings.START_DATE.year)
 
 
 # This automatically creates an Attendent Instance for every User on save
