@@ -2,110 +2,116 @@
 
 {% block assessment-header %}
 <h3>Scoring View / Summary Description</h3>
-{% for member in team.applicant.team.members.all %}
-        <article class="col-sm-4">
-            <header class="col-sm-6">
-                <h5>{{ member.role|capfirst }}</h5>
-                <small><img src="{{ member.user.profile.country.flag }}" alt=""> {{ member.user.profile.country.name}}</small>
-                <img class="img-responsive" src="{{ member.user.profile.profileImg.url }}" alt="">
-                <h3>{{ member.user.get_full_name }}</h3>
+<div class="card-group">
+    {% for member in team.applicant.team.members.all %}
+        <section class="card">
+            <header class="card-header">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img class="img-fluid" src="{{ member.user.profile.profileImg.url }}" alt="">
+                    </div>
+                    <div class="col-sm-8">
+                        <h5>{{ member.role|capfirst }}</h5>
+                        <img src="{{ member.user.profile.country.flag }}" alt=""> {{ member.user.profile.country.name}}
+                        <h3>{{ member.user.get_full_name }}</h3>
+
+                    </div>
+                </div>
             </header>
-            <content class="col-sm-8">
-                <article class="row">
-                    <header>
-                        <h4>Competition Experience</h4>
-                    </header>
-                    <table class="table table-striped table-hover">
-                        <thead>
+            <article class="card-block">
+                <header>
+                    <h4>Competition Experience</h4>
+                </header>
+                <table class="table table-sm table-striped table-hover">
+                    <thead class="thead-default">
+                        <tr>
+                            <td>Country</td>
+                            <td>Name</td>
+                            <td>Year</td>
+                            <td>Days</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for competition in member.user.profile.competition_set.all %}
                             <tr>
-                                <td class="col-sm-4">Country</td>
-                                <td class="col-sm-4">Name</td>
-                                <td class="col-sm-1">Year</td>
-                                <td class="col-sm-1">Duration</td>
+                                <td><img src="{{ competition.country.flag}}" alt=""> {{ competition.country.name }}</td>
+                                <td>{{ competition.name}}</td>
+                                <td>{{ competition.year }}</td>
+                                <td>{{ competition.duration }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for competition in member.user.profile.competition_set.all %}
-                                <tr>
-                                    <td><img src="{{ competition.country.flag}}" alt=""> {{ competition.country.name }}</td>
-                                    <td>{{ competition.name}}</td>
-                                    <td>{{ competition.year }}</td>
-                                    <td>{{ competition.duration }} {{ competition.measure}}</td>
-                                </tr>
-                            {% endfor %}
-                            <tr class="success">
-                                <td>Rating: </td>
-                                <td><input type="text" style="width: 80px;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </article>
-                {% comment %}{% endcomment %}
-                <article class="row">
-                    <header>
-                        <h4>International Experience</h4>
-                    </header>
-                    <table class="table table-striped table-hover">
-                        <thead>
+                        {% endfor %}
+                        <tr class="table-success">
+                            <td>Rating: </td>
+                            <td><input type="text" style="width: 80px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </article>
+            {% comment %}{% endcomment %}
+            <article class="card-block">
+                <header>
+                    <h4>International Experience</h4>
+                </header>
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Country</td>
+                            <td>Position</td>
+                            <td>Employer</td>
+                            <td>Duration</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for internship in member.user.profile.internship_set.all %}
                             <tr>
-                                <td class="col-sm-2">Country</td>
-                                <td class="col-sm-6">Position</td>
-                                <td class="col-sm-6">Employer</td>
-                                <td class="col-sm-2">Duration</td>
+                                <td><img src="{{ internship.country.flag }}" alt=""> {{ internship.country.name }}</td>
+                                <td>{{ internship.position }}</td>
+                                <td>{{ internship.employer }}</td>
+                                <td>{{ internship.duration}} {{ internship.measure}}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for internship in member.user.profile.internship_set.all %}
-                                <tr>
-                                    <td><img src="{{ internship.country.flag }}" alt=""> {{ internship.country.name }}</td>
-                                    <td><small>{{ internship.position }}</small></td>
-                                    <td><small>{{ internship.employer }}</small></td>
-                                    <td><small>{{ internship.duration}} {{ internship.measure}}</small></td>
-                                </tr>
-                            {% endfor %}
-                            <tr class="success">
-                                <td>Rating: </td>
-                                <td><input type="text" style="width: 80px;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        {% endfor %}
+                        <tr class="table-success">
+                            <td>Rating: </td>
+                            <td><input type="text" style="width: 80px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                </article>
-                {% comment %}{% endcomment %}
-                <article class="row">
-                    <header>
-                        <h4>Relevant Coursework</h4>
-                    </header>
-                    <table class="table table-striped table-hover">
-                        <thead>
+            </article>
+            {% comment %}{% endcomment %}
+            <article class="card-block">
+                <header>
+                    <h4>Relevant Coursework</h4>
+                </header>
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Subject</td>
+                            <td>Title</td>
+                            <td>Employer</td>
+                            <td>Duration</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in member.user.profile.studentprofile.course_set.all %}
                             <tr>
-                                <td class="col-sm-2">Subject</td>
-                                <td class="col-sm-6">Title</td>
-                                <td class="col-sm-6">Employer</td>
-                                <td class="col-sm-2">Duration</td>
+                                <td>{{ course.get_subject_display }}</td>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.institution_abbr }}</td>
+                                <td>{{ course.duration}} {{ course.measure}}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for course in member.user.profile.studentprofile.course_set.all %}
-                                <tr>
-                                    <td><small>{{ course.get_subject_display }}</small></td>
-                                    <td><small>{{ course.title }}</small></td>
-                                    <td><small>{{ course.institution_abbr }}</small></td>
-                                    <td><small>{{ course.duration}} {{ course.measure}}</small></td>
-                                </tr>
-                            {% endfor %}
-                            <tr class="success">
-                                <td>Rating: </td>
-                                <td><input type="text" style="width: 80px;"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                        {% endfor %}
+                        <tr class="table-success">
+                            <td>Rating: </td>
+                            <td><input type="text" style="width: 80px;"></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                </article>
-            </content>
-        </article>
-
+            </article>
+        </section>
     {% endfor %}
+</div>
 {% endblock assessment-header %}
 
 {% block assessment-presentation %}
@@ -113,17 +119,25 @@
     {% for member in team.applicant.team.members.all %}
         <article class="row">
             <header class="col-sm-2">
-                <h5>{{ member.role|capfirst }}</h5>
-                <small><img src="{{ member.user.profile.country.flag }}" alt=""> {{ member.user.profile.country.name}}</small>
-                <img class="img-responsive" src="{{ member.user.profile.profileImg.url }}" alt="">
-                <h3>{{ member.user.get_full_name }}</h3>
-                {% comment %}{% endcomment %}
-                <h4>Awards</h4>
-                
-                {% for award in member.user.profile.award_set.all %}
-                    <small>{{ award.competition }} /  {{ award.competition.year }}</small>
-                    <h5>{{ award.title }}</h5>
-                {% endfor %}
+                <div class="card">
+                    <div class="card-header">
+                        <img src="{{ member.user.profile.country.flag }}" alt=""> {{ member.user.profile.country.name}}
+                        <h3 class="card-title">{{ member.user.get_full_name }}</h3>
+                        <img class="img-fluid" src="{{ member.user.profile.profileImg.url }}" alt="">
+                        <h5>{{ member.role|capfirst }}</h5>
+                    </div>
+                    {% comment %}{% endcomment %}
+                    <ul class="list-group list-group-flush">
+                        {% comment %}<h4>Awards</h4>{% endcomment %}
+                        
+                        {% for award in member.user.profile.award_set.all %}
+                            <li class="list-group-item">
+                                {{ award.competition }} /  {{ award.competition.year }}
+                                <p><strong>{{ award.title }}</strong></p>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
                     
             </header>
             <content class="col-sm-10">
@@ -131,10 +145,10 @@
                 <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <td class="col-sm-1">Country</td>
-                                <td class="col-sm-4">Name</td>
-                                <td class="col-sm-1">Year</td>
-                                <td class="col-sm-1">Duration</td>
+                                <td>Country</td>
+                                <td>Name</td>
+                                <td>Year</td>
+                                <td>Days</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -152,25 +166,25 @@
                 <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <td class="col-sm-1">Field</td>
-                                <td class="col-sm-1">Country</td>
-                                <td class="col-sm-2">Position</td>
-                                <td class="col-sm-2">Employer</td>
-                                <td class="col-sm-1">Duration</td>
-                                <td class="col-sm-1">Year</td>
-                                <td class="col-sm-4">Scope of Work</td>
+                                <td>Field</td>
+                                <td>Country</td>
+                                <td>Position</td>
+                                <td>Employer</td>
+                                <td>Duration</td>
+                                <td>Year</td>
+                                <td>Scope of Work</td>
                             </tr>
                         </thead>
                         <tbody>
                             {% for internship in member.user.profile.studentprofile.internship_set.all %}
                                 <tr>
-                                    <td><small>{{ internship.get_field_of_practice_display }}</small></td>
+                                    <td>{{ internship.get_field_of_practice_display }}</td>
                                     <td><img src="{{ internship.country.flag }}" alt=""> {{ internship.country.name }}</td>
-                                    <td><small>{{ internship.position }}</small></td>
-                                    <td><small>{{ internship.employer }}</small></td>
-                                    <td><small>{{ internship.duration}} {{ internship.measure}}</small></td>
-                                    <td><small>{{ internship.year}}</small></td>
-                                    <td><small>{{ internship.descr }}</small></td>
+                                    <td>{{ internship.position }}</td>
+                                    <td>{{ internship.employer }}</td>
+                                    <td>{{ internship.duration}} {{ internship.measure}}</td>
+                                    <td>{{ internship.year}}</td>
+                                    <td>{{ internship.descr }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -179,23 +193,23 @@
                 <table class="table table-striped table-hover">
                         <thead>
                             <tr>
-                                <td class="col-sm-1">Institution</td>
-                                <td class="col-sm-1">Subject</td>
-                                <td class="col-sm-4">Title</td>
-                                <td class="col-sm-1">Instructor</td>
-                                <td class="col-sm-1">Duration</td>
-                                <td class="col-sm-4">Learnings</td>
+                                <td>Institution</td>
+                                <td>Subject</td>
+                                <td>Title</td>
+                                <td>Instructor</td>
+                                <td>Duration</td>
+                                <td>Learnings</td>
                             </tr>
                         </thead>
                         <tbody>
                             {% for course in member.user.profile.studentprofile.course_set.all %}
                                 <tr>
-                                    <td><small>{{ course.institution_abbr }}</small></td>
-                                    <td><small>{{ course.get_subject_display }}</small></td>
-                                    <td><small>{{ course.title }}</small></td>
-                                    <td><small>{{ course.instructor }}</small></td>
-                                    <td><small>{{ course.duration}} {{ course.measure}}</small></td>
-                                    <td><small>{{ course.learnings}}</small></td>
+                                    <td>{{ course.institution_abbr }}</td>
+                                    <td>{{ course.get_subject_display }}</td>
+                                    <td>{{ course.title }}</td>
+                                    <td>{{ course.instructor }}</td>
+                                    <td>{{ course.duration}} {{ course.measure}}</td>
+                                    <td>{{ course.learnings}}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

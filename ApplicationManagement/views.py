@@ -177,12 +177,25 @@ def team_registration(request):
 #-------Application Display--------
 from .models import Application
 
-def assess_team(request, teamslug=None):
-    teamlist = get_list_or_404(Application, applicant__role='team')
-    if teamslug:
-        team = get_object_or_404(Application, role='team', slug=teamslug)
-    else:
-        team = teamlist[0]
+# The Overview Index for the Assessors
+# This describes the process and ofers management Views
+def review_overview(request):
+    # Create a list of all teams to be reviewed by the person
+    team_applications = Application.objects.filter(applicant__role='team')
+    # Subset list to all teams that have not yet been reviewed
+    # Subset list to all teams that already have been reviewed
+    return render(request, 'review/review_index.html', {
+        'team_applications': team_applications,
+    })
+
+
+
+def assess_teams(request, slug=None):
+    teamlist = Application.objects.filter(applicant__role='team')
+    # if teamslug:
+    #     team = get_object_or_404(Application, applicant__role='team', slug=teamslug)
+    # else:
+    team = teamlist[0]
 
     if request.method=="POST":
         member_assessment_form = MemberReviewForm(request.POST)

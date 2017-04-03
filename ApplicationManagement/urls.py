@@ -11,14 +11,14 @@ urlpatterns = [
     url(r'^expert/$', application_views.expert_registration, name='register_expert'),
 ]
 
-# # Application Management Views
-# urlpatterns += [
-#     url(r'^team/review/$', application_views.expert_applicationlist, name='expert_overview'),
-#     url(r'^team/overview/$', application_views.team_applicationlist, name='team_overview'),
-#     url(r'^team/detail/(?P<role>\w+/$)', application_views.application_by, name='role_overview'),
-#     url(r'^(?P<role>\w+)/(?P<pk>)', application_views.application_detail, name='detail'),
-#     # url(r'^()', application_views.application_judgeOverview, name='')
-# ]
+# Application Management Views
+urlpatterns += [
+    url(r'^review/$', application_views.review_overview, name='review_index'),
+    url(r'^review/teams/(?P<slug>[-\w]+)/$', application_views.assess_teams, name='review_index'),
+    url(r'^review/teams/', application_views.assess_teams, name='team_overview'),
+    # url(r'^team/detail/(?P<role>\w+/$)', application_views.application_by, name='role_overview'),
+    # url(r'^()', application_views.application_judgeOverview, name='')
+]
 
 # # Review/Assessment Views
 # urlpatterns = [

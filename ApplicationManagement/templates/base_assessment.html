@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 
 {% block sub-navigation %}
-<nav class="navbar navbar-toggleable-md">
-    <ul class="nav navbar-nav">
-        <li><a href="#">Application Overview</a></li>
-        <li><a href="#">Finished Reviews</a></li>
-        <li><a href="{% url 'application:review_teamapplication' %}">Score Applications</a></li>
-    </ul>
-</nav>
+<div class="container">
+    <nav class="navbar navbar-toggleable-md">
+        <ul class="nav navbar-nav">
+            <li class="navbar-item"><a class="navbar-link" href="#">Application Overview</a></li>
+            <li class="navbar-item"><a class="navbar-link" href="#">Finished Reviews</a></li>
+            {% comment %}<li><a href="{% %}">Score Applications</a></li>{% endcomment %}
+        </ul>
+    </nav>
+</div>
 {% endblock sub-navigation %}
 
 {% block content %}

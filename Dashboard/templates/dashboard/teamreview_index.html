@@ -5,12 +5,22 @@ Subnavigation for T
 {% endblock subnavigation %}
 
 {% block overview-head %}
-<article class="row">
-    <header class="col-sm-4">
-        <h2>Team Application Review</h2>
-        <p>Put some introductory text here to describe the process of evaluating the teams</p>
-    </header>
-    <content class="col-sm-8">
+<div class="row">
+    <div class="col-sm-4">
+       <div class="card">
+           <div class="card-header">
+                <h2>Team Applications</h2>
+           </div>
+
+           <ul class="list-group list-group-flush">
+                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Overall Results</a></li>
+                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Finished Reviews</a></li>
+                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Unfinished Reviews</a></li>
+            </ul>
+
+       </div>
+    </div>
+    <div class="col-sm-8">
         <h3>Overall Ranking</h3>
         <table class="table table-striped table-hover">
             <thead class="thead-default">
@@ -35,71 +45,14 @@ Subnavigation for T
             	{% endfor %}
             </tbody>
         </table>
-    </content>
+    </div>
 </article>
 
-{% comment %}    Application Status    {% endcomment %}
-<section class="row">
-    <hr>    
-    <article class="col-sm">
-        <header></header>
-        <content>
-            <h4>Finalized Reviews</h4>
-            <table class="table table-striped">
-                <thead class="thead-default">
-                    <tr>
-                        <td>University</td>
-                        <td>Max Score</td>
-                        <td>Min Score</td>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for application in teams_reviewed %}
-                    <tr>
-                        <td class="success"><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
-                        <td>3.4</td>
-                        <td>2.3</td>
-
-                    </tr>
-                </tbody>
-                    {% endfor %}
-            </table>              
-        </content>
-    </article>
-
-    {% comment %}{% endcomment %}
-    <article class="col-sm">
-        <header>
-        </header>
-        <content>
-            <h4>Unfinished Reviews</h4>
-            <table class="table table-striped">
-                <thead class="thead-default">
-                    <tr>
-                        <td>University</td>
-                        <td>Max Score</td>
-                        <td>Min Score</td>
-                        <td>Review Count</td>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for application in teams_unreviewed %}
-                    <tr>
-                        <td class="warning"><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
-                        <td>3.4</td>
-                        <td>2.3</td>
-                        <td>2/12 finished</td>
-
-                    </tr>
-                </tbody>
-                    {% endfor %}
-            </table>              
-        </content>
-    </article>
-</section>
 {% endblock overview-head %}
 
 {% block content-header %}
+<h3>Ranking Statistics</h3>
+
 <!--Display the Inidividual RANKINGS FOR EACH CONTINENT -->
 <section class="row">
     {% for continent, continent_list in teamlists.items %}
@@ -140,7 +93,6 @@ Subnavigation for T
 
 
 {% block content-sidemenue %}
-<h3>Ranking Statistics</h3>
 {% endblock content-sidemenue %}
 
 {% comment %}{% endcomment %}
