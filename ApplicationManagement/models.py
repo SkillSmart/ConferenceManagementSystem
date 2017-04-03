@@ -4,6 +4,9 @@ from random import randint
 from django.contrib.auth.models import User
 from UserManagement.models import Attendent, Team
 from SessionManagement.models import Session
+# Import for Summary Statistics on the Models
+from django.db.models import (Sum, Max, Min, Avg, StdDev)
+
 
 # Create your models here.
 class Application(models.Model):
@@ -31,11 +34,48 @@ class Application(models.Model):
     continent_rank = None
     overall_rank = None
 
-    # TODO: Turn this into actual scoring method (Instead of faking with __init__)
-    def get_ratingscore(self):
-        ratings = self.review_set.all()
-        score = int(2.3)
-        return int(2.3)
+    # The Application review scores for this application
+    q1_score = models.FloatField(blank=True, null=True)
+    q2_score = models.FloatField(blank=True, null=True)
+    q3_score = models.FloatField(blank=True, null=True)
+    q4_score = models.FloatField(blank=True, null=True)
+
+    def aggregate_ratings(self):
+        # Check if Team or Student
+        if self.applicant.role =="mediator" or self.applicant.role=="negotiator" or self.applicant.role=="coach":
+            # Treat this as student
+            self.q1_score = self.review_set.aggregate(Avg('question_1'))
+            self.q2_score = self.review_set.aggregate(Avg('question_2'))
+            self.q3_score = self.review_set.aggregate(Avg('question_3'))
+            self.q4_score = self.review_set.aggregate(Avg('question_4'))
+
+        elif self.applicant.role == "team":
+            # Collect the list of all member applications
+            members = self.applicant.team.members.all()
+            # Get the list of current member applications
+            q1 
+            for member in members:
+                apl = member.get_current_application()
+                apl.aggregate_ratings()
+                ratings['q1_score'].append(apl.q1_score)
+                ratings['q2_score'].append(apl.q2_score)
+                ratings['q3_score'].append(apl.q2_score)
+                ratings['q4_score'].append(apl.q2_score)
+            
+            return ratings
+            # # Aggregate the qx_score values on all applications; Store on self
+            # self.q1_score = 
+            # self.q2_score = members.aggregate(Avg('q2_score'))
+            # self.q3_score = members.aggregate(Avg('q3_score'))
+            # self.q4_score = members.aggregate(Avg('q4_score'))
+        else:
+            # Treat as Expert
+            pass
+        return
+        # If Student then calculate ratings over all reviews and store on the Attendent
+        # If Team then call the calculation method on all members and then calculate the Sum
+
+        # return None
 
     def __str__(self):
         return "{}-{}".format(self.applicant.user.username, self.competition_year)

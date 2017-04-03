@@ -46,6 +46,7 @@ def expert_management(request, username=None):
         expert = expertlist[0]
     # Get the current Feedback Ratings for the Person
     ratings = expert.applicant.get_ratings()
+
     if request.method == "POST":
         form = ExpertCommentForm(request.POST)
         if form.is_valid():
@@ -114,7 +115,10 @@ def team_management(request, slug=None):
         team = Application.objects.get(applicant__team__slug=slug, competition_year='2017')
     else:
         team = teamlist[0]
-    
+
+    # Update Reviews on the selected Team
+    ratings = team.aggregate_ratings()
+
     # Handle Comment Form
     if request.method=="POST":
         form = TeamCommentForm(request.POST)

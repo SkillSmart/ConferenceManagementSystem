@@ -131,9 +131,15 @@
                         </thead>
                         <tbody>
                             {% for member in team.applicant.team.members.all %}
+                            {% with member.get_current_application  as application %}
                             <tr>
                                 <td>{{ member.user.get_full_name}}</td>
+                                <td>{{ application.q1_score}}</td>
+                                <td>{{ application.q2_score}}</td>
+                                <td>{{ application.q3_score}}</td>
+                                <td>{{ application.q4_score}}</td>
                             </tr>
+                            {% endwith %}
                             {% endfor %}
                         </tbody>
                     </table>

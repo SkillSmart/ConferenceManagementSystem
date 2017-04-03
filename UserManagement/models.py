@@ -1,3 +1,5 @@
+from datetime import datetime
+# General Imports
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
@@ -35,6 +37,20 @@ class Attendent(models.Model):
     role = models.CharField(max_length=35, choices=ROLES)
     blacklisted = models.BooleanField(default=False)
     administrativeComment = models.TextField(blank=True, null=True)
+    
+    # Store Information on the Current Year for easy retrieval
+    current_application = None
+
+    def get_current_application(self):
+        """
+        Used to get the current application from inside a template.
+        Returns None when no application present.
+        """
+        application = self.application_set.get(competition_year="2017")
+        if application:
+            return application
+        else:
+            return None
 
     def get_ratings(self):
         # Catch all given Feedback
@@ -62,6 +78,8 @@ class Attendent(models.Model):
     def __str__(self):
         return "{}".format(self.user)
     
+    def save(self, *args, **kwargs):
+        self.current_application = self.application_set.filter(competition_year=datetime.now().year())
 
 
 # This automatically creates an Attendent Instance for every User on save
