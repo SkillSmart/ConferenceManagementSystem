@@ -50,12 +50,11 @@ def expert_management(request, username=None):
     for feedback in expert.applicant.feedback_set.all():
         if feedback.date.year not in feedback_years:
             feedback_years.append(feedback.date.year)
-    
     ratings = {}
     for year in feedback_years:
         ratings[year] =  expert.applicant.get_ratings(year=year)
-        # ratings = expert.applicant.get_ratings()
-
+        
+    # Handle the form save
     if request.method == "POST":
         form = ExpertCommentForm(request.POST)
         if form.is_valid():
@@ -73,7 +72,6 @@ def expert_management(request, username=None):
             'expert':expert,
             'ratings':ratings,
             'form': form,
-            'years': feedback_years,
             })
 
     form = ExpertCommentForm(initial={'comment':expert.comments, 
@@ -89,8 +87,6 @@ def expert_management(request, username=None):
         'expert':expert,
         'ratings': ratings, 
         'form': form,
-        'years': feedback_years,
-
     })
 
 #  --------- TEAM Management Views --------------

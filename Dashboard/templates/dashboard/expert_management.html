@@ -198,7 +198,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
                     {% for year, ratings in ratings.items %}
                         <tr>
                         <td>{{ year}}</td>
@@ -215,8 +214,6 @@
         </article>
         <article class="card-block">
             <header>
-                {{years}}
-                {{ratings.2017}}
                 <h4>Internal Comment</h4>
             </header>
             {% crispy form %}

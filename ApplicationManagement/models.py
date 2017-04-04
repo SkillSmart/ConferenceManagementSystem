@@ -145,7 +145,7 @@ class Feedback(models.Model):
     """
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     expert = models.ForeignKey(Attendent, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True)
+    date = models.DateTimeField()
 
     # Feedback Categories
     feedbackQuality = models.IntegerField(verbose_name="How helpfull was his/her Feedback?",
@@ -161,4 +161,6 @@ class Feedback(models.Model):
     def __str__(self):
         return "{} - {}, {}".format(self.session, self.expert.user.last_name, self.expert.user.first_name)
 
-    
+    def save(self, *args, **kwargs):
+        self.date = self.session.startTime
+        super(Feedback, self).save(*args, **kwargs)
