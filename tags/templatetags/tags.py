@@ -11,4 +11,9 @@ def active(request, pattern):
     if re.search(pattern, request.path):
         return 'active'
     return ''
-    
+
+# from django.template.defaulttags import register
+# ...
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

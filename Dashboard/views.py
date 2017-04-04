@@ -18,7 +18,7 @@ from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
 # Helper Function
-
+from django.db.models import (Avg, Max, Min, Count, Sum)
 
 
 # Create your views here.
@@ -124,8 +124,15 @@ def team_management(request, slug=None):
     else:
         team = teamlist[0]
 
-    # Update Reviews on the selected Team
-    # ratings = team.aggregate_ratings()
+    # Calculate the Reviews on the Team members and send as dict
+    member_avg_scores = {}
+    members = team.applicant.team.members.all()
+    for member in members:
+        member_avg_scores[member] = member.get_current_application().review_set.all().aggregate(d1_avg=Avg('question_1'), d2_avg=Avg('question_2'), d3_avg=Avg('question_3'), d4_avg=Avg('question_4'))    
+    
+    # Calculate Team Average Scores for all Assessor Dimensions
+    team_avg_scores = {}
+
 
     # Handle Comment Form
     if request.method=="POST":
@@ -153,6 +160,8 @@ def team_management(request, slug=None):
         'teamlist_accepted': teamlist_accepted,
         'teamlist_declined': teamlist_declined, 
         'team': team,
+        'member_avg_scores': member_avg_scores,
+        'team_avg_scores': team_avg_scores,
         'form': form, 
     })
 
