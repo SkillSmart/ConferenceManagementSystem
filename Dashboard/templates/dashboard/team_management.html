@@ -108,11 +108,13 @@
                     {% if team.applicant.team.university_logo.url %}
                     <div class="col-sm-4">
                         <img class="img-responsive" src="{{ team.applicant.team.university_logo.url }}" alt="">
+
                     </div>
                     {% endif %}
                     <div class="col-sm-8">
+                        <span class="badge badge-success">{{total_team_score|floatformat:"2"}}</span>                        <small><img src="{{ team.applicant.team.country.flag }}" alt=""> {{ team.applicant.team.country.name }}</small>
+
                         <h3 class="card-title">{{ team.applicant.team.university }}</h3>
-                        <small><img src="{{ team.applicant.team.country.flag }}" alt=""> {{ team.applicant.team.country.name }}</small>
                     </div>
                 </div>
             </header>
@@ -133,7 +135,12 @@
                             </tr>
                         </thead>
                         <tbody>
-                            
+                                <tr class="table-success">
+                                    <td>Total Average</td>
+                                {% for avg in team_avg_scores %}
+                                    <td>{{ avg|floatformat:"1"}}</td>
+                                {% endfor %}
+                                </tr>
                             {% for member, rating in member_avg_scores.items %}
                                 <tr>
                                     <td>{{ member.user.get_full_name}}</td>
@@ -144,7 +151,12 @@
                                 </tr>
                             {% endfor %}
                             {% comment %}Implement Summary Scores for the team{% endcomment %}
-                            {{team_avg_scores}}
+                            
+                            
+                                
+                            <p>
+
+                            </p>
                         </tbody>
                     </table>
                 </article>

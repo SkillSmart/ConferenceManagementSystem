@@ -3,6 +3,8 @@ from django.conf import settings
 from django.shortcuts import (render, get_object_or_404, get_list_or_404)
 from django.db.models import Q
 from datetime import timedelta, date, datetime
+# Specific packages
+from pandas import DataFrame
 
 # Modelimports
 from UserManagement.models import Attendent, Team
@@ -131,8 +133,9 @@ def team_management(request, slug=None):
         member_avg_scores[member] = member.get_current_application().review_set.all().aggregate(d1_avg=Avg('question_1'), d2_avg=Avg('question_2'), d3_avg=Avg('question_3'), d4_avg=Avg('question_4'))    
     
     # Calculate Team Average Scores for all Assessor Dimensions
-    team_avg_scores = {}
-
+    team_avg_scores = DataFrame.from_dict(member_avg_scores, orient='index').mean(axis=0)
+    total_team_score = team_avg_scores.mean()
+    # avg_scores = members.aggregate(d1_avg = Avg('d1_avg'))
 
     # Handle Comment Form
     if request.method=="POST":
@@ -162,7 +165,8 @@ def team_management(request, slug=None):
         'team': team,
         'member_avg_scores': member_avg_scores,
         'team_avg_scores': team_avg_scores,
-        'form': form, 
+        'total_team_score': total_team_score,
+        'form': form,
     })
 
 
