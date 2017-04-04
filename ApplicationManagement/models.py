@@ -1,5 +1,6 @@
 from django.db import models
 from random import randint
+from pandas import DataFrame
 # Import Entity models
 from django.contrib.auth.models import User
 from UserManagement.models import Attendent, Team
@@ -31,56 +32,66 @@ class Application(models.Model):
     term_accepted = models.BooleanField(default=False, verbose_name="Accept Legal Terms")
 
     # Application Result variables
-    continent_rank = None
-    overall_rank = None
+    continent_rank = models.IntegerField()
+    overall_rank = models.IntegerField()
 
     # The Application review scores for this application
     q1_score = models.FloatField(blank=True, null=True)
     q2_score = models.FloatField(blank=True, null=True)
     q3_score = models.FloatField(blank=True, null=True)
     q4_score = models.FloatField(blank=True, null=True)
+    # The Total Application Score (Total Average over all Dimension Scores)
+    application_score = models.FloatField(blank=True, null=True)
 
-    def return_ratings(self):
-        if applicant.role=='team':
-            # Return team values
-            pass
-
-        else:
-            # Return individual values
-            pass
-
+    
+    def get_ratings(self):
+        # Update Ratings (TODO: Add check to see if there are changes, if not return cached)
+        #  (........)
+        # If new reviews where added, update the Scoring
+        self.aggregate_ratings()
+        # Return the Value as a dict
+        return {self.applicant: [self.q1_score, self.q2_score, 
+                                self.q3_score, self.q4_score]}
 
     def aggregate_ratings(self):
+        """
+        Uses a 'switch' on the instance application.applicant.role to call appropriate aggregation
+        methods to calculate the current application score, and store them on the instance itself.
+        Does not return values directly to the calling instance.
+        """
+        STUDENTROLES = ['mediator', 'negotiator', 'coach']
+        EXPERTROLES = ['expert']
         # Check if Team or Student
         if self.applicant.role == "team":
-            # all the function on all teammember applications
-            # for member in self.applicant.team.members.all():
-            #     member.get_current_application().aggregate_ratings()
-            # Get the list of current member applications
-            self.q1_score = self.applicant.team.members.all().aggregate(Avg('application__q1_score'))
-            self.q2_score = self.applicant.team.members.all().aggregate(Avg('application__q2_score'))
-            self.q3_score = self.applicant.team.members.all().aggregate(Avg('application__q3_score'))
-            self.q4_score = self.applicant.team.members.all().aggregate(Avg('application__q4_score'))
+            # Treat as Team with members to be aggregated and a total to then be calculated
+            members = self.applicant.team.members.all()
+            member_avg_ratings = {}
+            for member in members:
+                member_avg_ratings[member] = member.get_current_application().get_ratings()
 
-            # Working Query for the Complete Average over all Application Ratings in Total
-            results = Application.objects.all().annotate(q1_avg=Avg('review__question_1'), q2_avg=Avg('review__question_2'), q3_avg=Avg('review__question_3'), q4_avg=Avg('review__question_4')).aggregate(q1_score=Avg('q1_avg'), q2_score=Avg('q2_avg'), q3_score=Avg('q3_avg'), q4_score=Avg('q4_avg'))
-            
-
-            for member in self.applicant.team.members.all():
-                scores 
-            
-            # # Aggregate the qx_score values on all applications; Store on self
-            # self.q1_score = 
-            # self.q2_score = members.aggregate(Avg('q2_score'))
-            # self.q3_score = members.aggregate(Avg('q3_score'))
-            # self.q4_score = members.aggregate(Avg('q4_score'))
-        elif self.applicant.role =="mediator" or self.applicant.role=="negotiator" or self.applicant.role=="coach":
-            # Treat this as student
-            self.q1_score = self.review_set.aggregate(Avg('question_1'))
-            self.q2_score = self.review_set.aggregate(Avg('question_2'))
-            self.q3_score = self.review_set.aggregate(Avg('question_3'))
-            self.q4_score = self.review_set.aggregate(Avg('question_4'))
+            # Calculate Team Average Scores for all Assessor Dimensions
+            team_avg_scores = DataFrame.from_dict(member_avg_scores, orient='index').mean(axis=0)
+            total_team_score = team_avg_scores.mean()
+                
         
+        elif self.applicant.role in EXPERTROLES:
+            # Treat this as an expert (Aggregate Student Feedback received on their performance)
+            pass
+        
+        elif self.applicant.role in STUDENTROLES:
+            # Treat this as student
+            avg_scores = self.review_set.all().aggregate(d1_avg = Avg('question_1'),
+                                                        d2_avg = Avg('question_2'),
+                                                        d3_avg = Avg('question_3'),
+                                                        d4_avg = Avg('question_4'))
+            # Assign values to instance variables
+            self.q1_score = avg_scores['d1_avg']
+            self.q2_score = avg_scores['d2_avg']
+            self.q3_score = avg_scores['d3_avg']
+            self.q4_score = avg_scores['d4_avg']
+            # Calculate overall total Avg
+            self.application_score = DataFram.from_dict(avg_scores).mean(axis=1)
+
         else: 
             return 'Did not recognize either student or team application'
         # If Student then calculate ratings over all reviews and store on the Attendent
@@ -88,7 +99,14 @@ class Application(models.Model):
 
         # return None
 
-    
+    def get_rank(self, total=True):
+        """
+        Either gets the Ranking for Individuals (Student, Expert) or for Teams based on their
+        specific evaluation metrics (StudentFeedback, Assessor Scores, Averaged Team Member Scores).
+        The total argument sets the comparison to either 'continental' or 'total overall' ranking.
+        """
+        pass
+
     def __str__(self):
         return "{}-{}".format(self.applicant.user.username, self.competition_year)
 
