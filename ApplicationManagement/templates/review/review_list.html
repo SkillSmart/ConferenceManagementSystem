@@ -1,0 +1,164 @@
+{% extends "base_assessment.html" %}
+
+
+{% block assessment-header %}
+<div class="row">
+    <div class="col-sm-8">
+        <h2>Application Review - Submission</h2>
+        {% comment %}REVIEWED APPLICATION LIST{% endcomment %}
+        <h3>Reviewed Applications</h3>
+        <table class="table table-striped table-hover">
+            <thead class="thead-default">
+                <tr>
+                    <td>Country</td>
+                    <td>Applicant</td>
+                    <td>Competition Exp</td>
+                    <td>Intern.Exp</td>
+                    <td>Coursework</td>
+                    <td>Overall</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for review in review_list %}
+                <tr class="table-success">
+                    <td><img src="{{review.application.applicant.user.profile.country.flag}}" alt=""> {{review.application.applicant.user.profile.country.name}}</td>
+                    <td><a href="{% url 'application:review_applicationdetail' review.application.applicant.user.username %}">{{review.application.applicant.user.get_full_name}}</a></td>
+
+                    <td></td>
+                    <td>{{review.question_1}}</td>
+                    <td>{{review.question_2}}</td>
+                    <td>{{review.question_3}}</td>
+                    <td>{{review.question_4}}</td>
+                </tr>
+                {% endfor %}        
+            </tbody>
+        </table>
+        <!--  Open Applications -->
+        <h3>Unreviewed Applications</h3>
+        <table class="table table-striped table-hover">
+            <thead class="thead-default">
+                <tr>
+                    <td>University</td>
+                    <td>Members</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in review_list_open %}             
+                    <tr class="table-warning">
+                        <td><a href="{% url 'application:assess_team' team.slug %}">{{team.university}}</a></td>
+                        {% for member in team.members.all %}
+                        <td>{{member.user.get_full_name}}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}        
+            </tbody>
+        </table>
+            
+    </div>
+    <div class="col-sm-4">
+        <aside class="card">
+            <header class="card-header">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <img class="img-fluid" src="{{ member.user.profile.profileImg.url }}" alt="">
+                    </div>
+                    <div class="col-sm-8">
+                        <h5>{{ member.role|capfirst }}</h5>
+                        <img src="{{ member.user.profile.country.flag }}" alt=""> {{ member.user.profile.country.name}}
+                        <h3>{{ member.user.get_full_name }}</h3>
+
+                    </div>
+                </div>
+            </header>
+            <article class="card-block">
+                <header>
+                    <h4>Competition Experience</h4>
+                </header>
+                <table class="table table-sm table-striped table-hover">
+                    <thead class="thead-default">
+                        <tr>
+                            <td>Country</td>
+                            <td>Name</td>
+                            <td>Year</td>
+                            <td>Days</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for competition in member.user.profile.competition_set.all %}
+                            <tr>
+                                <td><img src="{{ competition.country.flag}}" alt=""> {{ competition.country.name }}</td>
+                                <td>{{ competition.name}}</td>
+                                <td>{{ competition.year }}</td>
+                                <td>{{ competition.duration }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </article>
+            {% comment %}{% endcomment %}
+            <article class="card-block">
+                <header>
+                    <h4>International Experience</h4>
+                </header>
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Country</td>
+                            <td>Position</td>
+                            <td>Employer</td>
+                            <td>Duration</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for internship in member.user.profile.internship_set.all %}
+                            <tr>
+                                <td><img src="{{ internship.country.flag }}" alt=""> {{ internship.country.name }}</td>
+                                <td>{{ internship.position }}</td>
+                                <td>{{ internship.employer }}</td>
+                                <td>{{ internship.duration}} {{ internship.measure}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </article>
+            {% comment %}{% endcomment %}
+            <article class="card-block">
+                <header>
+                    <h4>Relevant Coursework <span>{{member.}}</span></h4>
+                </header>
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <td>Subject</td>
+                            <td>Title</td>
+                            <td>Employer</td>
+                            <td>Duration</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course in member.user.profile.studentprofile.course_set.all %}
+                            <tr>
+                                <td>{{ course.get_subject_display }}</td>
+                                <td>{{ course.title }}</td>
+                                <td>{{ course.institution_abbr }}</td>
+                                <td>{{ course.duration}} {{ course.measure}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+            </article>
+        </aside>
+    </div>
+</div>
+{% endblock assessment-header %}
+
+
+{% block assessment-presentation %}
+Present the individual Team members as Cards here, summary description
+{% endblock assessment-presentation %}
+
+{% block scoring-section %}
+Scoring Section
+{% endblock scoring-section %}

@@ -1,0 +1,72 @@
+{% extends 'base_assessment.html' %}
+
+{% block assessment-header %}
+    <div class="row">
+        <div class="col-sm-8">
+            <header>
+                <h2>Application Review</h2>
+            </header>
+            <p>Welcome to CDRC Team Application Review.</p>
+            <p>Please read the following information carefully and conduct your review accordingly. <br>
+            Any questions arising, first conosult the FAQ Section on this page and if you can not answer it, ask us directly.
+            </p>
+        </div>
+        <div class="col-sm-4">
+            <div class="card">
+                <header class="card-header">
+                    <h3 class="card-title">{{ request.user.get_full_name}}</h3>
+                    6 of 12 Reviews finished
+                </header>
+                <div class="card-block">
+                    <table class="table table-sm table-striped">
+                        <thead class="thead thead-inverse">
+                            <tr>
+                                <td>University</td>
+                                <td>Status</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for application in team_applications %}
+                                <tr>
+                                    <td>{{application.applicant}}</td>
+                                    <td>{{application.get_status_display}}</td>
+                                </tr>
+                            {% endfor %}
+                                 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock assessment-header %}
+
+{% block assessment-presentation %}
+{% comment %}{% endcomment %}
+<article>
+    <header>
+        <h3>The FAQ</h3>
+    </header>
+    <p>Answer the most common questions here</p>
+    <p>Bind a search bar where to put questions in short sentences using autocomplete</p>
+</article>
+{% comment %}{% endcomment %}
+<article>
+    <header>
+        <h3>Official Documentation</h3>
+    </header>
+    <p>Answer the most common questions here</p>
+    <p>Bind a search bar where to put questions in short sentences using autocomplete</p>
+</article>
+
+{% comment %}{% endcomment %}
+<article>
+    <header>
+        <h3></h3>
+    </header>
+    <p>Answer the most common questions here</p>
+    <p>Bind a search bar where to put questions in short sentences using autocomplete</p>
+</article>
+{% endblock assessment-presentation %}

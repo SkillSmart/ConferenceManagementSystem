@@ -135,7 +135,7 @@ class Review(models.Model):
         return "{}'s Application reviewed by {}".format(self.application, self.reviewer)
 
     def save(self, *args, **kwargs):
-        self.application.status = 1
+        self.application.status = 0
         super().save(*args, **kwargs)
         
 
