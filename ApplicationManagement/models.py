@@ -44,20 +44,6 @@ class Application(models.Model):
     # The Total Application Score (Total Average over all Dimension Scores)
     application_score = models.FloatField(blank=True, null=True)
 
-
-    def get_ratings(self):
-        # Update Ratings (TODO: Add check to see if there are changes, if not return cached)
-        #  (........)
-        if self.applicant.role =="team":
-            scores = self.aggregate_ratings() 
-
-        # If new reviews where added, update the Scoring      
-        self.aggregate_ratings()
-        # Return the Value as a dict
-        return {self.applicant: [self.q1_score, self.q2_score, 
-                                self.q3_score, self.q4_score]}
-
-
     def update_ratings(self):
         """
         Uses a 'switch' on the instance application.applicant.role to call appropriate aggregation
@@ -126,11 +112,9 @@ class Application(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Application, self).__init__(*args, **kwargs)
-        
         # Team Application specific values - Saved on the Instance
         member_avg_scores = None
         team_avg_scores = None
-        
 
     class Meta:
         unique_together = ('applicant', 'competition_year')

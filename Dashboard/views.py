@@ -144,26 +144,26 @@ def team_management(request, slug=None):
     else:
         team = teamlist[0]
 
-    # Calculate the Reviews on the Team members and send as dict
-    member_avg_scores = {}
-    members = team.applicant.team.members.all()
-    for member in members:
-        member_avg_scores[member] = member.get_current_application().review_set.all().aggregate(d1_avg=Avg('question_1'), d2_avg=Avg('question_2'), d3_avg=Avg('question_3'), d4_avg=Avg('question_4'))    
+    # # Calculate the Reviews on the Team members and send as dict
+    # member_avg_scores = {}
+    # members = team.applicant.team.members.all()
+    # for member in members:
+    #     member_avg_scores[member] = member.get_current_application().review_set.all().aggregate(d1_avg=Avg('question_1'), d2_avg=Avg('question_2'), d3_avg=Avg('question_3'), d4_avg=Avg('question_4'))    
     
-    # Calculate Team Average Scores for all Assessor Dimensions
-    team_avg_scores = DataFrame.from_dict(member_avg_scores, orient='index').mean(axis=0)
-    total_team_score = team_avg_scores.mean()
+    # # Calculate Team Average Scores for all Assessor Dimensions
+    # team_avg_scores = DataFrame.from_dict(member_avg_scores, orient='index').mean(axis=0)
+    # total_team_score = team_avg_scores.mean()
     
-    # Update Values on the Instance
-    team.team_avg_scores = team_avg_scores
-    team.member_avg_scores = member_avg_scores
-    team.application_score = total_team_score
-    team.q1_score = team_avg_scores[0]
-    team.q2_score = team_avg_scores[1]
-    team.q3_score = team_avg_scores[2]
-    team.q4_score = team_avg_scores[3]
-    team.save()
-    # avg_scores = members.aggregate(d1_avg = Avg('d1_avg'))
+    # # Update Values on the Instance
+    # team.team_avg_scores = team_avg_scores
+    # team.member_avg_scores = member_avg_scores
+    # team.application_score = total_team_score
+    # team.q1_score = team_avg_scores[0]
+    # team.q2_score = team_avg_scores[1]
+    # team.q3_score = team_avg_scores[2]
+    # team.q4_score = team_avg_scores[3]
+    # team.save()
+    # # avg_scores = members.aggregate(d1_avg = Avg('d1_avg'))
 
     # Handle Comment Form
     if request.method=="POST":
@@ -191,9 +191,9 @@ def team_management(request, slug=None):
         'teamlist_accepted': teamlist_accepted,
         'teamlist_declined': teamlist_declined, 
         'team': team,
-        'member_avg_scores': member_avg_scores,
-        'team_avg_scores': team_avg_scores,
-        'total_team_score': total_team_score,
+        # 'member_avg_scores': member_avg_scores,
+        # 'team_avg_scores': team_avg_scores,
+        # 'total_team_score': total_team_score,
         'form': form,
     })
 

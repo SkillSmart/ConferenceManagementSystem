@@ -112,8 +112,7 @@
                     </div>
                     {% endif %}
                     <div class="col-sm-8">
-                        <span class="badge badge-success">{{total_team_score|floatformat:"2"}}</span>                        <small><img src="{{ team.applicant.team.country.flag }}" alt=""> {{ team.applicant.team.country.name }}</small>
-
+                        <span class="badge badge-success">{{team.application_score|floatformat:"2"}}</span>                        <small><img src="{{ team.applicant.team.country.flag }}" alt=""> {{ team.applicant.team.country.name }}</small>
                         <h3 class="card-title">{{ team.applicant.team.university }}</h3>
                     </div>
                 </div>
@@ -137,11 +136,12 @@
                         <tbody>
                                 <tr class="table-success">
                                     <td>Total Average</td>
-                                {% for avg in team_avg_scores %}
-                                    <td>{{ avg|floatformat:"1"}}</td>
-                                {% endfor %}
+                                    <td>{{ team.q1_score|floatformat:"1"}}</td>
+                                    <td>{{ team.q2_score|floatformat:"1"}}</td>
+                                    <td>{{ team.q3_score|floatformat:"1"}}</td>
+                                    <td>{{ team.q4_score|floatformat:"1"}}</td>
                                 </tr>
-                            {% for member, rating in member_avg_scores.items %}
+                            {% for member, rating in team.member_avg_scores.items %}
                                 <tr>
                                     <td>{{ member.user.get_full_name}}</td>
                                     <td>{{ rating.d1_avg|floatformat:"1"}}</td>
@@ -151,9 +151,6 @@
                                 </tr>
                             {% endfor %}
                             {% comment %}Implement Summary Scores for the team{% endcomment %}
-                            
-                            
-                                
                             <p>
 
                             </p>
@@ -220,17 +217,15 @@
                                 <td>{{ review.question_4 }}</td>
                             </tr>
                         {% endfor %}
-                    {% endfor %}
                     <tr class="table-success">
                         <td></td>
                         <td>Sumscores</td>
-                        {% with member_avg_scores|get_item:member as ratings%}
-                        <td>{{ratings.d1_avg|floatformat:"1"}}</td>
-                        <td>{{ratings.d2_avg|floatformat:"1"}}</td>
-                        <td>{{ratings.d3_avg|floatformat:"1"}}</td>
-                        <td>{{ratings.d4_avg|floatformat:"1"}}</td>
-                        {% endwith %}
+                        <td>{{application.q1_score|floatformat:"1"}}</td>
+                        <td>{{application.q2_score|floatformat:"1"}}</td>
+                        <td>{{application.q3_score|floatformat:"1"}}</td>
+                        <td>{{application.q4_score|floatformat:"1"}}</td>
                     </tr>
+                {% endfor %}
                 </tbody>
             </table>
             {% comment %}{% endcomment %}
