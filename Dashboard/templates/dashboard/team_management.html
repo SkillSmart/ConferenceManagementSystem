@@ -118,9 +118,23 @@
                 </div>
             </header>
             <content class="card-block">
-                <article class="list-group">
+                
+                <article>
                     <header>
-                        <h4>Assessor Scores</h4>
+                        <h4><span class="badge badge-success">{{ team.videoreview_score|floatformat:"2"}}</span>  Video Review </h4>
+                    </header>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <td></td>
+                            </tr>
+                        </thead>
+                    </table>
+                </article>
+                {% comment %}{% endcomment %}
+                <article>
+                    <header>
+                        <h4><span class="badge badge-success">{{ team.memberreview_score|floatformat:"2"}}</span>  Application Review</h4>
                         <small></small>
                     </header>
                     <table data-toggle="table" class="table table-striped table-hover">
@@ -158,7 +172,7 @@
                     </table>
                 </article>
                 {% comment %}{% endcomment %}
-                <article class="card-block">
+                <article class="">
                     <header>
                     </header>
                     <form method="POST" class="form-horizontal">

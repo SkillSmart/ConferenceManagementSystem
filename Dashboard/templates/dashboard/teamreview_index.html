@@ -29,6 +29,9 @@ Subnavigation for T
                     <td>Rank Continent</td>
                     <td>University</td>
                     <td>Country</td>
+                    <td>TeamScore</td>
+                    <td>VideoScore</td>
+                    <td class="table-success">Total</td>
                     <td>Application Status</td>
                 </tr>
             
@@ -40,6 +43,9 @@ Subnavigation for T
                         <td>{{ application.continent_rank }}</td>
                         <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
                         <td><img src="{{ application.applicant.team.country.flag }}" alt=""> {{ application.applicant.team.country.name }}</td>
+                        <td>{{ application.memberreview_score|floatformat:"2" }}</td>
+                        <td>{{ application.videoreview_score|floatformat:"2" }}</td>
+                        <td class="table-success">{{ application.application_score|floatformat:"2" }}</td>
                         <td>{{ application.get_status_display }}</td>
                     </tr>
             	{% endfor %}

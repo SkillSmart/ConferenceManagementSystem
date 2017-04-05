@@ -115,7 +115,7 @@ from ApplicationManagement.models import Application
 def applicationoverview_team(request):
     CONTINENTS = ['Africa', 'Europe', 'Asia', 'Australia', 'North America', 'South America']
 
-    team_applications = get_list_or_404(Application, applicant__role='team')
+    team_applications = Application.objects.filter(applicant__role='team').order_by('-application_score')
     # Create Lists of Teams per Continent
     teamlists = {}
     for country in CONTINENTS:
@@ -136,34 +136,15 @@ def applicationoverview_team(request):
 def team_management(request, slug=None):
     teamlist = Application.objects.filter(applicant__role='team')
     teamlist_unreviewed = Application.objects.filter(status="1", applicant__role='team')
-    teamlist_reviewed = Application.objects.filter(status="2", applicant__role="team")
-    teamlist_accepted = Application.objects.filter(Q(status="3") | Q(status="4"), applicant__role='team')
-    teamlist_declined = Application.objects.filter(status='0', applicant__role='team')
+    teamlist_reviewed = Application.objects.filter(status="2", applicant__role="team").order_by('-application_score')
+    teamlist_accepted = Application.objects.filter(Q(status="3") | Q(status="4"), applicant__role='team').order_by('-application_score')
+    teamlist_declined = Application.objects.filter(status='0', applicant__role='team').order_by('-application_score')
     if slug:
         team = Application.objects.get(applicant__team__slug=slug, competition_year=settings.START_DATE.year)
     else:
         team = teamlist[0]
-
-    # # Calculate the Reviews on the Team members and send as dict
-    # member_avg_scores = {}
-    # members = team.applicant.team.members.all()
-    # for member in members:
-    #     member_avg_scores[member] = member.get_current_application().review_set.all().aggregate(d1_avg=Avg('question_1'), d2_avg=Avg('question_2'), d3_avg=Avg('question_3'), d4_avg=Avg('question_4'))    
     
-    # # Calculate Team Average Scores for all Assessor Dimensions
-    # team_avg_scores = DataFrame.from_dict(member_avg_scores, orient='index').mean(axis=0)
-    # total_team_score = team_avg_scores.mean()
-    
-    # # Update Values on the Instance
-    # team.team_avg_scores = team_avg_scores
-    # team.member_avg_scores = member_avg_scores
-    # team.application_score = total_team_score
-    # team.q1_score = team_avg_scores[0]
-    # team.q2_score = team_avg_scores[1]
-    # team.q3_score = team_avg_scores[2]
-    # team.q4_score = team_avg_scores[3]
-    # team.save()
-    # # avg_scores = members.aggregate(d1_avg = Avg('d1_avg'))
+    team.update_ratings()
 
     # Handle Comment Form
     if request.method=="POST":

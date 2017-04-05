@@ -8,7 +8,6 @@ from SessionManagement.models import Session
 # Import for Summary Statistics on the Models
 from django.db.models import (Sum, Max, Min, Avg, StdDev)
 
-
 # Create your models here.
 class Application(models.Model):
     """ Application issued by an Attendant for a given year.
@@ -43,6 +42,9 @@ class Application(models.Model):
     
     # The Total Application Score (Total Average over all Dimension Scores)
     application_score = models.FloatField(blank=True, null=True)
+    # Team relevant Scores
+    videoreview_score = models.FloatField(blank=True, null=True)
+    memberreview_score = models.FloatField(blank=True, null=True)
 
     def update_ratings(self):
         """
@@ -67,7 +69,8 @@ class Application(models.Model):
             # Update Values on the Instance
             self.team_avg_scores = team_avg_scores
             self.member_avg_scores = member_avg_scores
-            self.application_score = total_team_score
+            self.memberreview_score = total_team_score
+            self.application_score = (self.videoreview_score + self.memberreview_score)/2
             self.q1_score = team_avg_scores[0]
             self.q2_score = team_avg_scores[1]
             self.q3_score = team_avg_scores[2]
