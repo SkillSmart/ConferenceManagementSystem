@@ -13,20 +13,34 @@ from ApplicationManagement.models import Application
 
 # FORM Imports ------
 from .forms import ExpertCommentForm, TeamCommentForm
-
+# Generic Views
 from django.views import View
 from django.views.generic.edit import (CreateView, UpdateView, DeleteView)
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-
 # Helper Function
 from django.db.models import (Avg, Max, Min, Count, Sum)
+from django.shortcuts import redirect
 
 
 # Create your views here.
 class DashboardIndex(ListView):
     model = Session
     template_name = 'dashboard/dashboard_index.html'
+
+def accept_application(request, pk):
+    next = request.GET.get('next', '/dashboard/')
+    application = get_object_or_404(Application, pk=pk)
+    application.status = 3
+    application.save()
+    return redirect(next)
+
+def decline_application(request, pk):
+    next = request.GET.get('next', '/dashboard/')
+    application = get_object_or_404(Application, pk=pk)
+    application.status = 0
+    application.save()
+    return redirect(next)
 
 def test_model(request):
     teams = Application.objects.filter(applicant__role='team')

@@ -15,5 +15,8 @@ urlpatterns = [
     url(r'^venues/$', views.VenueManagement.as_view(), name='manage_venues'),
     url(r'^venues/(?P<slug>[-\w]+)/$', views.VenueManagement.as_view(), name='manage_venue_detail'),
     url(r'^shifts/$', views.ShiftManagement.as_view(), name='manage_shifts'),
+    # Accept and Decline Applications directly
+    url(r'^accept/(?P<pk>\d+)/$', views.accept_application, name='accept_application'),
+    url(r'^decline/(?P<pk>\d+)/$', views.decline_application, name='decline_application'),
     url(r'^test/$', views.test_model, name='test'),
 ]

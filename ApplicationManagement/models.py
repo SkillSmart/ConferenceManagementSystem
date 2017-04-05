@@ -14,7 +14,11 @@ class Application(models.Model):
     Application holds information on pre-acceptance processess
     Continous information about demeanor of Attendant is stored in the
     Attendent instance."""
+    # General Information on the possible Roles for a student, expert and team
+    STUDENTROLES = ['mediator', 'negotiator', 'coach']
+    EXPERTROLES = ['expert']
 
+    # Application Status set for tracking the decission process during application review
     STATUS = (
         (0, 'Declined'),
         (1, 'Unreviewed'),
@@ -46,15 +50,16 @@ class Application(models.Model):
     videoreview_score = models.FloatField(blank=True, null=True)
     memberreview_score = models.FloatField(blank=True, null=True)
 
+    
+
     def update_ratings(self):
         """
         Uses a 'switch' on the instance application.applicant.role to call appropriate aggregation
         methods to calculate the current application score, and store them on the instance itself.
         Does not return values directly to the calling instance.
         """
-        STUDENTROLES = ['mediator', 'negotiator', 'coach']
-        EXPERTROLES = ['expert']
-        # Check if Team or Student
+
+        # Check if Team or Student or Expert
         if self.applicant.role == "team":
             # Treat as Team with members to be aggregated and a total to then be calculated
             member_avg_scores = {}
@@ -76,12 +81,40 @@ class Application(models.Model):
             self.q3_score = team_avg_scores[2]
             self.q4_score = team_avg_scores[3]
             self.save()
-
-        elif self.applicant.role in EXPERTROLES:
+            
+        elif self.applicant.role in self.EXPERTROLES:
+            """
+            Experts apply either for the first time, or they have already taken part in an earlier
+            Convention. If so, they received Feedback and their performance is important.
+            If NOT: Then this calculation can be skipped.
+            """
+            # Did he/she already judge here before? (They received Feedback)
+            if self.applicant.feedback_set:
+                # Check for how many years already
+                feedback_years = []
+                for feedback in self.applicant.feedback_set.all():
+                    if feedback.date.year not in feedback_years:
+                        feedback_years.append(feedback.date.year)
+                # Calculate the ratings for all available years individually
+                ratings = {}
+                for year in feedback_years:
+                    ratings[year] = self.applicant.get_ratings(year=year)
             # Treat this as an expert (Aggregate Student Feedback received on their performance)
-            pass
+            
+            
+            # Get the distinct years of feedback on this person
+            feedback_years = []
+            for feedback in expert.applicant.feedback_set.all():
+                if feedback.date.year not in feedback_years:
+                    feedback_years.append(feedback.date.year)
+            
+            # Call the Attendent instance to retrieve the ratings for the given years
+            ratings = {}
+            for year in feedback_years:
+                ratings[year] =  self.applicant.get_ratings(year=year)
         
-        elif self.applicant.role in STUDENTROLES:
+
+        elif self.applicant.role in self.STUDENTROLES:
             # Treat this as student
             avg_scores = self.review_set.all().aggregate(d1_avg = Avg('question_1'),
                                                         d2_avg = Avg('question_2'),
@@ -102,13 +135,15 @@ class Application(models.Model):
 
         # return None
 
-    def get_rank(self, total=True):
+    def update_rank(self, total=True):
         """
         Either gets the Ranking for Individuals (Student, Expert) or for Teams based on their
         specific evaluation metrics (StudentFeedback, Assessor Scores, Averaged Team Member Scores).
         The total argument sets the comparison to either 'continental' or 'total overall' ranking.
         """
-        pass
+        if self.applicant.role == "team":
+            pass
+
 
     def __str__(self):
         return "{}-{}".format(self.applicant.user.username, self.competition_year)

@@ -39,7 +39,8 @@ class Attendent(models.Model):
     role = models.CharField(max_length=35, choices=ROLES)
     blacklisted = models.BooleanField(default=False)
     administrativeComment = models.TextField(blank=True, null=True)
-    
+
+
     # Store Information on the Current Year for easy retrieval
     current_application = None
 
@@ -81,6 +82,12 @@ class Attendent(models.Model):
 # @receiver(post_save, sender=User)
 # def save_attendent_profile(sender, instance, **kwargs):
 #     instance.attendent.save()
+class Expert(Attendent):
+    """
+    
+    """
+    # Expert related Feedback Scores
+    pass
 
 class Team(Attendent):
     """Group of Students applying from a University for the Competition.
