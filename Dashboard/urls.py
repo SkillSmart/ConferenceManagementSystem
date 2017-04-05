@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^venues/$', views.VenueManagement.as_view(), name='manage_venues'),
     url(r'^venues/(?P<slug>[-\w]+)/$', views.VenueManagement.as_view(), name='manage_venue_detail'),
     url(r'^shifts/$', views.ShiftManagement.as_view(), name='manage_shifts'),
+    url(r'^test/$', views.test_model, name='test'),
 ]

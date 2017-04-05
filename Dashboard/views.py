@@ -28,6 +28,24 @@ class DashboardIndex(ListView):
     model = Session
     template_name = 'dashboard/dashboard_index.html'
 
+def test_model(request):
+    teams = Application.objects.filter(applicant__role='team')
+    experts = Application.objects.filter(applicant__role='expert')
+
+    team = teams[2]
+    expert = experts[1]
+
+    # Call the functions to be tested
+    # team.update_ratings()
+    # expert.update_ratings()
+    # team.assign_values(2,3,5,8)
+    # expert.assign_values(2,3,5,8)
+
+
+    return render(request, 'dashboard/test.html', {
+        'team': team, 
+        'expert': expert,
+    })
 
 # ---- EXPERT RELATED VIEWS --------------------------------
 def expert_management(request, username=None):
@@ -135,6 +153,16 @@ def team_management(request, slug=None):
     # Calculate Team Average Scores for all Assessor Dimensions
     team_avg_scores = DataFrame.from_dict(member_avg_scores, orient='index').mean(axis=0)
     total_team_score = team_avg_scores.mean()
+    
+    # Update Values on the Instance
+    team.team_avg_scores = team_avg_scores
+    team.member_avg_scores = member_avg_scores
+    team.application_score = total_team_score
+    team.q1_score = team_avg_scores[0]
+    team.q2_score = team_avg_scores[1]
+    team.q3_score = team_avg_scores[2]
+    team.q4_score = team_avg_scores[3]
+    team.save()
     # avg_scores = members.aggregate(d1_avg = Avg('d1_avg'))
 
     # Handle Comment Form

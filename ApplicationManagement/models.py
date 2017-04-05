@@ -35,25 +35,30 @@ class Application(models.Model):
     continent_rank = models.IntegerField()
     overall_rank = models.IntegerField()
 
-    # The Application review scores for this application
+    # The Application review scores for Individual Applications
     q1_score = models.FloatField(blank=True, null=True)
     q2_score = models.FloatField(blank=True, null=True)
     q3_score = models.FloatField(blank=True, null=True)
     q4_score = models.FloatField(blank=True, null=True)
+    
     # The Total Application Score (Total Average over all Dimension Scores)
     application_score = models.FloatField(blank=True, null=True)
 
-    
+
     def get_ratings(self):
         # Update Ratings (TODO: Add check to see if there are changes, if not return cached)
         #  (........)
-        # If new reviews where added, update the Scoring
+        if self.applicant.role =="team":
+            scores = self.aggregate_ratings() 
+
+        # If new reviews where added, update the Scoring      
         self.aggregate_ratings()
         # Return the Value as a dict
         return {self.applicant: [self.q1_score, self.q2_score, 
                                 self.q3_score, self.q4_score]}
 
-    def aggregate_ratings(self):
+
+    def update_ratings(self):
         """
         Uses a 'switch' on the instance application.applicant.role to call appropriate aggregation
         methods to calculate the current application score, and store them on the instance itself.
@@ -64,16 +69,25 @@ class Application(models.Model):
         # Check if Team or Student
         if self.applicant.role == "team":
             # Treat as Team with members to be aggregated and a total to then be calculated
+            member_avg_scores = {}
             members = self.applicant.team.members.all()
-            member_avg_ratings = {}
             for member in members:
-                member_avg_ratings[member] = member.get_current_application().get_ratings()
-
+                member_avg_scores[member] = member.get_current_application().review_set.all().aggregate(d1_avg=Avg('question_1'), d2_avg=Avg('question_2'), d3_avg=Avg('question_3'), d4_avg=Avg('question_4'))    
+            
             # Calculate Team Average Scores for all Assessor Dimensions
             team_avg_scores = DataFrame.from_dict(member_avg_scores, orient='index').mean(axis=0)
             total_team_score = team_avg_scores.mean()
-                
-        
+            
+            # Update Values on the Instance
+            self.team_avg_scores = team_avg_scores
+            self.member_avg_scores = member_avg_scores
+            self.application_score = total_team_score
+            self.q1_score = team_avg_scores[0]
+            self.q2_score = team_avg_scores[1]
+            self.q3_score = team_avg_scores[2]
+            self.q4_score = team_avg_scores[3]
+            self.save()
+
         elif self.applicant.role in EXPERTROLES:
             # Treat this as an expert (Aggregate Student Feedback received on their performance)
             pass
@@ -90,8 +104,8 @@ class Application(models.Model):
             self.q3_score = avg_scores['d3_avg']
             self.q4_score = avg_scores['d4_avg']
             # Calculate overall total Avg
-            self.application_score = DataFram.from_dict(avg_scores).mean(axis=1)
-
+            # self.application_score = DataFrame.from_dict(avg_scores).mean(axis=0)
+            self.save()
         else: 
             return 'Did not recognize either student or team application'
         # If Student then calculate ratings over all reviews and store on the Attendent
@@ -112,10 +126,11 @@ class Application(models.Model):
 
     def __init__(self, *args, **kwargs):
         super(Application, self).__init__(*args, **kwargs)
-        # Summary Scores calculated on the Application instance
-        self.score = randint(1,5)
-        self.continent_rank = randint(1,25)
-        self.overall_rank = randint(1,25)
+        
+        # Team Application specific values - Saved on the Instance
+        member_avg_scores = None
+        team_avg_scores = None
+        
 
     class Meta:
         unique_together = ('applicant', 'competition_year')
