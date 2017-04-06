@@ -19,7 +19,7 @@ class ExpertCommentForm(forms.Form):
     blacklisted = forms.BooleanField(required=False)
     status = forms.ChoiceField(
         label="Application Status",
-        choices = Application.STATUS
+        choices = Application.SELECTION_STATUS
     )
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +38,7 @@ class TeamCommentForm(forms.Form):
     
     status = forms.ChoiceField(
         label="Application Status",
-        choices = Application.STATUS
+        choices = Application.SELECTION_STATUS
     )
 
     def __init__(self, *args, **kwargs):

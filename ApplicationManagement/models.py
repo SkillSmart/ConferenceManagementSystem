@@ -19,24 +19,31 @@ class Application(models.Model):
     EXPERTROLES = ['expert']
 
     # Application Status set for tracking the decission process during application review
-    STATUS = (
-        (0, 'Declined'),
-        (1, 'Unreviewed'),
+    REVIEW_STATUS = (
+        (0, 'Unreviewed'),
+        (1, 'In Review'),
         (2, 'Reviewed'),
-        (3, 'Selected'),
-        (4, 'Accepted')
+        (3, 'Selected')
+    )
+    SELECTION_STATUS = (
+        (1, 'None'),
+        (2, 'Declined'),
+        (3, 'Accepted')
     )
 
     applicant = models.ForeignKey(Attendent)
+    application_type = models.CharField(max_length=20, null=True)
     competition_year = models.CharField(max_length=4)
     applicationDate = models.DateTimeField(auto_now_add=True)
     comments = models.TextField(blank=True)
-    status = models.IntegerField(choices=STATUS, default=0)
-    term_accepted = models.BooleanField(default=False, verbose_name="Accept Legal Terms")
-
+    # Variables controlling when an application can be finally accepted
+    term_accepted = models.BooleanField(default=False, verbose_name="Accept Legal Terms")    
+    review_status = models.IntegerField(choices=REVIEW_STATUS, default=1)
+    review_completed = models.BooleanField(default=False, verbose_name="Application review complete")
+    selection_status = models.IntegerField(choices=SELECTION_STATUS, default=1)
     # Application Result variables
-    continent_rank = models.IntegerField()
-    overall_rank = models.IntegerField()
+    continent_rank = models.IntegerField(blank=True, null=True)
+    overall_rank = models.IntegerField(blank=True, null=True)
 
     # The Application review scores for Individual Applications
     q1_score = models.FloatField(blank=True, null=True)
@@ -50,8 +57,51 @@ class Application(models.Model):
     videoreview_score = models.FloatField(blank=True, null=True)
     memberreview_score = models.FloatField(blank=True, null=True)
 
-    
+    def get_review_status(self):
+        """
+        Based on a 'switch' on the instance application.applicant.role it decides how to check if
+        the application instance is completed for final submission/approval.
+        It sets the variable self.status accordingly.
+        When ready for submission, self.review_completed is set to TRUE.
+        """
+        if self.application_type in self.STUDENTROLES:
+            """
+            Student Applications are to be reviewed by all 'Raters' to be considered finished.
+            Each Rater can only submit one Review per Application.
+            Once the application has received their first review, they are inbetween 'unreviewed' and 
+            'reviewed'
+            """
+            application_reviews = self.review_set.all()
+            if application_reviews and (application_reviews.count() == Attendent.objects.filter(role='expert'.count())):
+                self.status = '2'
+                self.review_completed = True
+                self.save()
+            else:
+                self.status = '1'
+                self.review_completed = False
+                self.save()
+            return none
+        elif self.application_type in self.EXPERTROLES:
+            return
+        elif self.applicaton_type == 'team':
+            return
 
+    def force_reviewed(self, all=False):
+        """
+        Convencience Function to let ADMIN force the finalization of the Review Process
+        on an application. 
+        As not all raters will ever rate every application, this can be overwritten
+        for either a single application or for all of them at once. (all=True)
+        """
+        if all:
+            for application in Application.objects.filter(application_type=self.application_type):
+                if review_status < 2:
+                    review_status = 2
+        else:
+            if self.review_status < 2:
+                self.review_status = 2
+        
+        self.save()
     def update_ratings(self):
         """
         Uses a 'switch' on the instance application.applicant.role to call appropriate aggregation
@@ -142,7 +192,12 @@ class Application(models.Model):
         The total argument sets the comparison to either 'continental' or 'total overall' ranking.
         """
         if self.applicant.role == "team":
-            pass
+            # Create an ordered list of the teams on (application_score)
+            teamapplications_ranked = Application.objects.filter(applicant__role='team').order_by('-application_score')
+            # Update all teamapplications with the appropriate rank
+            for index, teamapplication in enumerate(teamapplications_ranked):
+                teamapplication.overall_rank = index + 1
+                teamapplication.save()
 
 
     def __str__(self):
@@ -153,6 +208,8 @@ class Application(models.Model):
         # Team Application specific values - Saved on the Instance
         member_avg_scores = None
         team_avg_scores = None
+        # Set initial values on the instnace variable
+        self.application_type = self.applicant.role
 
     class Meta:
         unique_together = ('applicant', 'competition_year')

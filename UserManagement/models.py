@@ -35,7 +35,7 @@ class Attendent(models.Model):
         ('assessor', 'Assessor'),
         ('team', 'Team'),
     )
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=35, choices=ROLES)
     blacklisted = models.BooleanField(default=False)
     administrativeComment = models.TextField(blank=True, null=True)
@@ -71,6 +71,7 @@ class Attendent(models.Model):
     
     def save(self, *args, **kwargs):
         self.current_application = self.application_set.filter(competition_year=settings.START_DATE.year)
+        super(Attendent, self).save(*args, **kwargs)
 
 
 # This automatically creates an Attendent Instance for every User on save
@@ -82,6 +83,13 @@ class Attendent(models.Model):
 # @receiver(post_save, sender=User)
 # def save_attendent_profile(sender, instance, **kwargs):
 #     instance.attendent.save()
+class Student(Attendent):
+    """
+    Can be in role(Mediator, Negotiator). profile 
+    """
+    pass
+
+
 class Expert(Attendent):
     """
     
@@ -151,7 +159,13 @@ class ExpertProfile(Profile):
         return str(self.user)
 
 class StudentProfile(Profile):
-
+    """
+    Stores all relevant information on the Student as either(Negotiator, Mediator) in the
+    competition. Is used for professional representation, sharing of information.
+    It does NOT store relevant Scoringinformation etc.(= stored on ATTENDENT )
+    """ 
+    student = models.OneToOneField(Student, null=True, on_delete=models.CASCADE)
+    
     # relevant practical Experience
     def __str__(self):
         return str(self.user)

@@ -13,9 +13,9 @@ Subnavigation for T
            </div>
 
            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Overall Results</a></li>
-                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Finished Reviews</a></li>
-                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Unfinished Reviews</a></li>
+                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Overall Ranking </a></li>
+                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Finished Reviews 4/34</a></li>
+                <li class="list-group-item"><a class="card-link" href="{% url 'dashboard:manage_teams' %}">Unfinished Reviews 30/34</a></li>
             </ul>
 
        </div>
@@ -25,12 +25,12 @@ Subnavigation for T
         <table class="table table-striped table-hover">
             <thead class="thead-default">
                 <tr>
-                    <td>Rank Overall</td>
-                    <td>Rank Continent</td>
+                    <td>No.</td>
+                    <td>Continent</td>
                     <td>University</td>
                     <td>Country</td>
-                    <td>TeamScore</td>
-                    <td>VideoScore</td>
+                    <td>Team</td>
+                    <td>Video</td>
                     <td class="table-success">Total</td>
                     <td>Application Status</td>
                     <td></td>
@@ -40,15 +40,15 @@ Subnavigation for T
             <tbody>
                 {% for application in team_applications %}
                     <tr>
-                        <td class="table-success">{{ application.overall_rank }}</td>
-                        <td>{{ application.continent_rank }}</td>
+                        <td class="text-center table-warning">{{ application.overall_rank }}</td>
+                        <td class="text-center">{{ application.continent_rank }}</td>
                         <td><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
                         <td><img src="{{ application.applicant.team.country.flag }}" alt=""> {{ application.applicant.team.country.name }}</td>
                         <td>{{ application.memberreview_score|floatformat:"2" }}</td>
                         <td>{{ application.videoreview_score|floatformat:"2" }}</td>
                         <td class="table-success">{{ application.application_score|floatformat:"2" }}</td>
-                        <td>{{ application.get_status_display }}</td>
-                        <td><div class="btn-group">
+                        <td>{{ application.get_review_status_display }}</td>
+                        <td  {% if application.selection_status == 3%}class="table-success" {% elif application.selection_status == 2 %} class="table-danger"{% endif %}><div class="btn-group">
                             <a href="{% url 'dashboard:accept_application' application.id %}?next={{ request.path }}" name="" id="" class="btn btn-success btn-sm "><i class="fa fa-check" aria-hidden="true"></i></a>
                             <a href="{% url 'dashboard:decline_application' application.id %}?next={{ request.path }}" name="" id="" class="btn btn-danger btn-sm "><i class="fa fa-close" aria-hidden="true"></i></a>
                         </div>
@@ -73,23 +73,24 @@ Subnavigation for T
             <table class="table table-striped table-hover">
                 <thead class="thead">
                     <tr>
-                        <td>Score</td>
-                        <td>Continent</td>
-                        <td>Overall</td>
-                        <td>Country</td>
+                        <td>Local</td>
+                        <td>Global</td>
                         <td>University</td>
+                        <td>Country</td>
+                        <td>Total</td>
+                        <td>Video</td>
                         <td></td>
                     </tr>
                 </thead>
                 <tbody>
                     {% for application in continent_list %}
-                    <tr >
-                        <td>{{ application.application_score|floatformat:"2" }}</td>
+                    <tr>
+                        <td class="text-center table-warning">{{ application.continent_rank }}</td>
                         <td>{{ application.overall_rank }} / {{ team_applications|length }}</td>
-                        <td>{{ application.continent_rank }}</td>
+                        <td {% if application.selection_status == 3 %} class="table-success" {% elif application.selection_status == 2 %} class="table-danger" {% endif %} ><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
                         <td><img src="{{application.applicant.team.country.flag}}" alt=""> {{ application.applicant.team.country.name }}</td>
-                        <td {% if application.status == 3 %} class="table-success" {% elif application.status == 0 %} class="table-danger" {% endif %} ><a href="{% url 'dashboard:team_detail' application.applicant.team.slug %}">{{ application.applicant.team.university }}</a></td>
-                        
+                        <td>{{ application.application_score|floatformat:"2" }}</td>
+                        <td>{{ application.videoreview_score|floatformat:"2"}}</td>
                         {% comment %}{% for member in application.applicant.team.members.all %}
                         <td>{{ member.score }}</td>
                         {% endfor %}{% endcomment %}

@@ -31,23 +31,24 @@ class DashboardIndex(ListView):
 def accept_application(request, pk):
     next = request.GET.get('next', '/dashboard/')
     application = get_object_or_404(Application, pk=pk)
-    application.status = 3
+    application.selection_status = 3
     application.save()
     return redirect(next)
 
 def decline_application(request, pk):
     next = request.GET.get('next', '/dashboard/')
     application = get_object_or_404(Application, pk=pk)
-    application.status = 0
+    application.selection_status = 2
     application.save()
     return redirect(next)
 
 def test_model(request):
     teams = Application.objects.filter(applicant__role='team')
-    experts = Application.objects.filter(applicant__role='expert')
+    experts = Application.objects.filter(applicfant__role='expert')
 
     team = teams[2]
     expert = experts[1]
+    team.update_rank()
 
     # Call the functions to be tested
     # team.update_ratings()
@@ -70,15 +71,16 @@ def expert_management(request, username=None):
     from initial screening to final invitation/decline decissions.
     """
     expertlist = Application.objects.filter(applicant__role="expert", competition_year='2017')
-    expertlist_accepted = Application.objects.filter(Q(status="3") | Q(status="4"), applicant__role="expert", competition_year='2017')
-    expertlist_reviewed = Application.objects.filter(status="2", applicant__role="expert", competition_year='2017')
-    expertlist_unreviewed = Application.objects.filter(status="1", applicant__role="expert", competition_year='2017')
-    expertlist_declined = expertlist.filter(status="0", applicant__role="expert", competition_year='2017')
+    expertlist_accepted = Application.objects.filter(Q(selection_status="3"), applicant__role="expert", competition_year='2017')
+    expertlist_reviewed = Application.objects.filter(selection_status=1, review_status__gte=2, applicant__role="expert", competition_year='2017')
+    expertlist_unreviewed = Application.objects.filter(review_status="1", applicant__role="expert", competition_year='2017')
+    expertlist_declined = expertlist.filter(selection_status="2", applicant__role="expert", competition_year='2017')
     if username:
         expert = Application.objects.get(applicant__user__username=username, competition_year='2017')
     else:
         expert = expertlist[0]
-
+    # Check the Application as reviewed
+    expert.force_reviewed()
     # Get the distinct years of feedback on this person
     feedback_years = []
     for feedback in expert.applicant.feedback_set.all():
@@ -94,7 +96,7 @@ def expert_management(request, username=None):
         if form.is_valid():
             expert.comments = form.cleaned_data['comment']
             expert.applicant.blacklisted = form.cleaned_data['blacklisted']
-            expert.status = form.cleaned_data['status']
+            expert.selection_status = form.cleaned_data['status']
             expert.save()
         else:
             return render(request, 'dashboard/expert_mangement.html',{ 
@@ -110,7 +112,7 @@ def expert_management(request, username=None):
 
     form = ExpertCommentForm(initial={'comment':expert.comments, 
                                 'blacklisted':expert.applicant.blacklisted,
-                                'status':expert.status})
+                                'status':expert.selection_status})
 
     return render(request, 'dashboard/expert_management.html', {
         'expertlist': expertlist,
@@ -136,8 +138,8 @@ def applicationoverview_team(request):
         teamlists[country] = Application.objects.filter(applicant__role="team")
 
     # Application Review - status
-    teams_reviewed = Application.objects.filter(applicant__role='team', status__gte=1)
-    teams_unreviewed = Application.objects.filter(applicant__role='team', status=0)
+    teams_reviewed = Application.objects.filter(applicant__role='team', review_status=2)
+    teams_unreviewed = Application.objects.filter(applicant__role='team', review_status=1)
 
     return render(request, 'dashboard/teamreview_index.html', {
         'team_applications': team_applications,
@@ -149,10 +151,10 @@ def applicationoverview_team(request):
 
 def team_management(request, slug=None):
     teamlist = Application.objects.filter(applicant__role='team')
-    teamlist_unreviewed = Application.objects.filter(status="1", applicant__role='team')
-    teamlist_reviewed = Application.objects.filter(status="2", applicant__role="team").order_by('-application_score')
-    teamlist_accepted = Application.objects.filter(Q(status="3") | Q(status="4"), applicant__role='team').order_by('-application_score')
-    teamlist_declined = Application.objects.filter(status='0', applicant__role='team').order_by('-application_score')
+    teamlist_in_review = Application.objects.filter(review_status=1, applicant__role='team')
+    teamlist_reviewed = Application.objects.filter(review_status=2, applicant__role="team").order_by('-application_score')
+    teamlist_accepted = Application.objects.filter(selection_status=3, applicant__role='team').order_by('-application_score')
+    teamlist_declined = Application.objects.filter(selection_status=2, applicant__role='team').order_by('-application_score')
     if slug:
         team = Application.objects.get(applicant__team__slug=slug, competition_year=settings.START_DATE.year)
     else:
@@ -165,12 +167,12 @@ def team_management(request, slug=None):
         form = TeamCommentForm(request.POST)
         if form.is_valid():
             team.comments = form.cleaned_data['comment']
-            team.status = form.cleaned_data['status']
+            team.selection_status = form.cleaned_data['status']
             team.save()
         else:
             return render(request, 'dashboard/team_management.html', {
                 'teamlist': teamlist,
-                'teamlist_unreviewed': teamlist_unreviewed,
+                'teamlist_in_review': teamlist_in_review,
                 'teamlist_reviewed': teamlist_reviewed,
                 'teamlist_accepted': teamlist_accepted,
                 'teamlist_declined': teamlist_declined, 
@@ -178,10 +180,10 @@ def team_management(request, slug=None):
                 'form': form,
             })
 
-    form = TeamCommentForm(initial={'comment': team.comments, 'status':team.status})
+    form = TeamCommentForm(initial={'comment': team.comments, 'status':team.selection_status})
     return render(request, 'dashboard/team_management.html', {
         'teamlist': teamlist,
-        'teamlist_unreviewed': teamlist_unreviewed,
+        'teamlist_in_review': teamlist_in_review,
         'teamlist_reviewed': teamlist_reviewed,
         'teamlist_accepted': teamlist_accepted,
         'teamlist_declined': teamlist_declined, 
