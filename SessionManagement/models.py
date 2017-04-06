@@ -2,7 +2,7 @@ import requests
 from django.conf import settings
 from django.db import models
 from django.urls import reverse_lazy
-from UserManagement.models import Attendent, ExpertProfile, Team
+from UserManagement.models import Student, Expert, Team, Staff, ExpertProfile, TeamProfile, StudentProfile, StaffProfile
 # Import for Google Maps Plugin
 from django_google_maps import fields as map_fields
 from django.utils.text import slugify
@@ -178,7 +178,7 @@ class Session(models.Model):
 # ----------------Work Management-------------------------
 class Shift(models.Model):
     """A flexible amount of time a given Person is available for Work at the Comp."""
-    staff = models.ForeignKey(Attendent)
+    staff = models.ForeignKey(Staff)
     start = models.DateTimeField()
     end = models.DateTimeField()
 

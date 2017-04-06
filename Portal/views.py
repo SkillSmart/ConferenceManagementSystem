@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from UserManagement.models import (Attendent, Team, TeamProfile, 
+from UserManagement.models import (Student, Expert, Team, TeamProfile, 
                                     StudentProfile, ExpertProfile)
 from UserManagement.models import (MediationExperience, NegotiationExperience, 
                                     Course)
@@ -24,12 +24,12 @@ from SessionManagement.forms import (VenueCreateForm)
 
 # Create your views here.
 class IndexView(ListView):
-    model = Attendent
+    model = Student
     template_name = 'portal/index.html'
 
     def get_context_data(self):
         context = super(IndexView, self).get_context_data()
-        context['experts_invited'] = Attendent.objects.filter(role='expert')
+        context['experts_invited'] = Expert.objects.filter(role='expert')
         context['teams_invited'] = Team.objects.all()
         context['venues'] = Venue.objects.all()
 
@@ -89,8 +89,7 @@ class TeamEditView(UpdateView):
 
 # --- EXPERTS Section --------
 class ExpertListView(ListView):
-    model = Attendent
-    queryset = Attendent.objects.filter(role='expert')
+    model = Expert
     context_object_name = 'expert_list'
     template_name = 'portal/experts/expert_list.html'
 

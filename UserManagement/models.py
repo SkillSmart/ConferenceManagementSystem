@@ -50,17 +50,6 @@ class Attendent(models.Model):
         else:
             return None
 
-    def get_ratings(self, year=datetime.now().year):
-        # Catch all given Feedback
-        if self.feedback_set.all():
-            # Calculate the AVG Values
-            return self.feedback_set.filter(expert=self.user.attendent, date__year=year).aggregate(Avg('feedbackQuality'), Avg('feedbackRelated'), Avg('feedbackComm'))
-        else:
-            return None
-
-    def get_absolute_url(self):
-        return reverse('portal:expert_profile', args = [self.user.username])
-
     def __str__(self):
         return "{}".format(self.user)
     
@@ -86,10 +75,14 @@ class Student(Attendent):
     role = models.CharField(max_length=35, choices=settings.STUDENT_ROLES)
 
     # Models Storage related Methods
+    def get_absolute_url(self):
+        return reverse('portal:student_profile', args = [self.user.username])
+
     def __init__(self, *args, **kwargs):
         super(Student, self).__init__(*args, **kwargs)
         # Initialize Student instance relevant Information here
-
+    
+    # STUDENT SPECIFIC METHODS
 
 
 class Expert(Attendent):
@@ -103,6 +96,9 @@ class Expert(Attendent):
 
 
     # Models Storage related Methods
+    def get_absolute_url(self):
+        return reverse('portal:expert_profile', args = [self.user.username])
+
     def __init__(self, *args, **kwargs):
         super(Expert, self).__init__(*args, **kwargs)
         # Initialize necessary starting values for Expert Specific Applications
@@ -110,7 +106,15 @@ class Expert(Attendent):
 
     def save(self, *args, **kwargs):
         super(Expert, self).save(*args, **kwargs)
+    
     # EXPERT SPECIFIC METHODS
+    def get_ratings(self, year=datetime.now().year):
+        # Catch all given Feedback
+        if self.feedback_set.all():
+            # Calculate the AVG Values
+            return self.feedback_set.filter(expert=self.user.attendent, date__year=year).aggregate(Avg('feedbackQuality'), Avg('feedbackRelated'), Avg('feedbackComm'))
+        else:
+            return None
 
 
 
@@ -127,6 +131,9 @@ class Team(Attendent):
     members = models.ManyToManyField(Attendent, related_name="teammembers")
     
     # Models Storage related Methods
+    def get_absolute_url(self):
+        return reverse('portal:team_profile', args = [self.user.username])
+
     def __str__(self):
         return self.university
 
@@ -139,8 +146,18 @@ class Team(Attendent):
         self.role = 'team'
     
     # Specific TEAM related Methods
-    def new_function(self):
-        pass
+    def get_ratings(self, year=datetime.now().year):
+        """
+        Used for Retrieving the Scoring Details on the Teams during the competition.
+        Application Review Information is stored on the coresponding Application.
+        """
+        # Catch all given Feedback
+        if self.feedback_set.all():
+            # Calculate the AVG Values
+            return self.feedback_set.filter(expert=self.user.attendent, date__year=year).aggregate(Avg('feedbackQuality'), Avg('feedbackRelated'), Avg('feedbackComm'))
+        else:
+            return None
+
 
 class Staff(Attendent):
     """
@@ -161,6 +178,9 @@ class Staff(Attendent):
 class Profile(models.Model):
     """
     """
+    class Meta:
+        abstract = True
+    
     user = models.OneToOneField(User, blank=True, null=True)
     bio = models.TextField(max_length=2000)
     slogan = models.CharField(max_length=250, verbose_name="Your favorite quote up to 250 characters")
@@ -243,6 +263,12 @@ def create_tem_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Team)
 def save_team_profile(sender, instance, **kwargs):
     instance.teamprofile.save()
+
+class StaffProfile(models.Model):
+    """ Stores all relevant Information on the Staff Member used during their work
+    at the competition, and their display on the webpage for representation.
+    """
+    pass         
 
 #----------------- Interaction models -------------------------
 

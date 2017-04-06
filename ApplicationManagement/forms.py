@@ -11,12 +11,12 @@ from crispy_forms.bootstrap import (
 from django.contrib.auth.models import User
 from django import forms
 from UserManagement.models import Team, TeamProfile
-from UserManagement.models import Attendent
 # Students
-from UserManagement.models import StudentProfile, Internship, Course, Competition, Award, Language
+from UserManagement.models import Student, StudentProfile, Internship, Course, Competition, Award, Language
 # Experts
-from UserManagement.models import ExpertProfile, MediationExperience, NegotiationExperience
-# Experieence
+from UserManagement.models import Student, ExpertProfile, MediationExperience, NegotiationExperience
+# Staff
+from UserManagement.models import Staff, StaffProfile
 
 # ---- GENERAL PAGE RELEVANT FORMS ---------
 class ApplicationSelection(Form):

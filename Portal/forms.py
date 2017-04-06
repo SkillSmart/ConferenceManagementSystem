@@ -1,5 +1,5 @@
 from django import forms
-from UserManagement.models import Attendent, Team
+from UserManagement.models import Student, Expert, Staff, Team
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit, Layout, Div, Field
@@ -28,4 +28,4 @@ class TeamSearchForm(forms.Form):
 class TeamEditForm(forms.ModelForm):
     class Meta:
         model = Team
-        exclude = ['role', 'administrativeComment','blacklisted', 'slug', 'user']
+        exclude = ['role','administrativeComment','blacklisted', 'slug', 'user']

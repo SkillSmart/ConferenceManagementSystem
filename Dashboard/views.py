@@ -169,12 +169,11 @@ def expert_management(request, username=None):
 from ApplicationManagement.models import Application
 
 def applicationoverview_team(request):
-    CONTINENTS = ['Africa', 'Europe', 'Asia', 'Australia', 'North America', 'South America']
 
     team_applications = Application.objects.filter(applicant__role='team').order_by('-application_score')
     # Create Lists of Teams per Continent
     teamlists = {}
-    for country in CONTINENTS:
+    for country in settings.CONTINENTS:
         teamlists[country] = Application.objects.filter(applicant__role="team")
 
     # Application Review - status

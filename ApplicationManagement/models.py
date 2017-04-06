@@ -1,9 +1,11 @@
 from django.db import models
+from django.conf import settings
+# Helper Libraries
 from random import randint
 from pandas import DataFrame
 # Import Entity models
 from django.contrib.auth.models import User
-from UserManagement.models import Attendent, Team
+from UserManagement.models import Student, Expert, Team, Staff
 from SessionManagement.models import Session
 # Import for Summary Statistics on the Models
 from django.db.models import (Sum, Max, Min, Avg, StdDev)
@@ -14,9 +16,10 @@ class Application(models.Model):
     Application holds information on pre-acceptance processess
     Continous information about demeanor of Attendant is stored in the
     Attendent instance."""
-    # General Information on the possible Roles for a student, expert and team
-    STUDENTROLES = ['mediator', 'negotiator', 'coach']
-    EXPERTROLES = ['expert']
+
+    class Meta:
+        unique_together = ('applicant', 'competition_year')
+        abstract = True
 
     # Application Status set for tracking the decission process during application review
     REVIEW_STATUS = (
@@ -31,7 +34,6 @@ class Application(models.Model):
         (3, 'Accepted')
     )
 
-    applicant = models.ForeignKey(Attendent)
     application_type = models.CharField(max_length=20, null=True)
     competition_year = models.CharField(max_length=4)
     applicationDate = models.DateTimeField(auto_now_add=True)
@@ -53,18 +55,17 @@ class Application(models.Model):
     
     # The Total Application Score (Total Average over all Dimension Scores)
     application_score = models.FloatField(blank=True, null=True)
-    # Team relevant Scores
-    videoreview_score = models.FloatField(blank=True, null=True)
-    memberreview_score = models.FloatField(blank=True, null=True)
 
-    def get_review_status(self):
+
+
+    def update_review_status(self):
         """
-        Based on a 'switch' on the instance application.applicant.role it decides how to check if
+        Based on a 'switch' on the instance application.application_type it decides how to check if
         the application instance is completed for final submission/approval.
         It sets the variable self.status accordingly.
         When ready for submission, self.review_completed is set to TRUE.
         """
-        if self.application_type in self.STUDENTROLES:
+        if self.application_type == 'student':
             """
             Student Applications are to be reviewed by all 'Raters' to be considered finished.
             Each Rater can only submit one Review per Application.
@@ -72,19 +73,35 @@ class Application(models.Model):
             'reviewed'
             """
             application_reviews = self.review_set.all()
-            if application_reviews and (application_reviews.count() == Attendent.objects.filter(role='expert'.count())):
-                self.status = '2'
+            if application_reviews and (application_reviews.count() == Expert.objects.count()):
+                self.review_status = '2'
                 self.review_completed = True
                 self.save()
             else:
-                self.status = '1'
+                self.review_status = '1'
                 self.review_completed = False
                 self.save()
-            return none
-        elif self.application_type in self.EXPERTROLES:
+            return None
+        elif self.application_type == 'expert':
             return
-        elif self.applicaton_type == 'team':
-            return
+        elif self.application_type == 'team':
+            # Team application is completly reviewed when all its associated student
+            # applications have review_completed
+
+            # Check for completed Review of all member Applications
+            def teamreview_done(self):
+                for application in self.applicant.members.all():
+                    if application.review_completed == False: 
+                        return False
+                return True
+            # Check if team has been successfully reviewed, and if so store the information
+            # on the team application
+            if teamreview_done():
+                self.review_completed = True
+                self.review_status = 2
+            
+        elif self.application_type == 'staff':
+            return None
 
     def force_reviewed(self, all=False):
         """
@@ -100,20 +117,20 @@ class Application(models.Model):
         else:
             if self.review_status < 2:
                 self.review_status = 2
-        
         self.save()
+
     def update_ratings(self):
         """
-        Uses a 'switch' on the instance application.applicant.role to call appropriate aggregation
+        Uses a 'switch' on the instance application.application_type to call appropriate aggregation
         methods to calculate the current application score, and store them on the instance itself.
         Does not return values directly to the calling instance.
         """
 
         # Check if Team or Student or Expert
-        if self.applicant.role == "team":
+        if self.application_type == "team":
             # Treat as Team with members to be aggregated and a total to then be calculated
             member_avg_scores = {}
-            members = self.applicant.team.members.all()
+            members = self.applicant.members.all()
             for member in members:
                 member_avg_scores[member] = member.get_current_application().review_set.all().aggregate(d1_avg=Avg('question_1'), d2_avg=Avg('question_2'), d3_avg=Avg('question_3'), d4_avg=Avg('question_4'))    
             
@@ -132,7 +149,7 @@ class Application(models.Model):
             self.q4_score = team_avg_scores[3]
             self.save()
             
-        elif self.applicant.role in self.EXPERTROLES:
+        elif self.application_type == 'expert':
             """
             Experts apply either for the first time, or they have already taken part in an earlier
             Convention. If so, they received Feedback and their performance is important.
@@ -164,7 +181,7 @@ class Application(models.Model):
                 ratings[year] =  self.applicant.get_ratings(year=year)
         
 
-        elif self.applicant.role in self.STUDENTROLES:
+        elif self.application_type == 'student':
             # Treat this as student
             avg_scores = self.review_set.all().aggregate(d1_avg = Avg('question_1'),
                                                         d2_avg = Avg('question_2'),
@@ -180,10 +197,7 @@ class Application(models.Model):
             self.save()
         else: 
             return 'Did not recognize either student or team application'
-        # If Student then calculate ratings over all reviews and store on the Attendent
-        # If Team then call the calculation method on all members and then calculate the Sum
 
-        # return None
 
     def update_rank(self, total=True):
         """
@@ -191,14 +205,28 @@ class Application(models.Model):
         specific evaluation metrics (StudentFeedback, Assessor Scores, Averaged Team Member Scores).
         The total argument sets the comparison to either 'continental' or 'total overall' ranking.
         """
-        if self.applicant.role == "team":
-            # Create an ordered list of the teams on (application_score)
-            teamapplications_ranked = Application.objects.filter(applicant__role='team').order_by('-application_score')
-            # Update all teamapplications with the appropriate rank
-            for index, teamapplication in enumerate(teamapplications_ranked):
-                teamapplication.overall_rank = index + 1
-                teamapplication.save()
+        # When ranking on the Global Rankinglist
+        if total:
+            # Switch on the type of application
+            def update_list(self, queryset_ranked):
+                """Used to update the whole list of resulting objects"""
+                for index, application in enumerate(queryset_ranked):
+                    application.overall_rank = index + 1
+                    application.save()
 
+            if self.application_type == "team":
+                # Create an ordered list of the teams on (application_score)
+                self.update_list(TeamApplication.objects.order_by('-application_score'))
+            
+            elif self.application_type == 'expert':
+                # Create an ordered list of all experts based on review scores
+                self.update_list(ExpertApplication.objects.order_by('-application_score'))
+
+            
+            elif self.application_type == 'student':
+                pass
+            elif self.application_type == 'staff':
+                pass
 
     def __str__(self):
         return "{}-{}".format(self.applicant.user.username, self.competition_year)
@@ -206,19 +234,89 @@ class Application(models.Model):
     def __init__(self, *args, **kwargs):
         super(Application, self).__init__(*args, **kwargs)
         # Team Application specific values - Saved on the Instance
+
+class ExpertApplication(Application):
+    """ Application for a Expert Assessment Role
+    """
+    applicant = models.ForeignKey(Expert, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=settings.EXPERT_ROLES)
+
+    def __init__(self, *args, **kwargs):
+        self.application_type = 'expert'
         member_avg_scores = None
         team_avg_scores = None
-        # Set initial values on the instnace variable
-        self.application_type = self.applicant.role
 
+class StudentApplication(Application):
+    """
+    A Student application as part of a team application with the CDRC Competition.
+    Each Student is only allowed to partace once in the Competition in this role.
+    To ensure this, there is a one to one relation between the student Model and
+    the user that is registered with the System.
+    """
+    applicant = models.ForeignKey(Student, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=settings.STUDENT_ROLES)
+
+    def __init__(self, *args, **kwargs):
+        super(StudentApplication, self).__init__(*args, **kwargs)
+        self.application_type = 'student'
+
+class TeamApplication(Application):
+    """
+    A Team application is started without beeing registered to a particular set 
+    of members. Within the Team Application Process, the Team members are entered
+    into the system and become associated with the particular instance of this application.
+    Each Student can only be registered with a team, and one team only. 
+    Each User can only be registerd with one application
+    """
     class Meta:
-        unique_together = ('applicant', 'competition_year')
+        unique_together = ('applicant', 'member_applications')
+    
+    applicant = models.ForeignKey(Team, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=settings.TEAM_ROLES)
+    # Associated Team Member Applicationset (These are the ones beeing rated)
+    member_applications = models.ManyToManyField(StudentApplication)
+    # Specific Variables only relevant to a Team
+    videoreview_score = models.FloatField(blank=True, null=True)
+    memberreview_score = models.FloatField(blank=True, null=True)
 
+    def __init__(self, *args, **kwargs):
+        super(TeamApplication, self).__init__(*args, **kwargs)
+        self.application_type = 'team'
+            # Team relevant Scores
+   
+
+class StaffApplication(Application):
+    """
+    A Staff application is send to register a person with the CDRC Team. It represents the 
+    review and comments made on the person, and is stored in the system for later review.
+    Associated information from the Application is used to prepopulate the Staff Profile, 
+    once the Application has been accepted.
+    """
+    applicant = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    role = models.CharField(max_length=20, choices=settings.STAFF_ROLES)
+    
+    # Specific Application Values for Staff
+    ## Contact Information
+    phone = models.CharField(max_length=20, null=True)
+        # To be filled
+
+    def __init__(self, *args, **kwargs):
+        super(StaffApplication, self).__init__(*args, **kwargs)
+        self.applcation_type = 'staff'
+        # Specific Staff Variables
+        availabilities = {} # Stores the timeslots available for Shifts (Date, Time)
+
+
+# ------- Application related Classes [Feedback and Reviews Models] ------------
 class Review(models.Model):
     """Base Class for both Expert and Student Reviews. Externally done by
     Commitee Members and associated to a specific Application, 
     not the Userclass"""
 
+    class Meta:
+        # Each Reviewer can review a given Application only once
+        unique_together = ('reviewer', 'application')
+    
     application = models.ForeignKey(Application)
     reviewer = models.ForeignKey(User)
 
@@ -231,7 +329,7 @@ class Review(models.Model):
         (4, 4),
         (5, 5)
     )
-
+    # Applicatino Reviews Dimensions
     question_1 = models.IntegerField(choices=SELECTION, verbose_name="Question 1")
     question_2 = models.IntegerField(choices=SELECTION, verbose_name="Question 2")
     question_3 = models.IntegerField(choices=SELECTION, verbose_name="Question 3")
@@ -239,24 +337,25 @@ class Review(models.Model):
 
     # Additional comments
     comment = models.TextField(max_length=250, blank=True)
-
-    class Meta:
-        unique_together = ('reviewer', 'application')
     
     def __str__(self):
         return "{}'s Application reviewed by {}".format(self.application, self.reviewer)
 
     def save(self, *args, **kwargs):
-        self.application.status = 0
         super().save(*args, **kwargs)
+        # Engage the application to update its ratings, now that there is 
+        # a new review
+        self.application.update_ratings()
+        # Update the review status
+        self.application.update_review_status()
         
 
 class Feedback(models.Model):
     """
-    Feedback given by a participating student to a judge at a session
+    Feedback given by a participating student to an Expert Assessor at a specific session
     """
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
-    expert = models.ForeignKey(Attendent, on_delete=models.CASCADE)
+    expert = models.ForeignKey(Expert, on_delete=models.CASCADE)
     date = models.DateTimeField()
 
     # Feedback Categories
