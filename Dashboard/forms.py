@@ -1,5 +1,5 @@
 from django import forms
-from UserManagement.models import Attendent
+from UserManagement.models import Team, Student, Expert, Staff
 
 # Model Imports
 from ApplicationManagement.models import Application

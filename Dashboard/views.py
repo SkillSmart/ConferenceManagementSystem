@@ -7,7 +7,7 @@ from datetime import timedelta, date, datetime
 from pandas import DataFrame
 
 # Modelimports
-from UserManagement.models import Attendent, Team
+from UserManagement.models import Student, Expert, Team, Staff
 from SessionManagement.models import Session, Venue, Shift
 from ApplicationManagement.models import Application
 
@@ -21,6 +21,27 @@ from django.views.generic.detail import DetailView
 # Helper Function
 from django.db.models import (Avg, Max, Min, Count, Sum)
 from django.shortcuts import redirect
+
+# TEST PAGE -----------
+def test_model(request):
+    teams = Application.objects.filter(applicant__role='team')
+    experts = Application.objects.filter(applicfant__role='expert')
+
+    team = teams[2]
+    expert = experts[1]
+    team.update_rank()
+
+    # Call the functions to be tested
+    # team.update_ratings()
+    # expert.update_ratings()
+    # team.assign_values(2,3,5,8)
+    # expert.assign_values(2,3,5,8)
+
+
+    return render(request, 'dashboard/test.html', {
+        'team': team, 
+        'expert': expert,
+    })
 
 
 # Create your views here.
@@ -65,6 +86,7 @@ class DashboardShift(View):
         context = {}
         return render(request, 'dashboard/dashboard/shift_dashboard.html', context)
 
+#  DASHBOARD ---------FUNCITON_VIEWS
 def accept_application(request, pk):
     next = request.GET.get('next', '/dashboard/')
     application = get_object_or_404(Application, pk=pk)
@@ -79,25 +101,6 @@ def decline_application(request, pk):
     application.save()
     return redirect(next)
 
-def test_model(request):
-    teams = Application.objects.filter(applicant__role='team')
-    experts = Application.objects.filter(applicfant__role='expert')
-
-    team = teams[2]
-    expert = experts[1]
-    team.update_rank()
-
-    # Call the functions to be tested
-    # team.update_ratings()
-    # expert.update_ratings()
-    # team.assign_values(2,3,5,8)
-    # expert.assign_values(2,3,5,8)
-
-
-    return render(request, 'dashboard/test.html', {
-        'team': team, 
-        'expert': expert,
-    })
 
 # ---- EXPERT RELATED VIEWS --------------------------------
 def expert_management(request, username=None):

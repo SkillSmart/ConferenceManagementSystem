@@ -24,22 +24,17 @@ PRACTICE_FIELDS = (
 # -------------------  Roles within the Competition  ------------------
 
 class Attendent(models.Model):
+    # META CLASS
     """A Person attending the Competiton. Information stored to keep track
     on Applications before and behaviour during Competition over Time.
     Reused in later application processes."""
-    ROLES = (
-        ('negotiator', 'Negotiator'),
-        ('mediator', 'Mediator'),
-        ('expert', 'Expert Assessor'),
-        ('coach', 'Coach'),
-        ('assessor', 'Assessor'),
-        ('team', 'Team'),
-    )
+
+    class Meta:
+        abstract = True
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=35, choices=ROLES)
     blacklisted = models.BooleanField(default=False)
     administrativeComment = models.TextField(blank=True, null=True)
-
 
     # Store Information on the Current Year for easy retrieval
     current_application = None
@@ -49,7 +44,7 @@ class Attendent(models.Model):
         Used to get the current application from inside a template.
         Returns None when no application present.
         """
-        application = self.application_set.get(competition_year='2017')
+        application = self.application_set.get(competition_year=settings.START_DATE.year)
         if application:
             return application
         else:
@@ -83,38 +78,84 @@ class Attendent(models.Model):
 # @receiver(post_save, sender=User)
 # def save_attendent_profile(sender, instance, **kwargs):
 #     instance.attendent.save()
+
 class Student(Attendent):
     """
-    Can be in role(Mediator, Negotiator). profile 
+    Can be in role(Mediator, Negotiator)
     """
-    pass
+    role = models.CharField(max_length=35, choices=settings.STUDENT_ROLES)
+
+    # Models Storage related Methods
+    def __init__(self, *args, **kwargs):
+        super(Student, self).__init__(*args, **kwargs)
+        # Initialize Student instance relevant Information here
+
 
 
 class Expert(Attendent):
     """
-    
+    Can be in role(Assessor, Rater, CommiteeMember)
+    Only Assessors go trough an explicit Application process
+    All other roles get created by invitation from the Organizers
     """
+    role = models.CharField(max_length=35, choices=settings.EXPERT_ROLES)
     # Expert related Feedback Scores
-    pass
+
+
+    # Models Storage related Methods
+    def __init__(self, *args, **kwargs):
+        super(Expert, self).__init__(*args, **kwargs)
+        # Initialize necessary starting values for Expert Specific Applications
+        availabilities = {}
+
+    def save(self, *args, **kwargs):
+        super(Expert, self).save(*args, **kwargs)
+    # EXPERT SPECIFIC METHODS
+
+
 
 class Team(Attendent):
     """Group of Students applying from a University for the Competition.
     Consisting of individual Team Members and an Associated Coach."""
+    role = models.CharField(max_length=35, choices=settings.TEAM_ROLES)
+    # Specific Team Values
     university = models.CharField(max_length=100)
     university_logo = models.ImageField(upload_to='team/university_logo/', blank=True)
     country = CountryField(null=True)
     teamImg = models.ImageField(upload_to='team/teampictures/', blank=True)
     slug = models.SlugField(blank=True, null=True)
     members = models.ManyToManyField(Attendent, related_name="teammembers")
-
+    
+    # Models Storage related Methods
     def __str__(self):
         return self.university
-    
+
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.university)
-        self.role = 'team'
         super().save(*args, **kwargs)
 
+    def __init__(self, *args, **kwargs):
+        super(Team, self).__init__(*args, **kwargs)
+        self.slug = slugify(self.university)
+        self.role = 'team'
+    
+    # Specific TEAM related Methods
+    def new_function(self):
+        pass
+
+class Staff(Attendent):
+    """
+    Every person that is part of the Organizing and Convention Team and gets
+    assigned to Shifts of Work during the Competition Days.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super(Staff, self).__init__(*args, **kwargs)
+        self.role = 'staff'
+        # Stores the periods during the convention days the person is available for 
+        # taking shifts
+        availabilities = {}
+
+#  ----------------- PROFILE SECTION ----------------------------------------
 
 # ---Basic Profile Models to store additional Information on the Applicants
 class Profile(models.Model):
@@ -140,6 +181,7 @@ class Profile(models.Model):
     blog = models.URLField(verbose_name="Website",
     blank=True, null=True)
 
+    # Models Storage related Methods
     def __str__(self):
         return str(self.user)
 

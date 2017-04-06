@@ -1,14 +1,64 @@
-{% extends "base_dashboard.html" %}
+{% extends "base_dashboard_index.html" %}
 
 <!--  OVERVIEW HEADER  -->
 {% block overview-head %}
-<h2>Expert Dashboard</h2>
+<header>
+</header>
+<div class="row">
+    <div class="">
+        <div class="card">
+            <div class="card-header">
+                <h2>Expert Management</h2>
+                <small>Status: Closed for Review</small>
+            </div>
+           
+            <div class="card-block">
+                <h4>Most Important Settings</h4>
+                <table class="table">
+                    <thead>
+                        
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Registration:</td>
+                            <td>From: <input type="date" name="" value=""></td>
+                            <td>Till: <input type="date" name="" value=""></td>
+                        </tr>
+                        <tr>
+                        </tr>
+                        <tr>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+                        <button type="button" class="btn btn-success">Open Registration</button>
+                        <button type="button" class="btn btn-danger">Close Registration</button>
+                    </div>
+                    <div class="btn-group btn-group-sm mr-2" role="group" aria-label="First group">
+                        <button type="button" class="btn btn-secondary">Open Review</button>
+                        <button type="button" class="btn btn-secondary">Close Review</button>
+                    </div>
+                    <div class="btn-group btn-group-sm mr-2" role="group" aria-label="Second group">
+                        <button type="button" class="btn btn-success">Invite Experts</button>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="col-sm-6">
 
+    </div>
+</div>
 {% endblock overview-head %}
 
 <!-- CONTENT HEADER  -->
 {% block content-header %}
-
+Stats
 {% endblock content-header %}
 
 <!--   #############   MAIN   CONTENT   ############         -->

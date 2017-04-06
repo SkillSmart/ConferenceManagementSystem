@@ -7,15 +7,24 @@ from . import models
 Enables the management of Application and Feedback Processes over different years.
 NEVER gets deleted. Completly DECOUPPLED from the personal Profile Information.
 """
-class AttendentAdmin(ModelAdmin):
-    list_display = ['user','role']
-admin.site.register(models.Attendent, AttendentAdmin)
+#  Attendent Types - Management
+class StudentAdmin(ModelAdmin):
+    list_display = []
+admin.site.register(models.Student, StudentAdmin)
+
+class ExpertAdmin(ModelAdmin):
+    list_display = []
+admin.site.register(models.Expert, ExpertAdmin)
 
 class TeamAdmin(ModelAdmin):
     search_fields = ['university', 'country']
     list_display = ['university', 'country', ]
     list_filter = ['country']
 admin.site.register(models.Team, TeamAdmin)
+
+class StaffAdmin(ModelAdmin):
+    list_display = []
+admin.site.register(models.Staff, StaffAdmin)
 
 # Attendent Roles for STUDENTS
 """Handle STUDENT's Selection and Attendance related information over all stages of 
