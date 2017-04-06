@@ -28,6 +28,43 @@ class DashboardIndex(ListView):
     model = Session
     template_name = 'dashboard/dashboard_index.html'
 
+# ----------- DASHBOARD VIEWS ----------------------
+class DashboardSettings(View):
+    
+    def get(self, request):
+        context = {}
+        return render(request,'dashboard/dashboard/settings_dashboard.html', context)
+
+class DashboardExpert(View):
+
+    def get(self, request):
+        context = {}
+        return render(request,'dashboard/dashboard/expert_dashboard.html', context)
+
+class DashboardTeam(View):
+
+    def get(self, request):
+        context = {}
+        return render(request, 'dashboard/dashboard/team_dashboard.html', context)
+
+class DashboardVenue(View):
+
+    def get(self, request):
+        context = {}
+        return render(request, 'dashboard/dashboard/venue_dashboard.html', context)
+
+class DashboardSession(View):
+    
+    def get(self, request):
+        context = {}
+        return render(request, 'dashboard/dashboard/session_dashboard.html', context)
+
+class DashboardShift(View):
+
+    def get(self, request):
+        context = {}
+        return render(request, 'dashboard/dashboard/shift_dashboard.html', context)
+
 def accept_application(request, pk):
     next = request.GET.get('next', '/dashboard/')
     application = get_object_or_404(Application, pk=pk)

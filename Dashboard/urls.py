@@ -7,6 +7,14 @@ app_name = "dashboard"
 
 urlpatterns = [
     url(r'^$', views.DashboardIndex.as_view(), name='index'),
+    # Set of Dashboard Views to control the other modules
+    url(r'^settings/$', views.DashboardSettings.as_view(), name='index_settings'),
+    url(r'^settings/expert_application/$', views.DashboardExpert.as_view(), name='index_expert'),
+    url(r'^settings/team_application/$', views.DashboardTeam.as_view(), name='index_team'),
+    url(r'^settings/venue_management/$', views.DashboardVenue.as_view(), name='index_venue'),
+    url(r'^settings/session_management/$', views.DashboardSession.as_view(), name='index_session'),
+    url(r'^settings/shift_management/$', views.DashboardShift.as_view(), name='index_shift'),
+    # The Dashboard Module Views
     url(r'^experts/$', views.expert_management, name='manage_experts'),
     url(r'^experts/(?P<username>.+)/$', views.expert_management, name="expert_detail"),
     url(r'^sessions/$', views.SessionManagement.as_view(), name="manage_sessions"),

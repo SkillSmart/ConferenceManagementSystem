@@ -37,6 +37,16 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-3">
+                <aside class="col-sm-12">
+                    <ul class="list-group">
+                        <a href="{% url 'dashboard:index_settings'%}" class="list-group-item list-group-item-action active">General Settings</a>
+                        <a href="{% url 'dashboard:index_expert' %}" class="list-group-item list-group-item-action">Expert Application</a>
+                        <a href="{% url 'dashboard:index_team'%}" class="list-group-item list-group-item-action">Team Application</a>
+                        <a href="{% url 'dashboard:index_venue'%}" class="list-group-item list-group-item-action">Venue Mangement</a>
+                        <a href="{% url 'dashboard:index_session'%}" class="list-group-item list-group-item-action">Session Management</a>
+                        <a href="{% url 'dashboard:index_shift'%}" class="list-group-item list-group-item-action">Shift Management</a>
+                    </ul>
+                </aside>
                 {% block content-sidemenue %}
                 {% endblock content-sidemenue %}
             </div>
