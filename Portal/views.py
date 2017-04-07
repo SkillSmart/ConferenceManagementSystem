@@ -16,10 +16,9 @@ from django.views.generic.edit import CreateView, DeleteView, UpdateView
 # CBGV Mixins
 from django.views.generic.edit import FormMixin
 
-
 # FORMS:::
-from .forms import ExpertSearchForm, TeamSearchForm
-from .forms import TeamEditForm
+from .forms import ExpertSearchForm, TeamSearchForm, TeamEditForm
+# from .forms import TeamEditForm
 from SessionManagement.forms import (VenueCreateForm)
 
 # Create your views here.
@@ -29,10 +28,10 @@ class IndexView(ListView):
 
     def get_context_data(self):
         context = super(IndexView, self).get_context_data()
-        context['experts_invited'] = Expert.objects.filter(role='expert')
+        context['experts_invited'] = Expert.objects.all()
         context['teams_invited'] = Team.objects.all()
         context['venues'] = Venue.objects.all()
-
+ 
         return context
 
 class CompetitionIndex(ListView):

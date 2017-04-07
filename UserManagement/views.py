@@ -1,8 +1,11 @@
 from django.shortcuts import render, HttpResponseRedirect
-from .models import Attendent
+from .models import Student, Expert, Team, Staff
 # Class Imports
-from .models import ExpertProfile, TeamProfile, StudentProfile
+from .models import ExpertProfile, TeamProfile, StudentProfile, StaffProfile
 from .models import Program
+# Class based Views
+from django.views import View
+from django.generic import CreateView, ListView, DetailView
 # Form Imports
 from .forms import ExpertModelForm, TeamModelForm, UserProfileForm, UserModelForm, StudentModelForm
 from .forms import NegotiationExperienceForm, MediationExperienceForm
@@ -40,37 +43,56 @@ NEGEXP_FORM = {
     'staff': None,
 }
 # ----- Profile Creation ----------
-def profile_create(request):
-    
-    # When Student Team application is selected       
-    if request.method=="POST":
-        profile_form = PROFILE_FORM[request.user.attendent.role](request.POST)
-        negExp_form = NEGEXP_FORM[request.user.attendent.role](request.POST)
-        medExp_form = MEDEXP_FORM[request.user.attendent.role](request.POST)
+def StudentProfileCreateView(CreateView):
+    model = StudentProfile
+    context_object_name = 'studentprofile'
+    template_name = 'profile/studentprofile_create.html'
 
-        if profile_form.is_valid():
-            profile = profile_form.save(commit=False)
-            profile.attendent = request.user.attendent
-            profile.save()
+def ExpertProfileCreateView(CreateView):
+    model = ExpertProfile
+    context_object_name = 'expertprofile'
 
-        if negExp_form.is_valid():
-            negExp_form.save()
+def TeamProfileCreateView(CreateView):
+    model = TeamProfile
+    context_object_name = 'teamprofile'
+    template_name = 'profile/teamprofile_create.html'
 
-        if medExp_form.is_valid():
-            medExp_form.save()
+def StaffProfileCreateView(CreateView):
+    model = StaffProfile
+    context_object_name='staffprofile'
+    template_name = 'profile/staffprofile_create.html'
 
-    else:
-        profile_form = PROFILE_FORM[request.user.attendent.role]
-        negExp_form = NEGEXP_FORM[request.user.attendent.role]
-        medExp_form = MEDEXP_FORM[request.user.attendent.role]
+# def ProfileCreateView(View):
+        
+#     def post(request):
+#         # When Student Team application is selected       
+#         profile_form = PROFILE_FORM[request.user.attendent](request.POST)
+#         negExp_form = NEGEXP_FORM[request.user.attendent.role](request.POST)
+#         medExp_form = MEDEXP_FORM[request.user.attendent.role](request.POST)
 
-    return render(request, 'registration/profile_create.html', {
-        'attendent': Attendent.objects.get(user = request.user),
-        'profile_form': profile_form,
-        'members': member_forms,
-        'negExp_form': negExp_form,
-        'medExp_form': medExp_form,
-    })
+#         if profile_form.is_valid():
+#             profile = profile_form.save(commit=False)
+#             profile.attendent = request.user.attendent
+#             profile.save()
+
+#         if negExp_form.is_valid():
+#             negExp_form.save()
+
+#         if medExp_form.is_valid():
+#             medExp_form.save()
+
+#         else:
+#             profile_form = PROFILE_FORM[request.user.attendent.role]
+#             negExp_form = NEGEXP_FORM[request.user.attendent.role]
+#             medExp_form = MEDEXP_FORM[request.user.attendent.role]
+
+#     return render(request, 'registration/profile_create.html', {
+#         'attendent': Attendent.objects.get(user = request.user),
+#         'profile_form': profile_form,
+#         'members': member_forms,
+#         'negExp_form': negExp_form,
+#         'medExp_form': medExp_form,
+#     })
 
 # --- Profile Management ---------
 def profile_delete(request):

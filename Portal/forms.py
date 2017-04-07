@@ -28,4 +28,4 @@ class TeamSearchForm(forms.Form):
 class TeamEditForm(forms.ModelForm):
     class Meta:
         model = Team
-        exclude = ['role','administrativeComment','blacklisted', 'slug', 'user']
+        exclude = ['role', 'administrativeComment', 'blacklisted', 'slug', 'user']

@@ -213,7 +213,7 @@ class Application(models.Model):
                 for index, application in enumerate(queryset_ranked):
                     application.overall_rank = index + 1
                     application.save()
-
+                
             if self.application_type == "team":
                 # Create an ordered list of the teams on (application_score)
                 self.update_list(TeamApplication.objects.order_by('-application_score'))
@@ -221,13 +221,14 @@ class Application(models.Model):
             elif self.application_type == 'expert':
                 # Create an ordered list of all experts based on review scores
                 self.update_list(ExpertApplication.objects.order_by('-application_score'))
-
             
             elif self.application_type == 'student':
-                pass
+                self.update_list(StudentApplication.objects.order_by('-application_score'))
+            
             elif self.application_type == 'staff':
                 pass
-
+                
+                
     def __str__(self):
         return "{}-{}".format(self.applicant.user.username, self.competition_year)
 

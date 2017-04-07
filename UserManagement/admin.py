@@ -36,12 +36,18 @@ Competition Attendence."""
 # Profile Related models
 """Manage the Data stored as part of the representation and internal use of
 Attendent related information DURING the competion."""
-admin.site.register(models.ExpertProfile)
 
 class StudentProfileAdmin(ModelAdmin):
     list_display=['']
-admin.site.register(models.StudentProfile)
-admin.site.register(models.TeamProfile)
+admin.site.register(models.StudentProfile, StudentProfileAdmin)
+
+class ExpertProfileAdmin(admin.ModelAdmin):
+    list_display = []
+admin.site.register(models.ExpertProfile, ExpertProfileAdmin)
+
+class TeamProfileAdmin(admin.ModelAdmin):
+    list_display = []
+admin.site.register(models.TeamProfile, TeamProfileAdmin)
 
 # Attribute and Relation Models
 admin.site.register(models.MediationExperience)

@@ -31,8 +31,7 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         exclude = []
-    
-    
+
 
 # ----- TEAM REGISTRATION -------
 class TeamRegistrationForm(ModelForm):

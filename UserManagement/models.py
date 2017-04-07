@@ -112,11 +112,9 @@ class Expert(Attendent):
         # Catch all given Feedback
         if self.feedback_set.all():
             # Calculate the AVG Values
-            return self.feedback_set.filter(expert=self.user.attendent, date__year=year).aggregate(Avg('feedbackQuality'), Avg('feedbackRelated'), Avg('feedbackComm'))
+            return self.feedback_set.filter(date__year=year).aggregate(Avg('feedbackQuality'), Avg('feedbackRelated'), Avg('feedbackComm'))
         else:
             return None
-
-
 
 class Team(Attendent):
     """Group of Students applying from a University for the Competition.
@@ -129,7 +127,7 @@ class Team(Attendent):
     teamImg = models.ImageField(upload_to='team/teampictures/', blank=True)
     slug = models.SlugField(blank=True, null=True)
     members = models.ManyToManyField(Attendent, related_name="teammembers")
-    
+
     # Models Storage related Methods
     def get_absolute_url(self):
         return reverse('portal:team_profile', args = [self.user.username])
@@ -144,7 +142,7 @@ class Team(Attendent):
         super(Team, self).__init__(*args, **kwargs)
         self.slug = slugify(self.university)
         self.role = 'team'
-    
+
     # Specific TEAM related Methods
     def get_ratings(self, year=datetime.now().year):
         """
@@ -164,11 +162,10 @@ class Staff(Attendent):
     Every person that is part of the Organizing and Convention Team and gets
     assigned to Shifts of Work during the Competition Days.
     """
-
+    role = models.CharField(choices=settings.STAFF_ROLES)
     def __init__(self, *args, **kwargs):
         super(Staff, self).__init__(*args, **kwargs)
-        self.role = 'staff'
-        # Stores the periods during the convention days the person is available for 
+        # Stores the periods during the convention days the person is available for
         # taking shifts
         availabilities = {}
 
@@ -177,10 +174,12 @@ class Staff(Attendent):
 # ---Basic Profile Models to store additional Information on the Applicants
 class Profile(models.Model):
     """
+    Abstract Class to hold general information on the specific Profiles used for Teams, Student, Staff and Expert Assessors.
+    As they widely vary in their scope and later usage, this split is meant to make code reuse easier.
     """
     class Meta:
         abstract = True
-    
+
     user = models.OneToOneField(User, blank=True, null=True)
     bio = models.TextField(max_length=2000)
     slogan = models.CharField(max_length=250, verbose_name="Your favorite quote up to 250 characters")
