@@ -5,7 +5,7 @@ from django.db import transaction
 from django.conf import settings
 
 # MODEL Imports ---------
-from ApplicationManagement.models import Application
+from ApplicationManagement.models import Application, Attendent
 from UserManagement.models import ExpertProfile
 
 # GENERIC VIEWS -----------
@@ -56,7 +56,7 @@ class AccountRegistrationView(View):
             if not form.is_valid():
                 return False
             return True
-    
+
     def forward_next(self, role):
         """Determines the logic where to forward based on the role chosen"""
         if role == 'student':
@@ -69,7 +69,7 @@ class AccountRegistrationView(View):
             return HttpResponseRedirect('/application/team/')
         else:
             return HttpResponseRedirect('/')
-    
+
     def get_choices(self, role):
         if role == 'expert':
             return settings.EXPERT_ROLES
@@ -165,12 +165,11 @@ class ExpertRegistrationView(View):
 
         # Instantiate the overall form
         profile = ExpertProfileForm(request.POST, request.FILES)
-        profile.user = request.user
         if profile.is_valid():
             # Save the Expert Application Form
-            profile.save(commit=False)
-            profile.attendent = request.user.attendent
-            profile.save()
+            this = profile.save(commit=False)
+            this.attendent = Attendent.objects.get(user=request.user)
+            this.save()
 
             # if yes, redirect to the profile view
             return HttpResponseRedirect('/')

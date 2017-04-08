@@ -80,7 +80,7 @@ def profile_delete(request):
 def profile_display(request):
     # Switch Dicctionary to display the right form    
     return render(request, 'portal/experts/expert_detail.html', {
-        'attendent': get_object_or_404(Attendent, user=request.user)
+        'attendent': get_object_or_404(Attendent, user=request.user),
     })
 
 def profile_edit(request):
