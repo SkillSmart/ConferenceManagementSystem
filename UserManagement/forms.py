@@ -63,6 +63,7 @@ class MediationExperienceForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.form_tag = False
 
 
 class NegotiationExperienceForm(ModelForm):
@@ -72,6 +73,7 @@ class NegotiationExperienceForm(ModelForm):
 
     def __init__(self, *args, ** kwargs):
         super().__init__(*args, **kwargs)
+        self.form_tag = False
         self.helper = FormHelper()
         self.helper.layout = Layout()
 

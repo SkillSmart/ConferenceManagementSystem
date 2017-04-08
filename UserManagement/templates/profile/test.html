@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
-{% block content %}
 
-<form method="POST" enctype="multipart/form-data">{% csrf_token %}
-{{ profileForm }}
-<button type="submit">Submit</button>
+
+
+{% block content %}
+<form method="POST">{% csrf_token %}
+    <table>
+        {{ userForm.as_table}}
+    </table>
+    <button type="submit">Submit</button>    
 </form>
-{% endblock %}
+{% endblock content %}
 

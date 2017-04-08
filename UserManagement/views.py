@@ -1,7 +1,8 @@
 from django.shortcuts import render, HttpResponseRedirect
 from .models import Attendent
+from django.shortcuts import get_list_or_404, get_object_or_404
 # Class Imports
-from .models import ExpertProfile, TeamProfile, StudentProfile
+from .models import (ExpertProfile, TeamProfile, StudentProfile, StaffProfile)
 from .models import Program
 # Form Imports
 from .forms import ExpertModelForm, TeamModelForm, UserProfileForm, UserModelForm, StudentModelForm
@@ -41,23 +42,19 @@ NEGEXP_FORM = {
 }
 # ----- Profile Creation ----------
 def profile_create(request):
-    
     # When Student Team application is selected       
     if request.method=="POST":
         profile_form = PROFILE_FORM[request.user.attendent.role](request.POST)
         negExp_form = NEGEXP_FORM[request.user.attendent.role](request.POST)
         medExp_form = MEDEXP_FORM[request.user.attendent.role](request.POST)
 
-        if profile_form.is_valid():
+        if profile_form.is_valid and negExp_form.is_valid() and medExp_form.is_valid() :
             profile = profile_form.save(commit=False)
             profile.attendent = request.user.attendent
             profile.save()
-
-        if negExp_form.is_valid():
-            negExp_form.save()
-
-        if medExp_form.is_valid():
-            medExp_form.save()
+            # Save the many to many relations
+            negExp_form.save(instance=profile)
+            medExp_form.sav(instance=profile)
 
     else:
         profile_form = PROFILE_FORM[request.user.attendent.role]
@@ -82,8 +79,8 @@ def profile_delete(request):
 
 def profile_display(request):
     # Switch Dicctionary to display the right form    
-    return render(request, 'portal/experts/experts_detailview.html', {
-        'expert': ExpertProfile.objects.get(user=request.user)
+    return render(request, 'portal/experts/expert_detail.html', {
+        'attendent': get_object_or_404(Attendent, user=request.user)
     })
 
 def profile_edit(request):
@@ -124,19 +121,50 @@ def profile_edit(request):
 
 
 # ------ Profile Interaction -----------
-
+from django.views import View
+from ApplicationManagement.forms import (ExpertProfileForm, ExpertProfileFormHeader, ExpertProfileFormSide,
+                                        ExpertProfileFormHeaderSide,
+                                        ExpertProfileFormMain, ExpertProfileMembershipForm,
+                                        MediationExperienceFormset, NegotiationExperienceFormset)
 # TESTCASE
-def profile_test(request):
-    if request.method == "POST":
-        form = ExpertModelForm(request.POST, request.FILES, instance=request.user.profile.expertprofile)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/profile')
-    profileForm = ExpertModelForm(instance=request.user.profile.expertprofile)
-    return render(request, 'profile/test.html', {
-        'profileForm': profileForm,
-        })
+class TestView(View):
+    
 
+    def get(self, request):
+        profileFormHeader = ExpertProfileForm()
+        profileFormHeaderSide = ExpertProfileFormHeaderSide()
+        profileFormSide = ExpertProfileFormSide()
+        profileFormMain = ExpertProfileFormMain()
+        profileFormMembership = ExpertProfileMembershipForm()
+        mediationExp = MediationExperienceFormset()
+        negotiationExp = NegotiationExperienceFormset()
+        
+        context = {
+            'userForm' : profileFormHeader,
+            'user': request.user,
+            'profileFormHeader': profileFormHeader,
+            'profileFormHeaderSide': profileFormHeaderSide,
+            'profileFormSide': profileFormSide,
+            'profileFormMain': profileFormMain,
+            'profileFormMembership': profileFormMembership,
+            'mediationExp': mediationExp,
+            'mediationExp_helper': MediationExperienceFormset_helper(),
+            'negotiationExp': negotiationExp,
+            'negotiationExp_helper': NegotiationExperienceFormset_helper(),
+        }
+        return render(request, 'profile/test.html', context)
+
+    def post(self, request):
+        userForm = ExpertProfileForm(request.POST, request.FILES)
+        if userForm.is_valid():
+            obj = userForm.save(commit=True)
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, 'profile/test.html', {
+                'userForm': userForm,
+            })
+        context = {}
+        return render(request, 'profile/test.html', context)
 
 # -------------- SCORING VIEWS ----------------------
 """

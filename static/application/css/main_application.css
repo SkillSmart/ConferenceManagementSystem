@@ -1,0 +1,144 @@
+body {
+    /*background: darkblue;*/
+    background: lightgrey;
+}
+
+.jumbotron {
+    background-image: url("https://www.richmond.ac.uk/wp-content/uploads/2015/11/richmond-1banner.png");
+    height: 480px;
+}
+
+.sidebar-left {
+    /*margin-top: -90px;*/
+    padding: 0;
+}
+
+.header-display {
+    background: white;
+    margin: 15px;
+    padding: 25px;
+}
+
+.sidebar-left article {
+    background: white;
+    border: 1px solid lightgrey;
+    padding: 5px 20px;
+    margin-bottom: 15px;
+}
+
+/*-----------GENERAL FORM LAYOUT ------------*/
+
+.controls {
+    margin: 0;
+    margin-bottom: -10px;
+}
+
+
+label {
+    font-size: 12px;
+}
+
+}
+/*------------REGISTRATION PAGE---------------*/
+.left-background {
+    position:fixed;
+    background: blue;
+    opacity:0.2;
+    top:0;
+    bottom:0;
+    right:50%;
+    left:0%;
+    /*z-index: 1;*/
+}
+
+.right-background {
+    position:fixed;
+    background: green;
+    opacity:0.2;
+    top:0;
+    bottom:0;
+    right:0%;
+    left:50%;
+    /*z-index: 1;*/
+}
+.expert-background {
+    position: fixed;
+    background-image: url('http://www.universitiesuk.ac.uk/events/about/Testimonials%20slide%20show/Crowd.jpg');
+    filter: alpha(opacity=60);
+    opacity: 0.6;
+    top:0;
+    bottom:0;
+    right:0%;
+    left:50%;
+    z-index: -1;
+}
+
+.team-background {
+    background-image: url('https://www.profwritingacademy.com/wp-content/uploads/2013/11/Tom-Bromley-2.jpg');
+    position: fixed;
+    filter: alpha(opacity=60);
+    opacity: 0.6;
+    top:0;
+    bottom:0;
+    right:50%;
+    left:0%;
+    z-index: -1;
+}
+
+
+/*The boxes displayed above the Background images*/
+.registration_display {
+    margin:  20% 15%;
+    padding: 35px;
+    background: white;
+    color: black;
+    z-index: 0;
+}
+.registration_display header {
+    margin: 20px;
+    margin-bottom: 30px;
+}
+
+.registration_display a {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+/*-------EXPERT FORM--------------*/
+#ExpertProfileTop {
+    background: white;
+    padding: 5px
+}
+#ExpertProfileHeader {
+    background: white;
+    padding: 10px;
+}
+
+#ExpertProfileSide {
+    padding: 10px;
+    margin-right: 10px;
+    background: white;
+}
+
+#ExpertProfileSide label {
+    font-size:12px;
+    margin-right: -20px;
+
+}
+
+.experienceItem {
+    margin-bottom: 20px;
+    background: white;
+    padding: 20px;
+    border: 1px solid white;
+}
+
+.profileSubmit {
+    position: absolute;
+    right: 0%;
+    margin-bottom: 80px;
+}
+/*--------- TEAM APPLICATION PAGE ----------*/
+/*.expert-formsetItem {
+    margin-bottom: 25px;
+}*/

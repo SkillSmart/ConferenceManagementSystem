@@ -1,0 +1,41 @@
+body {
+    padding-top: 70px;
+}
+
+.footer-backdrop {
+    height: 250px;
+    background: red;
+}
+
+.navbar-fixed-top {
+    padding:0;
+    margin: 0;
+    background: white;
+    height: 70px;
+}
+.navbar-brand {
+    font-size: 30px;
+}
+.navbar-fixed-top a {
+    color: #888888;
+    padding: 15px 40px;
+    margin-right: 10px;
+    font-weight: 200;
+}
+
+.navbar-nav li a:hover {
+    margin-top:-1px;
+    border-bottom: 4px solid darkblue;
+    border-top: 1px solid darkblue;
+    background: inherit !important;
+    color: darkblue;
+    font-weight: 200;
+}
+
+.navbar-right li a:hover {
+    border: none;
+}
+
+/*Body Sections Styles*/
+
+/* MODAL SETUP */

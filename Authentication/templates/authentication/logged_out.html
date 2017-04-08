@@ -1,10 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Loggin Out</h2>
-<form action="" method="POST">
-{% csrf_token %}
-{{form.as_p}}
-<button type="submit">Log out</button>
-</form>
+<h2>Successfully logged out</h2>
+<p>All session data has been deleted</p>
+
+<a href="{% 'portal:index' %}" class="btn btn-success">Close</a>
 {% endblock %}

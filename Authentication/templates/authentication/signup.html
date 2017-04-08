@@ -4,8 +4,8 @@
     {% csrf_token %}
     <table>
         <tbody>
+            {{ user_form.as_table }}
             {{ attendent_form.as_table }}
-            {{ account_form.as_table }}
         </tbody>
     </table>
     <button type="submit">Create Account</button>

@@ -21,6 +21,7 @@ from cdrc_cms import settings
 # This is added to get the traditional views
 from django.contrib.auth import views as auth_views
 from Authentication import views as authentication_views
+from ApplicationManagement.views import AccountRegistrationView
 
 # Application INCLUDES
 urlpatterns = [
@@ -33,10 +34,8 @@ urlpatterns = [
 
 # AUTHENTICATION
 urlpatterns += [
-    url(r'^login/', auth_views.login,
-    {'template_name':'authentication/login.html','redirect_field_name':'home'},
-    name='login'),
-    url(r'^logout/$', auth_views.logout, {'next_page':'/'}, name='logout'),
+    url(r'^login/', authentication_views.LoginView.as_view(), name='login'),
+    url(r'^logout/$', authentication_views.LogoutView.as_view(), name='logout'),
     url(r'^change-password/$', auth_views.password_change, 
     {'template_name': 'authentication/changePassword.html'}),
     url(r'^reset-password/$', auth_views.password_reset, {
@@ -45,7 +44,6 @@ urlpatterns += [
     url(r'^reset-password-done/$', auth_views.password_reset_done, {
         'template_name': 'authentication/resetPasswordDone.html'}, name="password_reset_done"),
     url(r'^admin/', admin.site.urls),
-    url(r'^signup/$', authentication_views.signup, name='signup'),
 ] 
 # Additon to serve Media when DEBUG=TRUE
 

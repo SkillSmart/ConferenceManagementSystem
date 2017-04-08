@@ -9,40 +9,42 @@
 
 {% comment %}<div class="expert-application"></div>{% endcomment %}
 <div class="container">
-    <section class="expert-application col-sm-6 text-center">
-    <div class="left-background"></div>
-    <div class="expert-background"></div>
-    <article class="registration_display col-sm-10 col-md-8">
-        <header >
-            <h2>Expert Registration</h2>
-        </header>
-        <p>This article explores relationships between feedback, group learning, 
-            and performance. It considers how feedback to individuals and the group as a whole supports 
-            continuous group learning. Feedback source, purpose, clarity, and valence may affect 
-            perceptions, processing, and outcomes of feedback. How feedback is processed and used may 
-            be influenced by group and individual conditions.</p>
-            <hr>
-            <a type="button" href="{% url 'application:register_expert' %}"  class="btn btn-success" value="Start Expert Registration">Start Expert Registration</a>
-    </article>
-</section>
+   <div class="row">
+        <section class="expert-application col-sm-6 text-center">
+            <div class="left-background"></div>
+            <div class="expert-background"></div>
+            <article class="registration_display col-sm-10 col-md-8">
+                <header >
+                    <h2>Expert Registration</h2>
+                </header>
+                <p>This article explores relationships between feedback, group learning, 
+                    and performance. It considers how feedback to individuals and the group as a whole supports 
+                    continuous group learning. Feedback source, purpose, clarity, and valence may affect 
+                    perceptions, processing, and outcomes of feedback. How feedback is processed and used may 
+                    be influenced by group and individual conditions.</p>
+                    <hr>
+                    <a type="button" href="{% url 'application:register_account' 'expert' %}"  class="btn btn-success" value="Start Expert Registration">Start Expert Registration</a>
+            </article>
+        </section>
 
 
-<section class="team-application col-sm-6 text-center">
-    <div class="right-background"></div>
-    <div class="team-background"></div>
-    <article class="registration_display col-sm-10 col-md-9">
-        <header >
-            <h2>Team registration</h2>
-        </header>
-        <p>This article explores relationships between feedback, group learning, 
-            and performance. It considers how feedback to individuals and the group as a whole supports 
-            continuous group learning. Feedback source, purpose, clarity, and valence may affect 
-            perceptions, processing, and outcomes of feedback. How feedback is processed and used may 
-            be influenced by group and individual.</p>
-            <hr>
-            <a type="button" href="{% url 'application:register_team' %}" class="btn btn-primary">Start Team Registration</a>
-    </article>
-</section>
+        <section class="team-application col-sm-6 text-center">
+            <div class="right-background"></div>
+            <div class="team-background"></div>
+            <article class="registration_display col-sm-10 col-md-9">
+                <header >
+                    <h2>Team registration</h2>
+                </header>
+                <p>This article explores relationships between feedback, group learning, 
+                    and performance. It considers how feedback to individuals and the group as a whole supports 
+                    continuous group learning. Feedback source, purpose, clarity, and valence may affect 
+                    perceptions, processing, and outcomes of feedback. How feedback is processed and used may 
+                    be influenced by group and individual.</p>
+                    <hr>
+                    <a type="button" href="{% url 'application:register_team' %}" class="btn btn-primary">Start Team Registration</a>
+            </article>
+        </section>
+   </div>
 </div>
 
 

@@ -27,16 +27,9 @@ class Attendent(models.Model):
     """A Person attending the Competiton. Information stored to keep track
     on Applications before and behaviour during Competition over Time.
     Reused in later application processes."""
-    ROLES = (
-        ('negotiator', 'Negotiator'),
-        ('mediator', 'Mediator'),
-        ('expert', 'Expert Assessor'),
-        ('coach', 'Coach'),
-        ('assessor', 'Assessor'),
-        ('team', 'Team'),
-    )
+
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    role = models.CharField(max_length=35, choices=ROLES)
+    role = models.CharField(max_length=35, choices= settings.STUDENT_ROLES + settings.EXPERT_ROLES + settings.STAFF_ROLES)
     blacklisted = models.BooleanField(default=False)
     administrativeComment = models.TextField(blank=True, null=True)
 
@@ -67,7 +60,7 @@ class Attendent(models.Model):
         return reverse('portal:expert_profile', args = [self.user.username])
 
     def __str__(self):
-        return "{}".format(self.user)
+        return "{}".format(self.user.get_full_name())
     
     def save(self, *args, **kwargs):
         self.current_application = self.application_set.filter(competition_year=settings.START_DATE.year)
@@ -115,12 +108,18 @@ class Team(Attendent):
         self.role = 'team'
         super().save(*args, **kwargs)
 
+class Staff(Attendent):
+    """
+    Will be used to manage and represent all necessary information on a Staff Member for Shift Management.
+    """
+    pass
+
 
 # ---Basic Profile Models to store additional Information on the Applicants
 class Profile(models.Model):
     """
     """
-    user = models.OneToOneField(User, blank=True, null=True)
+    attendent = models.OneToOneField(Attendent, blank=True, null=True, on_delete=models.CASCADE)
     bio = models.TextField(max_length=2000)
     slogan = models.CharField(max_length=250, verbose_name="Your favorite quote up to 250 characters")
     country = CountryField(null=True)
@@ -141,7 +140,7 @@ class Profile(models.Model):
     blank=True, null=True)
 
     def __str__(self):
-        return str(self.user)
+        return str(self.attendent)
 
 class ExpertProfile(Profile):
     """
@@ -155,9 +154,6 @@ class ExpertProfile(Profile):
     viac_member = models.BooleanField(verbose_name="Are you Member of VIAC?", default=False)
     iba_member = models.BooleanField(verbose_name="Are you Member of IBA?", default=False)
 
-    def __str__(self):
-        return str(self.user)
-
 class StudentProfile(Profile):
     """
     Stores all relevant information on the Student as either(Negotiator, Mediator) in the
@@ -167,11 +163,8 @@ class StudentProfile(Profile):
     student = models.OneToOneField(Student, null=True, on_delete=models.CASCADE)
     
     # relevant practical Experience
-    def __str__(self):
-        return str(self.user)
-
     def get_absolute_url(self):
-        return reverse('portal:student_profile', args=[self.user.username])
+        return reverse('portal:student_profile', args=[self.attendent.user.username])
 
 class TeamProfile(models.Model):
     """ Stores all relevant Information about the Team as the object of a Application.
@@ -201,6 +194,20 @@ def create_tem_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Team)
 def save_team_profile(sender, instance, **kwargs):
     instance.teamprofile.save()
+
+
+class StaffProfile(Profile):
+    """
+    Stores all relevant information on the Student as either(Negotiator, Mediator) in the
+    competition. Is used for professional representation, sharing of information.
+    It does NOT store relevant Scoringinformation etc.(= stored on ATTENDENT )
+    """ 
+    staff = models.OneToOneField(Staff, null=True, on_delete=models.CASCADE)
+    
+    # relevant practical Experience
+    def get_absolute_url(self):
+        return reverse('portal:student_profile', args=[self.attendent.user.username])
+
 
 #----------------- Interaction models -------------------------
 

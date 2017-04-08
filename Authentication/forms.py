@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from UserManagement.models import Attendent
+from django.core.exceptions import ValidationError
 
 # --- Entitiy Management Forms ------
 class UserModelForm(forms.ModelForm):
@@ -16,10 +17,6 @@ class UserModelForm(forms.ModelForm):
             raise ValidationError("Password does not match.")
         return self.cleaned_data
 
-class AttendentModelForm(forms.ModelForm):
-    class Meta:
-        model = Attendent
-        exclude = []
 
 # ---- Authentication Action Forms ---------
 class LoginForm(forms.Form):
@@ -31,12 +28,13 @@ class ChangePasswordForm(forms.Form):
     newPassword = forms.CharField(widget=forms.PasswordInput())
     newPassword_repeat = forms.CharField(widget=forms.PasswordInput())
 
-
-
-    def clean(self):
+    def clean(self, *args, **kwargs):
+        cleaned_data = super(ChangePasswordForm, self).clean(*args, **kwargs)
         if( self.cleaned_data['newPassword'] != self.cleaned_data['newPassword_repeat']):
             raise ValidationError("The new Passwords given do not match.")
         return cleaned_data
+
+
 # ---- Profile Edit Forms -------
 class UserAccountForm(UserModelForm):
     exclude = ['password', 'confirm_password']

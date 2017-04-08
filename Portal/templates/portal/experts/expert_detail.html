@@ -1,55 +1,75 @@
 {% extends 'base_profile.html' %}
 
-
 {% block profile-header %}
+
 <div class="container">
     <article class="row">
-        <header class="col-sm-3">
-            <!--Profile Picture-->
-            <small>Role</small>
-            <h3>{{ expert.user.attendent.role|capfirst}}</h3>
-            <img class="img-responsive" style="max-width: 160px;" src="{% if expert.profileImg %}{{ expert.profileImg.url}} {% else %} https://placehold.it/180x180 {% endif %}" alt="">
-            <img src="{{ expert.country.flag}}" alt=""> {{ expert.country.name}}
-            <h2>{{ expert.user.get_full_name }}</h2>
-            
-            <!--Contact Details-->
-            <table class="table-sm">
-                <tbody>
-                    <tr><td>Phone: </td><td>{{ expert.phoneNumber}}</td></tr>
-                    <tr><td>Email: </td><td>{{ expert.user.email}}</td></tr>
-                    <tr><td>City: </td><td>{{ expert.city }}</td></tr>
-                </tbody>
-            </table>
-            <hr>
-            <nav class="social_links list-inline">
-                <li><a href="{{ expert.twitter }}">Twitter</a></li>
-                <li><a href="{{ expert.facebook }}">Facebook</a></li>
-                <li><a href="{{ expert.blog }}">Website</a></li>
-            </nav>
-            {% if request.user.profile.expertprofile == expert %}
-                <a href="{% url 'userManagement:profile_edit' %}" role="button" class="btn-block btn-danger">Edit Profile</a>
-            {% endif %}
+        <header class="col-sm-4">
+            <div class="card">
+                <!--Profile Picture-->
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <img class="img-fluid" src="{% if attendent.profile.profileImg %}{{ attendent.profile.profileImg.url}} {% else %} https://placehold.it/180x180 {% endif %}" alt="">
+                        </div>
+                        <div class="col-sm-7">
+                             <small>{{ attendent.user.attendent.role|capfirst}}</small>
+                            <img src="{{ attendent.country.flag}}" alt=""> {{ attendent.country.name}}
+                            <h4>{{ attendent.user.get_full_name }}</h4>
+                            <div class="float-sm-left">
+                                <ul class="list-inline">
+                                    <li class='list-inline-item'><a href="{{ attendent.profile.linkedin}}" class="fa fa-linkedin"></a></li>
+                                    <li class='list-inline-item'><a href="{{ attendent.profile.twitter}}" class="fa fa-twitter"></a></li>
+                                    <li class='list-inline-item'><a href="{{ attendent.profile.facebook}}" class="fa fa-facebook"></a></li>
+                                    <li class='list-inline-item'><a href="{{ attendent.profile.instagram}}" class="fa fa-instagram"></a></li>
+                                    <li class='list-inline-item'><a href="{{ attendent.profile.google}}" class="fa fa-google"></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="card-block">
+                    <!--Contact Details-->
+                    <table class="table table-sm">
+                        <tbody>
+                            <tr><td>Phone: </td><td>{{ attendent.profile.phoneNumber}}</td></tr>
+                            <tr><td>Email: </td><td>{{ attendent.user.email}}</td></tr>
+                            <tr><td>City: </td><td>{{ attendent.profile.city }}</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr>
+                <div class="card-footer">
+                    <div class="navbar">
+                        
+                    </div>
+                </div>
+                {% if request.user.attendent == attendent %}
+                    <a href="{% url 'userManagement:profile_edit' %}" role="button" class="btn-block btn-danger">Edit Profile</a>
+                {% endif %}
+            </div>
         </header>
         <!--Header Detail Section-->
         <content class="col-sm-8">
             <div class="backlink">
             </div>
-            <article class="row">
+            <article>
                 <header>
                 </header>
                 <content>
                     <h3>Slogan</h3>
                     <blockquote cite="">
-                        {{ expert.slogan }}
+                        {{ attendent.profile.slogan }}
                     </blockquote>
                 </content>
             </article>
-            <article class="row">
+            <article>
                 <header>
                     <h3>Biography</h3>
                 </header>
                 <content>
-                    {{ expert.bio }}
+                    <p>{{ attendent.profile.bio }}</p>
                 </content>
             </article>
         </content>
@@ -62,9 +82,9 @@
 {% comment %}   SIDEBAR   {% endcomment %}
 {% block profile-content %}
 
-<!--        DISPLAY ONLY FOR EXPERT THEMSELVES                          -->
+<!--        DISPLAY ONLY FOR attendent THEMSELVES                          -->
 
-{% if request.user.profile.expertprofile == expert %}
+{% if request.user.profile.attendentprofile == attendent %}
     <!--Personal Information Feedback-->
     <section class="row">
         <article class="col-sm-6">
@@ -125,10 +145,10 @@
     </section>
 {% endif %}
 
-<!--        DISPLAY ONLY FOR EXPERT THEMSELVES                          -->
+<!--        DISPLAY ONLY FOR attendent THEMSELVES                          -->
 <section class="row">
         <h3>Upcoming Programs/Trainings</h3>
-        {% for program in expert.program_set.all %}
+        {% for program in attendent.program_set.all %}
             <a href="{{program.webpage.url}}">
             <article class="col-sm-6">
                 
@@ -140,7 +160,7 @@
                 <aside class="col-sm-4">
                     <h5>{{ program.institution}}</h5>
                     <ul class="list-unstyled">
-                        <li>Instructor: {{ program.expert.user.get_full_name }}</li>
+                        <li>Instructor: {{ program.attendent.user.get_full_name }}</li>
                         <li>Duration: {{ program.duration }} Hours</li>
                     </ul>
                 </aside>
@@ -178,7 +198,7 @@
     <aside class="col-sm-4">
         <h3>Certifications</h3>
         
-        {% for certificate in expert.certification_set.all %}
+        {% for certificate in attendent.certification_set.all %}
             <article class="row">
                 <header class="col-sm-12">
                     <h4>{{certificate.title}}</h4>
@@ -194,7 +214,7 @@
         <article class="row">
             <h3>Languages</h3>
             
-            {% for language in expert.language_set.all %}
+            {% for language in attendent.language_set.all %}
                 <header>
                     <h4>{{ language.name }}</h4>
                 </header>
@@ -214,7 +234,7 @@
         <!-- Awards -->
         <section class="row">
             <h3>Mediation Experience</h3>
-            {% for experience in expert.mediationexperience_set.all %}
+            {% for experience in attendent.mediationexperience_set.all %}
             <article class="row">
                 <div class="col-sm-12">
                     <h5>{{ experience.get_profession_display|capfirst }}</h5>
@@ -241,7 +261,7 @@
 
         <section class="row">
             <h3>Negotiation Experience</h3>
-            {% for experience in expert.negotiationexperience_set.all %}
+            {% for experience in attendent.negotiationexperience_set.all %}
             <article class="row">
                 <div class="col-sm-12">
                     <h5>{{ experience.get_profession_display|capfirst }}</h5>

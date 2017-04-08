@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+<!--Crispy loaders-->
+{% crispy user_form user_form.helper  %}
+{% crispy attendent_form %}
+
+{% block css-includes %}
+    <link rel="stylesheet" type="text/css" href="{% static 'application/css/main_application.css' %}">
+{% endblock %}  
+
+{% block content %}
+
+{% comment %}<div class="expert-application"></div>{% endcomment %}
+<div class="container">
+    <div class="col-sm-5">
+        <h2>Register your {{role|capfirst}} Account</h2>
+        {% if role == 'student' %}
+            <header class="text-center">
+                <p>We welcome you to the CDRC 2017 Registration.</p>
+
+                <p>This Account will give you automatic access to your Teams
+                    Registration Page, where you can fill out and submit the necessary
+                    Teamdetails and upload your Application Video.
+                </p>
+            </header>
+        {% elif role == 'expert' %}
+            <header class="text-center">
+                <p>We welcome you to the CDRC 2017 Registration.
+                    You have been invited to register as part of the 
+                    University of Bengalore, India. </p>
+
+                <p>This Account will give you automatic access to your Teams
+                    Registration Page, where you can fill out and submit the necessary
+                    Teamdetails and upload your Application Video.
+                </p>
+            </header>
+        {% elif role == 'staff' %}
+            <header class="text-center">
+                <p>
+                   Welcome and Thank you for your interest in becoming a part of the 
+                   CDRC 2017 Mediation and Negotiation Competition Vienna</p>
+
+                <p>
+                </p>
+            </header>
+        {% endif %}
+        <form method="POST" action="">{% csrf_token %}
+            <h4>Please start by setting your Account Details</h4>
+            {% crispy user_form %}
+            <h4>Please select the Role you apply for</h4>                
+            {% crispy attendent_form %}
+            <button class="btn btn-block btn-success" type="submit">Create Account</button>
+        </form>
+    </div>
+</div>
+
+
+{% endblock content %}

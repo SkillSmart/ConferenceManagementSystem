@@ -1,3 +1,5 @@
+from django.core.exceptions import ValidationError
+# 
 from django.forms import ModelForm, Form
 from django.forms import inlineformset_factory, modelformset_factory, formset_factory
 
@@ -19,8 +21,6 @@ from UserManagement.models import ExpertProfile, MediationExperience, Negotiatio
 # Experieence
 
 # ---- GENERAL PAGE RELEVANT FORMS ---------
-class ApplicationSelection(Form):
-    pass
 
 class ContactForm(Form):
     sender = forms.EmailField()
@@ -31,8 +31,19 @@ class UserForm(ModelForm):
     class Meta:
         model = User
         exclude = []
+
+# ----- ACCOUNT REGISTRATION --------
+class AttendentModelForm(forms.ModelForm):
+    class Meta:
+        model = Attendent
+        fields = ['role']
     
-    
+    def __init__(self, choices, *args, **kwargs):
+        super(AttendentModelForm, self).__init__(*args, **kwargs)
+        self.fields['role'].choices = choices
+        self.helper = FormHelper()        
+        self.helper.form_tag = False
+
 
 # ----- TEAM REGISTRATION -------
 class TeamRegistrationForm(ModelForm):
@@ -50,6 +61,7 @@ class StdProfileForm_head(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        
         self.helper.layout = Layout(
             Field('slogan', rows=3),
             Field('bio', rows=10),
@@ -108,7 +120,7 @@ class StudentProfileForm(ModelForm):
 
 # STUDENT ---- FormSets and Inline Formsets
 class UserRegistrationForm(ModelForm):
-    password_set = forms.CharField(widget=forms.PasswordInput(
+    password = forms.CharField(widget=forms.PasswordInput(
         attrs={'class':'form-control'}
     ),
     label="Choose Password")
@@ -118,15 +130,22 @@ class UserRegistrationForm(ModelForm):
     label="Confirm Password")
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email','password_set', 'password_repeat']
-    
+        fields = ['first_name', 'last_name', 'email', ]
+
+    def clean(self, *args, **kwargs):
+        super(UserRegistrationForm, self).clean(*args, **kwargs)
+        if (self.cleaned_data.get('password') != self.cleaned_data.get('password_repeat')):
+            raise ValidationError("Password does not match.")
+        return self.cleaned_data
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.form_id = 'ExpertProfileTop'
-        self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-sm-4'
-        self.helper.field_class = 'col-sm-8'
+        self.helper.form_class = 'form-group-row'
+        self.helper.label_class = 'col-sm-4 col-form-label'
+        self.helper.field_class = 'form-group-row'
 
 
 # STUDENT ----- LANGUAGES
@@ -270,26 +289,55 @@ class ExpertProfileFormHeader(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.form_id = 'ExpertProfileHeader'
         self.helper.layout = Layout(
             Field('slogan', rows=2)
         )
 
+class ExpertProfileFormHeaderSide(ModelForm):
+    class Meta:
+        model = ExpertProfile
+        fields = ['profileImg', 'affiliation', 'position', 'country', 'city']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_id = 'ExpertProfileFormHeaderSide'
+        self.helper.layout = Layout(
+            Field('slogan', rows=2)
+        )
+    
 class ExpertProfileFormSide(ModelForm):
     class Meta:
         model = ExpertProfile
-        fields = ['profileImg', 'affiliation', 'position', 'country', 'phoneNumber', 'twitter', 'linkedin', 'facebook', 'blog']
+        fields = ['phoneNumber', 'twitter', 'linkedin', 'facebook', 'blog']
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.form_id = 'ExpertProfileSide'
-        self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-sm-4'
-        self.helper.field_class = 'col-sm-8'
+        # self.helper.label_class = 'col-sm-4'
+        # self.helper.field_class = 'col-sm-6'
         self.helper.layout = Layout(
             Field('profileImg', hidden=True)
         )
+
+class ExpertProfileMembershipForm(ModelForm):
+    class Meta:
+        model = ExpertProfile
+        fields = ['imi_certified', 'viac_member', 'iba_member']
+
+    
+    def __init__(self, *args, **kwargs):
+        super(ExpertProfileMembershipForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_id = 'ExpertProfileMembership'
+
 
 class ExpertProfileFormMain(ModelForm):
     class Meta:
@@ -299,6 +347,7 @@ class ExpertProfileFormMain(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.form_id = 'ExpertProfileMain'
 
 class MediationExperienceForm(ModelForm):
@@ -309,6 +358,8 @@ class MediationExperienceForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.form_class = 'mediationExpItem'
 
 
 class NegotiationExperienceForm(ModelForm):
@@ -318,7 +369,9 @@ class NegotiationExperienceForm(ModelForm):
 
     def __init__(self, *args, ** kwargs):
         super().__init__(*args, **kwargs)
+        # self.helper.form_tag = False
         self.helper = FormHelper()
+        self.helper.form_class = 'negotiationExpItem'
         self.helper.layout = Layout()
 
 #EXPERT _ FORMSETS AND INLINE FORMSETS
@@ -327,7 +380,6 @@ NegotiationExperienceFormset = formset_factory(NegotiationExperienceForm, extra=
 class NegotiationExperienceFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(NegotiationExperienceFormset_helper, self).__init__(*args, **kwargs)
-        self.form_method = 'post'
         self.layout = Layout(
             Div(
                 Div(
@@ -351,7 +403,6 @@ MediationExperienceFormset = formset_factory(MediationExperienceForm, extra=2)
 class MediationExperienceFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(MediationExperienceFormset_helper, self).__init__(*args, **kwargs)
-        self.form_method = 'post'
         self.layout = Layout(
             Div(
                 Div(
