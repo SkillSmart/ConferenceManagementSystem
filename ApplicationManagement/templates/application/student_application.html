@@ -18,9 +18,16 @@
 
 <!-- COPY -->
 {% block body %}
+{% comment %} Section to store the managementforms for all formsets{% endcomment %}
+{{ languageFormset.mangement_form }}
+{{ competitionFormset.management_form }}
+{{ internshipFormset.management_form }}
+{{ courseworkFormset.management_form }}
+{{ awardFormset.mangement_form }}
+
 <section class="jumbotron">
 <form method="POST" enctype="multipart/form-data">{% csrf_token %}
-    <div class="container">
+    <section class="container">
         <div class="row">
             <div class="col-md-4">
                 <div class="card">
@@ -55,76 +62,63 @@
                 </div>
             </div>
         </div>
-    </div>
-</section>
-<section class="container">
-    <div class="row">
-        <section class="col-md-3 sidebar-left">
-            <div class="card">
-                <div class="card-header">
-                    <h3>Awards</h3>
-                </div>
-
-                <div class="card-block">
-
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h3>Languages</h3>
-                </div>
-                <div class="card-block">
-                    {{ languageFormset.management_form|crispy}}
-                    {% crispy languageFormset languageFormset_helper %}
-                </div>
-            </div>    
-        </section>
-        <section class="col-md-9">
-                <div class="card mb-sm-4">
+    </section>
+    </section>
+    <section class="container">
+        <div class="row">
+            <section class="col-md-3 sidebar-left">
+                <div class="card  mb-sm-4">
                     <div class="card-header">
-                         <h3>Competition Experience</h3>
+                        <h3>Languages</h3>
                     </div>
-                    <section class="card-block">
-                        {{ competitionFormset.management_form|crispy }}
-                        {{ awardFormset.management_form|crispy }}
-                        {% for compForm in competitionFormset %}
-                            {% crispy compForm competitionFormset_helper %}
-                            
-                            {% for awardForm in awardFormset %}
-                                {% crispy awardForm awardFormset_helper %}
-                            {% endfor %}
-                                
-                        {% endfor %}
-                            
-
-                    </section>
-                                        
+                    <div class="card-block" id="languageFormset">
+                        {% crispy languageFormset languageFormset_helper %}
+                    </div>
                 </div>
-                <div class="card mb-sm-4">
+                <article class="card">
                     <header class="card-header">
-                        <h3>International Experience</h3>
-                        <p>Please describe to us the professional background you bring
-                            to the table here.
-                        </p>
+                        <h3 class="card-title">
+                            Contact Details
+                        </h3>
                     </header>
-                    <content class="card-block">
-                        {{ internshipFormset.management_form|crispy}}
-                        {% crispy internshipFormset internshipFormset_helper %}
+                    <content class="card-block" >
+                        {% crispy profileFormSide %}
                     </content>
-                </div>
-                <div class="card mt-sm-4">
-                    <header class="card-header">
-                        <h3>Coursework</h3>
-                    </header>
-                    <content class="card-block">
-                        {% crispy courseworkFormset courseworkFormset_helper %}
-                    </content>
-                </section>
+                </article>
             </section>
-        </div>
-</section>
+            <section class="col-md-9">
+                    <div class="card mb-sm-4">
+                        <div class="card-header">
+                            <h3>Competition Experience</h3>
+                        </div>
+                        <content class="card-block" id="competitionFormset">
+                            {% crispy competitionFormset competitionFormset_helper  %}
+                        </content>
+                                            
+                    </div>
+                    <div class="card mb-sm-4">
+                        <header class="card-header">
+                            <h3>International Experience</h3>
+                            <p>Please describe to us the professional background you bring
+                                to the table here.
+                            </p>
+                        </header>
+                        <content class="card-block" id="internshipFormset">
+                            {% crispy internshipFormset internshipFormset_helper %}
+                        </content>
+                    </div>
+                    <div class="card mt-sm-4">
+                        <header class="card-header">
+                            <h3>Coursework</h3>
+                        </header>
+                        <content class="card-block" id="courseworkFormset">
+                            {% crispy courseworkFormset courseworkFormset_helper %}
+                        </content>
+                    </section>
+                </section>
+            </div>
+    </section>
 </form>
-
 {% endblock body %}
 
 {% comment %}
@@ -148,7 +142,7 @@ in the base_application.html template.
         deleteText: "<i class='fa fa-ban' aria-hidden='true'></i>",
         deleteCssClass: 'int btn btn-danger btn-sm bp-sm-4 float-right',
         addText: 'add Internship',
-        addCssClass: 'int btn btn-success btn-sm float-right',
+        addCssClass: 'int btn btn-primary btn-sm float-right',
 
     });
 
@@ -158,26 +152,26 @@ in the base_application.html template.
         deleteText: "<i class='fa fa-ban'' aria-hidden='true'></i>",
         deleteCssClass: 'cmp btn btn-danger btn-sm float-right',
         addText: 'add Competition',
-        addCssClass: 'cmp btn btn-success btn-sm float-right',
+        addCssClass: 'cmp btn btn-primary btn-sm float-right',
     });
 
     $('#languageFormset').formset({
         prefix: '{{ languageFormset.prefix }}',
         formCssClass: 'dynamic-languageFormset',
         deleteText: "<i class='fa fa-ban'' aria-hidden='true'></i>",
-        deleteCssClass: 'lng btn btn-danger btn-sm bp-sm-4 float-right',
+        deleteCssClass: 'lng btn btn-danger btn-sm float-right',
         addText: 'add Language',
-        addCssClass: 'lng btn btn-success btn-sm float-right',
+        addCssClass: 'lng btn btn-primary btn-sm float-right',
         
     });
 
-    $('#awardFormset').formset({
+    $('.awardFormset').formset({
         prefix: '{{ awardFormset.prefix }}',
         formCssClass: 'dynamic-awardFormset',
         addText: 'add Award',
         addCssClass: 'awd btn btn-success btn-sm float-right',
         deleteText: "<i class='fa fa-ban' aria-hidden='true'></i>",
-        deleteCssClass: 'awd btn btn-danger btn-sm bp-sm-4 float-right',
+        deleteCssClass: 'awd btn btn-danger btn-sm  float-right',
     });
 </script>
 

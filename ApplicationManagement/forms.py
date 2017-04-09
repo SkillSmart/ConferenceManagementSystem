@@ -1,14 +1,14 @@
 from django.core.exceptions import ValidationError
+from django.conf import settings
 # 
 from django.forms import ModelForm, Form
 from django.forms import inlineformset_factory, modelformset_factory, formset_factory
 
 # Crispy Imports
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Button, Submit, Reset, Layout, Field, MultiField, Div, Fieldset
+from crispy_forms.layout import LayoutObject, Button, Submit, Reset, Layout, Field, MultiField, Div, Fieldset
 from crispy_forms.bootstrap import (
     PrependedText, PrependedAppendedText, FormActions)
-
 # Import Models
 from django.contrib.auth.models import User
 from django import forms
@@ -19,6 +19,38 @@ from UserManagement.models import StudentProfile, Internship, Course, Competitio
 # Experts
 from UserManagement.models import ExpertProfile, MediationExperience, NegotiationExperience
 # Experieence
+
+# TEST IMPORTS
+from django.template.loader import render_to_string
+
+
+# Specific Field to display an inline formset as a single Field (for nesting)
+class Formset(LayoutObject):
+    """
+    Layout object. It renders an entire formset, as though it were a Field.
+    Example::
+    Formset("attached_files_formset")
+    """
+
+    template = "application/formset_competition.html"
+
+    def __init__(self, formset_name_in_context, formset_helper_name=None, template=None):
+        self.formset_name_in_context = formset_name_in_context
+        self.formset_helper_name = formset_helper_name
+        # crispy_forms/layout.py:302 requires us to have a fields property
+        self.fields = []
+        # Overrides class variable with an instance level variable
+        if template:
+            self.template = template
+
+    def render(self, form, form_style, context, template_pack=settings.CRISPY_TEMPLATE_PACK):
+        formset = context[self.formset_name_in_context]
+        formset_helper = context[self.formset_helper_name]
+        return render_to_string(self.template, {'wrapper': self,
+            'formset': formset,
+            'formset_helper': formset_helper,
+            'formset_tag': True,})
+
 
 # ---- GENERAL PAGE RELEVANT FORMS ---------
 
@@ -81,6 +113,10 @@ class StdProfileForm_side(ModelForm):
     class Meta:
         model = StudentProfile
         fields = (
+            'twitter',
+            'linkedin',
+            'facebook',
+            'blog'
         )
 
     def __init__(self, *args, **kwargs):
@@ -170,8 +206,8 @@ LanguageFormset = formset_factory(LanguageForm, extra=1)
 class LanguageFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(LanguageFormset_helper, self).__init__(*args, **kwargs)
-        self.form_method = 'post'
         self.form_id = 'languageFormset'
+        self.form_tag = False
         self.layout = Layout(
             Div(
                 'name',
@@ -186,7 +222,6 @@ class LanguageFormset_helper(FormHelper):
                 css_class='row experienceItem'
             )
         )
-        self.render_required_fields = False
 
 # STUDENT ---- INTERNSHIPS
 class InternshipForm(ModelForm):
@@ -199,6 +234,7 @@ class InternshipFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(InternshipFormset_helper, self).__init__(*args, **kwargs)
         self.form_id = 'internshipFormset'
+        self.form_tag = False
         self.layout = Layout(
             Div(
                 Div(
@@ -222,6 +258,28 @@ class InternshipFormset_helper(FormHelper):
             )
         )
 
+# STUDENT ----- AWARDS & NOMINATIONS
+class AwardForm(ModelForm):
+    class Meta:
+        model = Award
+        fields = ['title']
+
+AwardFormset = inlineformset_factory(Competition, Award, fields = ['title'], extra=1)
+class AwardFormset_helper(FormHelper):
+    def __init__(self, *args, **kwargs):
+        super(AwardFormset_helper, self).__init__(*args, **kwargs)
+        # self.form_id = 'awardFormset'
+        self.render_required_fields = False
+        self.form_tag = False
+        self.layout = Layout(
+            Div(
+                Div(
+                'title',
+                'profile',
+                ),
+                css_class='awardFormset'
+            )
+        )
 
 # STUDENT ------ COMPETITION EXPERIENCE
 class CompetitionForm(ModelForm):
@@ -234,7 +292,7 @@ class CompetitionFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(CompetitionFormset_helper, self).__init__(*args, **kwargs)
         self.render_required_fields = False
-        self.form_id = 'competitionFormset'
+        self.formset_tag = False
         self.layout = Layout(
             Div(
                 Div(
@@ -245,11 +303,22 @@ class CompetitionFormset_helper(FormHelper):
                 ),
                 Div(
                     'name',
-                    'language',
+                    Div(
+                        Div(
+                        'duration'
+                        ,css_class="col-sm-6"
+                    ),
+                    Div(
+                        'measure'
+                        ,css_class="col-sm-6"
+                    ), 
+                    css_class='row'
+                    ),
+                    Formset('awardFormset', 'awardFormset_helper'),
                     css_class='col-sm-8'
                 ),
                 css_class = 'row'
-            )
+            ), 
         )
 
 # STUDENT ------ COURSEWORK
@@ -262,48 +331,35 @@ class CourseworkFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(CourseworkFormset_helper, self).__init__(*args, **kwargs)
         self.render_required_fields = False
-        self.form_id = 'courseworkFormset'
+        self.form_tag = False
         self.field_class = 'form-control-sm'
         self.layout = Layout(
             Div(
                 Div(
                 'institution',
                 'instructor',
-                'duration',
-                'measure',
-                css_class='col-sm-4',
+                    Div(
+                        Div(
+                            'duration',
+                            css_class='col-sm-6'
+                        ),
+                        Div(
+                            'measure',
+                            css_class='col-sm-6'
+                        ),
+                        css_class='row'
+                    ),
+                    css_class='col-sm-4',
                 ),
                 Div(
                     'title',
                     'year',
                     Field('learnings', rows='4'),
                     css_class='col-sm-8',
-                ),
-                css_class='row',
-                form_id = 'courseworkFormset'
+                )
             )
         )
 
-# STUDENT ----- AWARDS & NOMINATIONS
-class AwardForm(ModelForm):
-    class Meta:
-        model = Award
-        exclude = []
-
-AwardFormset = inlineformset_factory(Competition, Award, exclude = [], extra=1)
-class AwardFormset_helper(FormHelper):
-    def __init__(self, *args, **kwargs):
-        super(AwardFormset_helper, self).__init__(*args, **kwargs)
-        self.form_id = 'awardFormset'
-        self.render_required_fields = False
-        self.layout = Layout(
-            Div(
-                Div(
-                'title',css_class='col-sm-8',
-                ),
-                css_class='row'
-            )
-        )
 
 TeamMemberRegistration = formset_factory(UserRegistrationForm, extra=1)
 

@@ -210,8 +210,8 @@ class ExpertRegistrationView(View):
 
 class StudentRegistrationView(View):
 
-    def check_valid(self, forms_list):
-        for form in forms_list:
+    def check_valid(self, *args, **kwargs):
+        for form in args:
             if not form.is_valid():
                 return False
         return True
@@ -257,29 +257,33 @@ class StudentRegistrationView(View):
         profileFormSide = StdProfileForm_side(request.POST)
         profileFormMain = StdProfileForm_main(request.POST)
         # Many To Many Formsets
-        internshipFormset = InternshipFormset(request.POST)
-        competitionFormset = CompetitionFormset(request.POST)
-        courseworkFormset = CourseworkFormset(request.POST)
-        languageFormset = LanguageFormset(request.POST)
-        awardFormset = AwardFormset(request.POST)
+        internshipFormset = InternshipFormset(request.POST, prefix='intFs')
+        competitionFormset = CompetitionFormset(request.POST, prefix='cmpFs')
+        courseworkFormset = CourseworkFormset(request.POST, prefix='cswFs')
+        languageFormset = LanguageFormset(request.POST, prefix='lngFs')
+        # awardFormset = AwardFormset(request.POST, prefix='awdFs')
 
         # Combine in StudentProfileForm
         profile = StudentProfileForm(request.POST, request.FILES)
-        if profile.is_valid():
-            inst = profile.save(commit=False)
-            inst.attendent = Attendent.objects.get(user=request.user)
-            inst.save()
 
-            # Save Formsets
-            if intExpFormset.is_valid():
-                intExpFormset.instance = user
-                intExpFormset.save()
+        if self.check_valid(profile, competitionFormset, languageFormset):
+            profile_inst = profile.save(commit=False)
+            profile_inst.attendent = Attendent.objects.get(user=request.user)
+            profile_inst.save()
 
-            # competitionFormset.instance = user
-            # competitionFormset.save()
+            # Create all Competition Instances, and update them in bulk
+            new_compExp = []
+            for form in competitionFormset():
+                compExp = form.save(commit=False)
+                compExp.profile = profile_inst
+                compExp.save()
 
-            # courseworkFormset.instance = user
-            # courseworkFormset.save()
+
+
+            # try:
+            #     with transaction.atomic():
+            #         # Replace all old items with new ones
+            #         Competition.objects.bulk_create()
 
             return HttpResponseRedirect('/profile/')
         else:
@@ -295,13 +299,13 @@ class StudentRegistrationView(View):
                 'competitionFormset': competitionFormset,
                 'internshipFormset': internshipFormset,
                 'courseworkFormset': courseworkFormset,
-                'awardFormset': awardFormset,
+                # 'awardFormset': awardFormset,
                 # Formset Helper
-                'languageFormset_helper': LanguageFormset_helper(),
+                'languageFormset_helper': LanguageFormset_helper,
                 'internshipFormset_helper': InternshipFormset_helper(),
-                'competitionFormset_helper': CompetitionFormset_helper(),
-                'courseworkFormset_helper': CourseworkFormset_helper(),
-                'awardFormset_helper': awardFormset_helper(),
+                'competitionFormset_helper': CompetitionFormset_helper,
+                'courseworkFormset_helper': CourseworkFormset_helper,
+                # 'awardFormset_helper': AwardFormset_helper(),
             })
 
 

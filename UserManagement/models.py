@@ -163,7 +163,7 @@ class StudentProfile(Profile):
     Stores all relevant information on the Student as either(Negotiator, Mediator) in the
     competition. Is used for professional representation, sharing of information.
     It does NOT store relevant Scoringinformation etc.(= stored on ATTENDENT )
-    """ 
+    """
     # student = models.OneToOneField(Student, null=True, on_delete=models.CASCADE)
     
     # relevant practical Experience
@@ -266,7 +266,7 @@ class Course(models.Model):
     institution = models.CharField(max_length=100, blank=True, null=True)
     country = CountryField(null=True)
     duration = models.IntegerField()
-    measure = models.CharField(max_length=10)
+    measure = models.CharField(max_length=10, verbose_name='Day/Hour', choices=(('day','Days'), ('hour', 'Hours')))
     learnings = models.TextField(max_length=500, blank=True, null=True)
     def __str__(self):
         return "{}, {}".format(self.title, self.institution)
@@ -288,7 +288,6 @@ class Program(models.Model):
         return self.title
 
 class Internship(models.Model):
-    profile = models.ForeignKey(Profile)
     position = models.CharField(max_length=150)
     field_of_practice = models.CharField(max_length=100, choices=PRACTICE_FIELDS)
     employer = models.CharField(max_length=100, verbose_name="Name of Firm or Instituation")
@@ -303,14 +302,13 @@ class Internship(models.Model):
         return self.position
 
 class Competition(models.Model):
-    profile = models.ForeignKey(Profile)
     name = models.CharField(max_length=100)
     country = CountryField(null=True)
     city = models.CharField(max_length=35)
     duration = models.CharField(max_length=50)
-    measure = models.CharField(max_length=50)
+    measure = models.CharField(max_length=50, choices=(('day', 'Days'), ('hour', 'Hours')))
     year = models.CharField(max_length=4)
-    language = models.CharField(max_length=50)
+
     def __str__(self):
         return self.name
 
