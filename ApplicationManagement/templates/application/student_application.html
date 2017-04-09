@@ -5,7 +5,6 @@
 
 
 {% comment %}CRISPY LOADERS{% endcomment %}
-{% crispy userForm %}
 {% crispy profileFormHeader profileFormHeader.helper %}
 {% crispy profileFormSide profileFormSide.helper %}
 {% crispy profileFormMain profileFormMain.helper %}
@@ -14,65 +13,172 @@
 {% crispy internshipFormset internshipFormset_helper %}
 {% crispy competitionFormset competitionFormset_helper %}
 {% crispy courseworkFormset courseworkFormset_helper %}
-{% crispy awardsFormset awardsFormset_helper %}
-
-<!--FORM HEADER SECTION-->
-{% block form-header %}
-    <h2>Personal Details</h2>
-    {% crispy userForm %}
-{% endblock form-header %}
+{% crispy awardFormset awardFormset_helper %}
 
 
-{% block header-intro %}
-    <h3>Background</h3>
-    {% crispy profileFormHeader %}
-{% endblock header-intro %}
+<!-- COPY -->
+{% block body %}
+<section class="jumbotron">
+<form method="POST" enctype="multipart/form-data">{% csrf_token %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header ">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <img class="img-fluid" src="https://placehold.it/190x210" alt="">
+                            </div>
+                            <div class="col-sm-8">
+                                <small>{{user.attendent.role|capfirst}}</small>
+                                <h5>{{user.get_full_name }}</h5>
+                                <p>University of Bengalore</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-block">
+                        {% crispy profileFormHeaderSide %}
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" name="" id="" class="btn btn-success btn-lg btn-block">Save Application</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Background</h3>
+                        </div>
+                        <div class="card-block">
+                            {% crispy profileFormHeader %}
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="container">
+    <div class="row">
+        <section class="col-md-3 sidebar-left">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Awards</h3>
+                </div>
 
-<!--FORM SIDEBAR -->
-{% block form-sidebar %}
-    <section class="row">
-        <img src="https://placehold.it/190x210" alt="">
-        <h3>Professional Details</h3>
-        <article>
-            {% crispy profileFormSide profileFormSide.helper %}
-        </article>
-    </section>
-    <section class="row">
-        <header>
-            <h3>Languages</h3>
-        </header>
-        {% crispy languageFormset languageFormset_helper %}
-    </section>
-    
+                <div class="card-block">
 
-{% endblock form-sidebar %}
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h3>Languages</h3>
+                </div>
+                <div class="card-block">
+                    {{ languageFormset.management_form|crispy}}
+                    {% crispy languageFormset languageFormset_helper %}
+                </div>
+            </div>    
+        </section>
+        <section class="col-md-9">
+                <div class="card mb-sm-4">
+                    <div class="card-header">
+                         <h3>Competition Experience</h3>
+                    </div>
+                    <section class="card-block">
+                        {{ competitionFormset.management_form|crispy }}
+                        {{ awardFormset.management_form|crispy }}
+                        {% for compForm in competitionFormset %}
+                            {% crispy compForm competitionFormset_helper %}
+                            
+                            {% for awardForm in awardFormset %}
+                                {% crispy awardForm awardFormset_helper %}
+                            {% endfor %}
+                                
+                        {% endfor %}
+                            
 
-<!--MAIN FORM BODY-->
-{% block form-content %}
-    <section class="row">
-        <h3>Competition Experience</h3>
-        {% crispy competitionFormset competitionFormset_helper %}
-        {% crispy awardsFormset awardsFormset_helper %}
+                    </section>
+                                        
+                </div>
+                <div class="card mb-sm-4">
+                    <header class="card-header">
+                        <h3>International Experience</h3>
+                        <p>Please describe to us the professional background you bring
+                            to the table here.
+                        </p>
+                    </header>
+                    <content class="card-block">
+                        {{ internshipFormset.management_form|crispy}}
+                        {% crispy internshipFormset internshipFormset_helper %}
+                    </content>
+                </div>
+                <div class="card mt-sm-4">
+                    <header class="card-header">
+                        <h3>Coursework</h3>
+                    </header>
+                    <content class="card-block">
+                        {% crispy courseworkFormset courseworkFormset_helper %}
+                    </content>
+                </section>
+            </section>
+        </div>
+</section>
+</form>
 
-    </section>
-    <section class="row">
-        <header>
-            <h3>International Experience</h3>
-            <p>Please describe to us the professional background you bring
-                to the table here.
-            </p>
-        </header>
-        <content>
-            {% crispy internshipFormset internshipFormset_helper %}
-        </content>
-    </section>
-    <section>
-        <header>
-            <h3>Coursework</h3>
-        </header>
-        <content>
-            {% crispy courseworkFormset courseworkFormset_helper %}
-        </content>
-    </section>
+{% endblock body %}
 
-{% endblock %}
+{% comment %}
+Put all JS to manage the form here. Shared dependencies for all forms 
+in the base_application.html template.
+{% endcomment %}
+{% block form-js-includes %}
+<script type="text/javascript">
+    $('#courseworkFormset').formset({
+        prefix: '{{ courseworkFormset.prefix }}',
+        formCssClass: 'dynamic-courseworkFormset',
+        addText: 'add Course',
+        addCssClass: 'csw btn btn-success btn-sm float-right',
+        deleteText: "<i class='fa fa-ban'' aria-hidden='true'></i>",
+        deleteCssClass: 'csw btn btn-danger btn-sm bp-sm-4 float-right',
+    });
+
+    $('#internshipFormset').formset({
+        prefix: '{{ internshipFormset.prefix }}',
+        formCssClass: 'dynamic-internshipFormset',
+        deleteText: "<i class='fa fa-ban' aria-hidden='true'></i>",
+        deleteCssClass: 'int btn btn-danger btn-sm bp-sm-4 float-right',
+        addText: 'add Internship',
+        addCssClass: 'int btn btn-success btn-sm float-right',
+
+    });
+
+    $('#competitionFormset').formset({
+        prefix: '{{ competitionFormset.prefix }}',
+        formCssClass: 'dynamic-competitionFormset',
+        deleteText: "<i class='fa fa-ban'' aria-hidden='true'></i>",
+        deleteCssClass: 'cmp btn btn-danger btn-sm float-right',
+        addText: 'add Competition',
+        addCssClass: 'cmp btn btn-success btn-sm float-right',
+    });
+
+    $('#languageFormset').formset({
+        prefix: '{{ languageFormset.prefix }}',
+        formCssClass: 'dynamic-languageFormset',
+        deleteText: "<i class='fa fa-ban'' aria-hidden='true'></i>",
+        deleteCssClass: 'lng btn btn-danger btn-sm bp-sm-4 float-right',
+        addText: 'add Language',
+        addCssClass: 'lng btn btn-success btn-sm float-right',
+        
+    });
+
+    $('#awardFormset').formset({
+        prefix: '{{ awardFormset.prefix }}',
+        formCssClass: 'dynamic-awardFormset',
+        addText: 'add Award',
+        addCssClass: 'awd btn btn-success btn-sm float-right',
+        deleteText: "<i class='fa fa-ban' aria-hidden='true'></i>",
+        deleteCssClass: 'awd btn btn-danger btn-sm bp-sm-4 float-right',
+    });
+</script>
+
+{% endblock form-js-includes %}

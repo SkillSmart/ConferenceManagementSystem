@@ -16,28 +16,47 @@ from django.views.generic.detail import DetailView
 
 # FORM Imput -----------
 from django.forms import ChoiceField
-from .forms import ContactForm
-from .forms import AttendentModelForm, UserRegistrationForm, TeamRegistrationForm
-from .forms import TeamMemberRegistration
-from .forms import TeamRegistrationForm
-# ----Student Forms-------------
-from .forms import StdProfileForm_head, StdProfileForm_main, StdProfileForm_side 
-from .forms import LanguageFormset, InternshipFormset, CompetitionFormset, CourseworkFormset, AwardsFormset
-from .forms import LanguageFormset_helper, InternshipFormset_helper, CompetitionFormset_helper, CourseworkFormset_helper, AwardsFormset_helper
-# ---ExpertForms-------------
+from .forms import (ContactForm,
+                    AttendentModelForm,
+                    UserRegistrationForm)
+# ----  STUDENT FORMS  -------------
+from .forms import (StudentProfileForm,
+                    StdProfileForm_head,
+                    StdProfileForm_head_side,
+                    StdProfileForm_main,
+                    StdProfileForm_side)
+# student___Formsets
+from .forms import (LanguageFormset,
+                    InternshipFormset,
+                    CompetitionFormset,
+                    CourseworkFormset,
+                    AwardFormset)
+# student___Formset Helper 
+from .forms import (LanguageFormset_helper,
+                    InternshipFormset_helper,
+                    CompetitionFormset_helper,
+                    CourseworkFormset_helper,
+                    AwardFormset_helper)
+# ---  EXPERT FORMS  -------------
 from .forms import (ExpertProfileForm,
                     ExpertProfileFormHeader,
                     ExpertProfileFormHeaderSide,
                     ExpertProfileFormMain,
                     ExpertProfileMembershipForm,
                     ExpertProfileFormSide)
-                    # Formsets
+# expert___Formsets
 from .forms import (MediationExperienceFormset,
                     NegotiationExperienceFormset)
-                    #FormHelper
+#expert___FormHelper
 from .forms import (MediationExperienceFormset_helper,
                     NegotiationExperienceFormset_helper)
-# ---ASSESSMENT Forms -------
+# ----  TEAM FORMS  -------------
+from .forms import (TeamRegistrationForm,
+                    TeamMemberRegistration)
+# ----  STAFF FORMS  -------------
+# from .forms import ()
+
+# ---  ASSESSMENT Forms -------
 from .forms import MemberReviewForm
 
 # General Informa
@@ -172,7 +191,7 @@ class ExpertRegistrationView(View):
             this.save()
 
             # if yes, redirect to the profile view
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/profile')
         else:
             # Redisplay Form with Errors attached
             return render(request, 'application/expert_application.html', {
@@ -188,76 +207,103 @@ class ExpertRegistrationView(View):
                 # 'negotiationExp_helper': NegotiationExperienceFormset_helper(),
             })
 
-@login_required
-@transaction.atomic
-def student_registration(request):
-    """Display the Registration Form for the User Registration Process"""
-    if request.method =="POST":
-        userForm = UserRegistrationForm(request.POST)
+
+class StudentRegistrationView(View):
+
+    def check_valid(self, forms_list):
+        for form in forms_list:
+            if not form.is_valid():
+                return False
+        return True
+
+    def get(self, request):
+        # Student Profile Forms
+        profileFormHeader = StdProfileForm_head()
+        profileFormHeaderSide = StdProfileForm_head_side()
+        profileFormSide = StdProfileForm_side()
+        profileFormMain = StdProfileForm_main()
+        # Many to many Formsets
+        languageFormset = LanguageFormset(prefix='lngFs')
+        internshipFormset = InternshipFormset(prefix='intFs')
+        competitionFormset = CompetitionFormset(prefix='cmpFs')
+        courseworkFormset = CourseworkFormset(prefix='cswFs')
+        awardFormset = AwardFormset(prefix='awdFs')
+
+        return render(request, 'application/student_application.html', {
+            'user': request.user,
+            # Student Profile Forms
+            'profileFormHeader': profileFormHeader,
+            'profileFormHeaderSide': profileFormHeaderSide,
+            'profileFormSide': profileFormSide,
+            'profileFormMain': profileFormMain,
+            # Many to Many Formsets
+            'languageFormset': languageFormset,
+            'competitionFormset': competitionFormset,
+            'internshipFormset': internshipFormset,
+            'courseworkFormset': courseworkFormset,
+            'awardFormset': awardFormset,
+            # Formset Helper
+            'languageFormset_helper': LanguageFormset_helper(),
+            'internshipFormset_helper': InternshipFormset_helper(),
+            'competitionFormset_helper': CompetitionFormset_helper(),
+            'courseworkFormset_helper': CourseworkFormset_helper(),
+            'awardFormset_helper': AwardFormset_helper(),
+        })
+
+    def post(self, request):
+        # Student Profile Forms
         profileFormHeader = StdProfileForm_head(request.POST)
+        profileFormHeaderSide = StdProfileForm_head_side(request.POST, request.FILES)
         profileFormSide = StdProfileForm_side(request.POST)
         profileFormMain = StdProfileForm_main(request.POST)
+        # Many To Many Formsets
         internshipFormset = InternshipFormset(request.POST)
         competitionFormset = CompetitionFormset(request.POST)
         courseworkFormset = CourseworkFormset(request.POST)
         languageFormset = LanguageFormset(request.POST)
-        awardsFormset = AwardsFormset(request.POST)
-       
-        if (userForm.is_valid()):
-            # Create User
-            user = userForm.save(commit=False)
-            if user.cleaned_data.get['password_set'] == user.cleaned_data.get['password_repeat']:
-                user.set_password(userForm.cleaned_data.get['password_set'])
-                user.save()
-            else:
-                raise ValidationError('Your passwords do not match')
-            profileForm.save(commit=False)
-            # Add additional Information to profileForm
-            profile = profileForm.save(commit=False)
-            profile.team = request.user.attendent.team
-            profile.save()
-            
+        awardFormset = AwardFormset(request.POST)
+
+        # Combine in StudentProfileForm
+        profile = StudentProfileForm(request.POST, request.FILES)
+        if profile.is_valid():
+            inst = profile.save(commit=False)
+            inst.attendent = Attendent.objects.get(user=request.user)
+            inst.save()
+
             # Save Formsets
-            intExpFormset.instance = user
-            intExpFormset.save()
+            if intExpFormset.is_valid():
+                intExpFormset.instance = user
+                intExpFormset.save()
 
-            competitionFormset.instance = user
-            competitionFormset.save()
+            # competitionFormset.instance = user
+            # competitionFormset.save()
 
-            courseworkFormset.instance = user
-            courseworkFormset.save()
+            # courseworkFormset.instance = user
+            # courseworkFormset.save()
 
-            return HttpResponseRedirect('portal:index')
+            return HttpResponseRedirect('/profile/')
+        else:
+            return render(request, 'application/student_application.html', {
+                'user': request.user,
+                # Student Profile Forms
+                'profileFormHeader': profileFormHeader,
+                'profileFormHeaderSide': profileFormHeaderSide,
+                'profileFormSide': profileFormSide,
+                'profileFormMain': profileFormMain,
+                # Many to Many Formsets
+                'languageFormset': languageFormset,
+                'competitionFormset': competitionFormset,
+                'internshipFormset': internshipFormset,
+                'courseworkFormset': courseworkFormset,
+                'awardFormset': awardFormset,
+                # Formset Helper
+                'languageFormset_helper': LanguageFormset_helper(),
+                'internshipFormset_helper': InternshipFormset_helper(),
+                'competitionFormset_helper': CompetitionFormset_helper(),
+                'courseworkFormset_helper': CourseworkFormset_helper(),
+                'awardFormset_helper': awardFormset_helper(),
+            })
 
-    else:
-        userForm = UserRegistrationForm(instance=request.user)
-        profileFormHeader = StdProfileForm_head()
-        profileFormSide = StdProfileForm_side()
-        profileFormMain = StdProfileForm_main()
-        languageFormset = LanguageFormset()
-        internshipFormset = InternshipFormset()
-        competitionFormset = CompetitionFormset()
-        courseworkFormset = CourseworkFormset()
-        awardsFormset = AwardsFormset()
-
-    return render(request, 'application/student_application.html', {
-        'user': request.user,
-        # Forms
-        'userForm': userForm, 
-        'profileFormHeader': profileFormHeader,
-        'profileFormSide': profileFormSide,
-        'profileFormMain': profileFormMain,
-        'languageFormset': languageFormset,
-        'competitionFormset': competitionFormset,
-        'internshipFormset': internshipFormset,
-        'courseworkFormset': courseworkFormset,
-        'awardsFormset': awardsFormset,
-        'languageFormset_helper': LanguageFormset_helper(),
-        'internshipFormset_helper': InternshipFormset_helper(),
-        'competitionFormset_helper': CompetitionFormset_helper(),
-        'courseworkFormset_helper': CourseworkFormset_helper(),
-        'awardsFormset_helper': AwardsFormset_helper(),
-    })
 
 @transaction.atomic
 def team_registration(request):

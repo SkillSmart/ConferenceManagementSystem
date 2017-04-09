@@ -4,6 +4,11 @@ from django.shortcuts import get_list_or_404, get_object_or_404
 # Class Imports
 from .models import (ExpertProfile, TeamProfile, StudentProfile, StaffProfile)
 from .models import Program
+# Generic Classbased Views
+from django.views.generic.base import View
+from django.views.generic.list import ListView
+from django.views.generic.edit import (DeleteView, CreateView)
+
 # Form Imports
 from .forms import ExpertModelForm, TeamModelForm, UserProfileForm, UserModelForm, StudentModelForm
 from .forms import NegotiationExperienceForm, MediationExperienceForm
@@ -76,12 +81,16 @@ def profile_delete(request):
             pass
 
     return render(request, 'profile/profile_delete.html', {})
+class ProfileDisplayView(View):
 
-def profile_display(request):
-    # Switch Dicctionary to display the right form    
-    return render(request, 'portal/experts/expert_detail.html', {
-        'attendent': get_object_or_404(Attendent, user=request.user),
-    })
+    def get(self, request):
+        # Switch Dicctionary to display the right form    
+        return render(request, 'portal/experts/expert_detail.html', {
+            'attendent': get_object_or_404(Attendent, user=request.user),
+        })
+    
+    def post(self, request):
+        pass
 
 def profile_edit(request):
 

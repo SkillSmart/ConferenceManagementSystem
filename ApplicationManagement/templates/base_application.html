@@ -2,42 +2,16 @@
 {% load static %}
 
 {% block css-includes %}
-    <link rel="stylesheet" type="text/css" href="{% static 'application/css/main_application.css' %}">
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'application/css/main_application.css' %}">-->
 {% endblock %}
 
 
 {% block content %}
-<section class="jumbotron {% block header-imgClass %}{% endblock %}">
-    <div class="container">
-        <article>
-            <header class="row">
-                 <div class="col-md-4">
-                 {% block form-header %}
-                 {% endblock form-header %}
-                 </div>
-                 <div class="col-md-8">
-                     {% block header-intro %}
-                     {% endblock header-intro %}
-                 </div>
-            </header>
-            <content>
-                
-            </content>
-        </article>
-    </div>
-</section>
-<section class="container">
-    <div class="row">
-        <section class="col-md-3 sidebar-left">
-            {% block form-sidebar %}
-            {% endblock form-sidebar %}
-        </section>
-        <section class="col-md-9 form-display">
-            {% block form-content %}
-            {% endblock %}
-        </section>
-    </div>
-</section>
+
+    {% block body %}
+    {% endblock body %}
+
+
 
 {% endblock %}
 
@@ -48,3 +22,18 @@
 {% block footer-right %}
 <h2>Right footer</h2>
 {% endblock footer-right %}
+
+
+{% comment %}JAVASCRIPT INCLUDE{% endcomment %}
+{% block js-includes %}
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+    {% block form-js-includes %}
+    {% endblock form-js-includes %}
+{% endblock js-includes %}
+
+
+
+
+
+
+

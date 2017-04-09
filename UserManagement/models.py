@@ -76,11 +76,7 @@ class Attendent(models.Model):
 # @receiver(post_save, sender=User)
 # def save_attendent_profile(sender, instance, **kwargs):
 #     instance.attendent.save()
-class Student(Attendent):
-    """
-    Can be in role(Mediator, Negotiator). profile 
-    """
-    pass
+
 
 
 class Expert(Attendent):
@@ -108,6 +104,14 @@ class Team(Attendent):
         self.role = 'team'
         super().save(*args, **kwargs)
 
+
+class Student(Attendent):
+    """
+    Can be in role(Mediator, Negotiator). profile 
+    """
+    # This needs to be initialized when the student is 
+    university = models.OneToOneField(Team, null=True, blank=True)
+
 class Staff(Attendent):
     """
     Will be used to manage and represent all necessary information on a Staff Member for Shift Management.
@@ -124,7 +128,7 @@ class Profile(models.Model):
     slogan = models.CharField(max_length=250, verbose_name="Your favorite quote up to 250 characters")
     country = CountryField(null=True)
     city = models.CharField(max_length=50, verbose_name='City of Residence')
-    profileImg = models.ImageField(upload_to='profileImg/%Y/%m/%d', blank=True)
+    profileImg = models.ImageField(upload_to='profileImg/%Y/%m/%d', blank=True, null=True)
 
     # Contact Details
     phoneNumber = models.CharField(verbose_name="Your Phone Number", max_length=100, blank=True, null=True)
@@ -145,7 +149,7 @@ class Profile(models.Model):
 class ExpertProfile(Profile):
     """
     """
-    team = models.ForeignKey(Team, related_name="coachedTeam", null=True, blank=True)  
+    coachedTeam = models.ForeignKey(Team, related_name="coachedTeam", null=True, blank=True)  
     affiliation = models.CharField(max_length=100)
     position = models.CharField(max_length=100)
 
@@ -160,7 +164,7 @@ class StudentProfile(Profile):
     competition. Is used for professional representation, sharing of information.
     It does NOT store relevant Scoringinformation etc.(= stored on ATTENDENT )
     """ 
-    student = models.OneToOneField(Student, null=True, on_delete=models.CASCADE)
+    # student = models.OneToOneField(Student, null=True, on_delete=models.CASCADE)
     
     # relevant practical Experience
     def get_absolute_url(self):

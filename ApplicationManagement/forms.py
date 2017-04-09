@@ -61,30 +61,32 @@ class StdProfileForm_head(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
-        
+        self.helper.form_tag = False        
         self.helper.layout = Layout(
             Field('slogan', rows=3),
             Field('bio', rows=10),
         )
 
+class StdProfileForm_head_side(ModelForm):
+    class Meta:
+        model = StudentProfile
+        fields = ['profileImg','country', 'city', 'phoneNumber']
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
 
 class StdProfileForm_side(ModelForm):
     class Meta:
         model = StudentProfile
         fields = (
-            'profileImg',
-            'country',
-            'phoneNumber',
-            'twitter',
-            'linkedin',
-            'facebook',
-            'blog',
-
         )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
 
 class StdProfileForm_main(ModelForm):
     class Meta:
@@ -94,18 +96,27 @@ class StdProfileForm_main(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.field_template = 'bootstrap4/field.html'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-8'
+
 
 
 class StudentProfileForm(ModelForm):
     class Meta:
         model = StudentProfile
-        exclude = ['user', 'team', 'awards', 'internships', 'mediation_courses', 'negotiation_courses'] 
+        exclude = []
 
     def __init__(self, *args, **kwargs):
         super(StudentProfileForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper ()
-        self.helper.form_class = "form-horizontal"
+        self.helper.form_tag = False
         self.helper.field_class = 'form-input-sm'
+        self.form_class = 'form-horizontal'
+        self.label_class = 'col-lg-2'
+        self.field_class = 'col-lg-8'
         self.helper.layout = Layout(
             Field('country', css_class='input-sm'),
             Field('phone', css_class='input-sm'),
@@ -142,6 +153,7 @@ class UserRegistrationForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.form_class = 'form-horizontal'
         self.helper.form_id = 'ExpertProfileTop'
         self.helper.form_class = 'form-group-row'
         self.helper.label_class = 'col-sm-4 col-form-label'
@@ -159,6 +171,7 @@ class LanguageFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(LanguageFormset_helper, self).__init__(*args, **kwargs)
         self.form_method = 'post'
+        self.form_id = 'languageFormset'
         self.layout = Layout(
             Div(
                 'name',
@@ -185,6 +198,7 @@ InternshipFormset = formset_factory(InternshipForm, extra=1)
 class InternshipFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(InternshipFormset_helper, self).__init__(*args, **kwargs)
+        self.form_id = 'internshipFormset'
         self.layout = Layout(
             Div(
                 Div(
@@ -204,7 +218,7 @@ class InternshipFormset_helper(FormHelper):
                     Field('descr', rows=11),
                     css_class='col-sm-8',
                 ),
-                css_class=''
+                css_class='row'
             )
         )
 
@@ -219,17 +233,22 @@ CompetitionFormset = formset_factory(CompetitionForm, extra=1)
 class CompetitionFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(CompetitionFormset_helper, self).__init__(*args, **kwargs)
+        self.render_required_fields = False
+        self.form_id = 'competitionFormset'
         self.layout = Layout(
             Div(
+                Div(
                 'city',
                 'country',
                 'year',
                 css_class='col-sm-4'
-            ),
-            Div(
-                'name',
-                'language',
-                css_class='col-sm-8'
+                ),
+                Div(
+                    'name',
+                    'language',
+                    css_class='col-sm-8'
+                ),
+                css_class = 'row'
             )
         )
 
@@ -242,19 +261,26 @@ CourseworkFormset =  formset_factory(CourseForm, extra=1)
 class CourseworkFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
         super(CourseworkFormset_helper, self).__init__(*args, **kwargs)
+        self.render_required_fields = False
+        self.form_id = 'courseworkFormset'
+        self.field_class = 'form-control-sm'
         self.layout = Layout(
             Div(
+                Div(
                 'institution',
                 'instructor',
                 'duration',
                 'measure',
                 css_class='col-sm-4',
-            ),
-            Div(
-                'title',
-                'year',
-                Field('learnings', rows='4'),
-                css_class='col-sm-8',
+                ),
+                Div(
+                    'title',
+                    'year',
+                    Field('learnings', rows='4'),
+                    css_class='col-sm-8',
+                ),
+                css_class='row',
+                form_id = 'courseworkFormset'
             )
         )
 
@@ -264,12 +290,19 @@ class AwardForm(ModelForm):
         model = Award
         exclude = []
 
-AwardsFormset = inlineformset_factory(Competition, Award, exclude = [], extra=1)
-class AwardsFormset_helper(FormHelper):
+AwardFormset = inlineformset_factory(Competition, Award, exclude = [], extra=1)
+class AwardFormset_helper(FormHelper):
     def __init__(self, *args, **kwargs):
-        super(AwardsFormset_helper, self).__init__(*args, **kwargs)
+        super(AwardFormset_helper, self).__init__(*args, **kwargs)
+        self.form_id = 'awardFormset'
+        self.render_required_fields = False
         self.layout = Layout(
-            Div('title',css_class='col-sm-8')
+            Div(
+                Div(
+                'title',css_class='col-sm-8',
+                ),
+                css_class='row'
+            )
         )
 
 TeamMemberRegistration = formset_factory(UserRegistrationForm, extra=1)
